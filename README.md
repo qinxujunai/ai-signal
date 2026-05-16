@@ -6,6 +6,22 @@ Extract signal from AI noise. Fully automated, LLM-curated, bilingual, professio
 
 ---
 
+## NOT Claude Code Only
+
+AI Signal is a **standalone Node.js pipeline**. It works anywhere Node.js runs.
+
+| 使用方式 | 命令 |
+|---------|------|
+| **终端** | `node prepare-digest.js \| node remix-digest.js \| node deliver.js` |
+| **npm** | `npm run digest` |
+| **cron / 任务计划** | `bash run-digest.sh` (already scheduled daily 10:00) |
+| **Claude Code** | `/ai` (convenience entry point) |
+| **Codex CLI / Cursor / 任何 Agent** | 同上，只要它能执行 shell 命令 |
+
+The `/ai` slash command in Claude Code is just a convenience — the engine itself is tool-agnostic.
+
+---
+
 ## What It Does
 
 Every morning at your chosen time, this system:
