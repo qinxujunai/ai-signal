@@ -1,42 +1,77 @@
 ---
 name: ai-signal
-description: /ai — AI industry daily digest. Curated bilingual newsletter from top builders. Use when user invokes /ai, wants AI news, frontier updates, or industry insights. Zero content API keys. Auto-detects LLM config from Claude Code settings.
+description: /ai — AI industry daily digest. Use when user invokes /ai, wants AI news, frontier updates, or industry insights. Handles first-time setup automatically.
 ---
 
 # AI Signal · 信号
 
 Extract signal from AI noise. A fully automated, LLM-curated daily digest of the AI industry.
 
-## What You Do
+## Detection
 
-When the user invokes `/ai` or asks for their AI digest, run the full pipeline:
+Before anything, check: does `~/.follow-builders/config.json` exist AND have `"onboardingComplete": true`?
 
+- **NO → Run First-Time Setup below.**
+- **YES → Run Digest Pipeline below.**
+
+---
+
+## First-Time Setup
+
+### Step 1: Greeting
+
+Tell the user:
+
+"Hi! I'm **AI Signal**, your personal AI industry digest. I track top AI builders on X and YouTube podcasts, then remix their content into a curated bilingual summary. No content API keys needed — everything comes from a central feed.
+
+Let's get you set up in under a minute."
+
+### Step 2: API Key
+
+Check `~/.claude/settings.json` for `ANTHROPIC_AUTH_TOKEN`. Also check `~/.follow-builders/.env` for `DEEPSEEK_API_KEY`.
+
+If neither exists: "First — do you have a DeepSeek API key? (If you already use Claude Code with DeepSeek, this is auto-detected and you can skip.)"
+
+If they provide one, save it:
 ```bash
-cd <SKILL_DIR>/scripts
-node prepare-digest.js 2>/dev/null | node remix-digest.js 2>/dev/null | node deliver.js
+mkdir -p ~/.follow-builders
+cat > ~/.follow-builders/.env << 'ENVEOF'
+DEEPSEEK_API_KEY=<their key>
+ENVEOF
 ```
 
-This fetches the latest, remixes via LLM, and delivers based on their config.
+If auto-detected: "✓ DeepSeek API key auto-detected from your Claude Code settings."
 
-## First Run — Auto-Onboarding
+### Step 3: Delivery Method
 
-Check if `~/.follow-builders/config.json` exists. If NOT, run onboarding:
+Ask: "How would you like to receive your digest?"
 
-1. Tell the user: "AI Signal 需要几分钟完成首次配置。你只需要一个 DeepSeek API key。"
-2. Ask: "推送方式？"
-   - **终端查看（推荐起步）** — 零额外配置，摘要直接显示在对话里
-   - **邮件推送** — 需要 Resend 账号 + 域名
-3. If email: walk through the Resend setup (same as before)
-4. Ask: "语言偏好？" → 中英双语 / 纯中文 / 纯英文
-5. Ask: "推送频率？" → 每天 / 每周
-6. Save config to `~/.follow-builders/config.json`:
+1. **终端查看 (Recommended to start)** — Digest appears directly in this conversation. Zero extra setup.
+2. **邮件推送** — Professionally formatted HTML email. Requires a free Resend account and a domain.
 
-```json
+If email:
+- Walk through Resend setup (sign up → API key → verify domain)
+- Ask for their email address
+- Save to config
+
+### Step 4: Language
+
+Ask: "Language preference?"
+- 中英双语 (Bilingual) — Recommended
+- 纯中文
+- English only
+
+### Step 5: Save Config
+
+Save `~/.follow-builders/config.json`:
+
+```bash
+cat > ~/.follow-builders/config.json << 'CFGEOF'
 {
   "platform": "other",
   "language": "<bilingual|zh|en>",
   "timezone": "Asia/Shanghai",
-  "frequency": "<daily|weekly>",
+  "frequency": "daily",
   "deliveryTime": "10:00",
   "delivery": {
     "method": "<stdout|email>",
@@ -44,51 +79,50 @@ Check if `~/.follow-builders/config.json` exists. If NOT, run onboarding:
   },
   "onboardingComplete": true
 }
+CFGEOF
 ```
 
-7. If they have a DeepSeek API key, save to `~/.follow-builders/.env`:
+### Step 6: First Digest
 
-```env
-DEEPSEEK_API_KEY=sk-xxxxxxxxxxxx
+"All set! Let me generate your first digest now..."
+
+Run the pipeline immediately (see below). After showing the digest:
+
+"Your next digest: type `/ai` anytime. To set up automatic daily delivery, check the README at https://github.com/qinxujunai/ai-signal"
+
+---
+
+## Digest Pipeline
+
+Once onboarded, every `/ai` invocation runs:
+
+```bash
+cd <SKILL_DIR>/scripts
+node prepare-digest.js 2>/dev/null | node remix-digest.js 2>/dev/null | node deliver.js
 ```
 
-Tell them: "如果你的 Claude Code 已经配了 DeepSeek API key，这步跳过——系统会自动读取。"
+This:
+1. Fetches the latest tweets + podcast transcripts from the central feed
+2. Sends them through DeepSeek for curation and bilingual formatting
+3. Delivers based on config (stdout: displays here; email: sends via Resend)
 
-8. Do NOT ask for X/Twitter API keys or YouTube API keys. Content comes from a central feed.
-9. After saving config, immediately run the pipeline to show them the first digest.
+### Fallback behavior
+
+If the LLM fails, a template-based fallback ensures you always get content.
+
+---
 
 ## Auto-Detection
 
-The remix engine automatically:
-- Reads `DEEPSEEK_API_KEY` from `~/.follow-builders/.env`
-- Falls back to `ANTHROPIC_AUTH_TOKEN` from `~/.claude/settings.json`
-- Reads model from `ANTHROPIC_DEFAULT_OPUS_MODEL` in settings.json
-- Strips `[1m]` suffix automatically
+- API key: `~/.follow-builders/.env` → `~/.claude/settings.json` (auto)
+- Model: `DEEPSEEK_MODEL` env → `ANTHROPIC_DEFAULT_OPUS_MODEL` in settings → `deepseek-chat` (fallback)
+- No content API keys EVER needed (X, YouTube, etc.)
 
-This means users who already use Claude Code with DeepSeek need ZERO additional API configuration.
-
-## Delivery Modes
-
-### stdout (zero setup)
-- Digest is output directly in the terminal/Claude Code conversation
-- No Resend, no domain, no cron needed
-- User just types `/ai` whenever they want a digest
-
-### email (full setup)
-- Professional HTML email via Resend
-- Requires Resend API key + verified domain
-- Can be scheduled (Windows Task Scheduler or Linux cron)
-- Run `install.ps1` for one-click Windows setup
-
-## Troubleshooting
-
-- "No API key" → Check `~/.follow-builders/.env` or `~/.claude/settings.json`
-- "Empty digest" → Central feed may be updating, retry in a minute
-- Email not received → Check spam folder; verify domain in Resend dashboard
+---
 
 ## Files
 
-- `scripts/remix-digest.js` — Core curation + HTML rendering engine
-- `scripts/prepare-digest.js` — Fetches central feed
-- `scripts/deliver.js` — Delivery (stdout / email / Telegram)
-- `install.ps1` — Windows one-click scheduling setup
+- `scripts/remix-digest.js` — Core curation + HTML rendering
+- `scripts/prepare-digest.js` — Central feed fetching
+- `scripts/deliver.js` — Delivery (stdout / email)
+- `install.ps1` / `install.sh` — Automated scheduling setup
