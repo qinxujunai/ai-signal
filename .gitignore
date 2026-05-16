@@ -6,3 +6,5 @@ cron.log
 .ftp
 .DS_Store
 Thumbs.db
+.playwright-mcp/
+email-*.png
