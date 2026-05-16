@@ -258,14 +258,14 @@ function renderHTML(content, lang) {
     <!-- MUST READ -->
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
       <tr><td style="padding:0 0 14px 0;">
-        <span style="background:#fef3c7;color:#92400e;font-size:11px;font-weight:700;padding:4px 10px;border-radius:4px;letter-spacing:0.5px;">🔥 今日必读</span>
+        <span style="background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;padding:4px 10px;border-radius:4px;letter-spacing:0.5px;">🔥 今日必读</span>
       </td></tr>`;
     for (const item of content.mustRead) {
       sectionsHTML += `
       <tr><td style="padding-bottom:16px;">
         <table width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,0.08);border:1px solid #e5e7eb;">
           <tr><td style="padding:20px 22px;">
-            <div style="font-size:11px;color:#9ca3af;margin-bottom:8px;letter-spacing:0.3px;">${esc(item.source || '')}</div>
+            <div style="font-size:12px;color:#9ca3af;margin-bottom:8px;letter-spacing:0.3px;">${esc(item.source || '')}</div>
             <div style="font-size:17px;font-weight:700;color:#111827;line-height:1.5;margin-bottom:8px;">${titleText(item.title_cn, item.title_en)}</div>
             <div style="font-size:15px;color:#374151;line-height:1.7;">${bodyText(item.body_cn, item.body_en)}</div>
             <a href="${esc(item.url)}" target="_blank" style="display:inline-block;margin-top:12px;color:#2563eb;font-size:13px;font-weight:600;text-decoration:none;border:1px solid #2563eb;border-radius:6px;padding:6px 16px;">${btnLabel}</a>
@@ -283,16 +283,16 @@ function renderHTML(content, lang) {
     <!-- SECTION -->
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
       <tr><td style="padding:0 0 14px 0;">
-        <span style="background:#e0e7ff;color:#3730a3;font-size:11px;font-weight:700;padding:4px 10px;border-radius:4px;letter-spacing:0.5px;">${tagLabel}</span>
+        <span style="background:#e0e7ff;color:#3730a3;font-size:12px;font-weight:700;padding:4px 10px;border-radius:4px;letter-spacing:0.5px;">${tagLabel}</span>
       </td></tr>`;
     for (const item of (sec.items || [])) {
       sectionsHTML += `
       <tr><td style="padding-bottom:12px;">
         <table width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:1px solid #edf2f7;">
           <tr><td style="padding:16px 20px;">
-            <div style="font-size:11px;color:#9ca3af;margin-bottom:6px;">${esc(item.source || '')}</div>
+            <div style="font-size:12px;color:#9ca3af;margin-bottom:6px;">${esc(item.source || '')}</div>
             <div style="font-size:15px;font-weight:700;color:#1f2937;line-height:1.5;margin-bottom:6px;">${titleText(item.title_cn, item.title_en)}</div>
-            <div style="font-size:14px;color:#4b5563;line-height:1.7;">${bodyText(item.body_cn, item.body_en)}</div>
+            <div style="font-size:15px;color:#4b5563;line-height:1.7;">${bodyText(item.body_cn, item.body_en)}</div>
             <a href="${esc(item.url)}" target="_blank" style="display:inline-block;margin-top:8px;color:#2563eb;font-size:12px;font-weight:500;text-decoration:underline;">${btnLabel}</a>
           </td></tr>
         </table>
@@ -309,7 +309,7 @@ function renderHTML(content, lang) {
     <!-- PODCAST -->
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
       <tr><td style="padding:0 0 14px 0;">
-        <span style="background:#f3e8ff;color:#6b21a8;font-size:11px;font-weight:700;padding:4px 10px;border-radius:4px;letter-spacing:0.5px;">🎙️ 深度播客</span>
+        <span style="background:#f3e8ff;color:#6b21a8;font-size:12px;font-weight:700;padding:4px 10px;border-radius:4px;letter-spacing:0.5px;">🎙️ 深度播客</span>
       </td></tr>
       <tr><td style="padding-bottom:16px;">
         <table width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,#faf5ff 0%,#f3e8ff 100%);border-radius:10px;border:1px solid #e9d5ff;">
@@ -318,7 +318,7 @@ function renderHTML(content, lang) {
             <div style="font-size:18px;font-weight:700;color:#4c1d95;line-height:1.4;margin-bottom:2px;">${esc(p.title || '')}</div>
             <div style="font-size:13px;color:#7c3aed;margin-bottom:8px;">${esc(p.name || '')}</div>
             ${p.takeaway_cn ? `<div style="background:#ffffff;border-radius:8px;border:1px solid #e9d5ff;padding:12px 14px;margin-bottom:16px;">
-              <div style="font-size:11px;color:#7c3aed;font-weight:700;margin-bottom:4px;">💡 核心结论 · The Takeaway</div>
+              <div style="font-size:12px;color:#7c3aed;font-weight:700;margin-bottom:4px;">💡 核心结论 · The Takeaway</div>
               <div style="font-size:14px;color:#1f2937;line-height:1.6;font-weight:600;">${bodyText(p.takeaway_cn, p.takeaway_en)}</div>
             </div>` : ''}
             ${p.why_cn ? `<div style="font-size:12px;color:#7c3aed;margin-bottom:14px;line-height:1.5;">${esc('🎯 ' + (p.why_cn || p.why_en))}</div>` : ''}`;
@@ -353,35 +353,35 @@ function renderHTML(content, lang) {
 <title>AI Signal · 信号 | ${dateStr}</title>
 <!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->
 </head>
-<body style="margin:0;padding:0;background:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6;padding:20px 0;">
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6;padding:16px 0;">
 <tr><td align="center">
 
 <!-- PREVIEW TEXT -->
 <div style="display:none;max-height:0;overflow:hidden;">${esc(content.headline?.text_cn || '')} — ${esc(content.mustRead?.[0]?.title_cn || '')}</div>
 
 <!-- CONTAINER -->
-<table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
 
   <!-- HEADER -->
-  <tr><td style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);padding:32px 36px;">
+  <tr><td style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);padding:28px 24px;">
     <table width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td>
-          <div style="font-size:11px;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">AI FRONTIER DIGEST</div>
-          <div style="font-size:26px;font-weight:800;color:#ffffff;line-height:1.3;margin-bottom:6px;">AI Signal · 信号</div>
-          <div style="font-size:13px;color:#94a3b8;">${dateStr} · 每天 ${deliveryTime} 北京时间</div>
+          <div style="font-size:12px;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">AI FRONTIER DIGEST</div>
+          <div style="font-size:24px;font-weight:800;color:#ffffff;line-height:1.3;margin-bottom:4px;">AI Signal · 信号</div>
+          <div style="font-size:14px;color:#94a3b8;">${dateStr} · 每天 ${deliveryTime} 北京时间</div>
         </td>
       </tr>
     </table>
   </td></tr>
 
-  <!-- HEADLINE: 今日焦点 -->
+  <!-- HEADLINE -->
   ${content.headline ? `
-  <tr><td style="background:linear-gradient(135deg,#1e40af 0%,#2563eb 100%);padding:18px 36px;">
+  <tr><td style="background:linear-gradient(135deg,#1e40af 0%,#2563eb 100%);padding:16px 24px;">
     <table width="100%" cellpadding="0" cellspacing="0">
       <tr>
-        <td style="font-size:10px;color:#93c5fd;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding-bottom:4px;">今日焦点</td>
+        <td style="font-size:12px;color:#93c5fd;font-weight:700;letter-spacing:1px;padding-bottom:4px;">今日焦点</td>
       </tr>
       <tr>
         <td style="font-size:16px;color:#ffffff;font-weight:700;line-height:1.5;">
@@ -390,7 +390,7 @@ function renderHTML(content, lang) {
       </tr>
       ${(content.headline.text_en && content.headline.text_cn && isBilingual) ? `
       <tr>
-        <td style="font-size:13px;color:#93c5fd;line-height:1.5;padding-top:2px;">
+        <td style="font-size:14px;color:#93c5fd;line-height:1.5;padding-top:4px;">
           ${esc(content.headline.text_en)}
         </td>
       </tr>` : ''}
@@ -398,7 +398,7 @@ function renderHTML(content, lang) {
   </td></tr>` : ''}
 
   <!-- CONTENT -->
-  <tr><td style="padding:28px 36px;background:#fafbfc;">
+  <tr><td style="padding:20px 16px;background:#fafbfc;">
 
     ${sectionsHTML}
     ${podcastHTML}
@@ -406,13 +406,11 @@ function renderHTML(content, lang) {
   </td></tr>
 
   <!-- FOOTER -->
-  <tr><td style="background:#f9fafb;padding:24px 36px;border-top:1px solid #e5e7eb;">
+  <tr><td style="background:#f9fafb;padding:20px 24px;border-top:1px solid #e5e7eb;">
     <table width="100%" cellpadding="0" cellspacing="0">
-      <tr><td style="font-size:11px;color:#9ca3af;line-height:1.8;">
-        <strong style="color:#6b7280;">AI Signal · 信号</strong> · 追踪 AI 领域顶级 builder 的每日动态<br>
-        自动发送至 ${esc(toEmail)} · 每天 ${deliveryTime} 北京时间<br>
-        内容来源：X/Twitter + YouTube 播客 · 中央 Feed 维护，无需个人 API Key<br>
-        如需调整频率、语言或退订，回复本邮件或在 Claude Code 中告知
+      <tr><td style="font-size:12px;color:#9ca3af;line-height:1.8;">
+        <strong style="color:#6b7280;">AI Signal · 信号</strong> · 从 AI 噪音中提取信号<br>
+        发送至 ${esc(toEmail)} · 每天 ${deliveryTime} 北京时间
       </td></tr>
     </table>
   </td></tr>
@@ -490,7 +488,7 @@ function renderFallback(data, lang) {
         <tr><td style="padding-bottom:12px;">
           <table width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:1px solid #edf2f7;">
             <tr><td style="padding:16px 20px;">
-              <div style="font-size:11px;color:#9ca3af;margin-bottom:6px;">${esc(b.name)} · ${esc(role)}</div>
+              <div style="font-size:12px;color:#9ca3af;margin-bottom:6px;">${esc(b.name)} · ${esc(role)}</div>
               <div style="font-size:14px;color:#1f2937;line-height:1.7;">${esc(t.text)}</div>
               <a href="${esc(t.url)}" target="_blank" style="display:inline-block;margin-top:8px;color:#2563eb;font-size:12px;font-weight:500;text-decoration:underline;">查看原文 →</a>
             </td></tr>
@@ -513,7 +511,7 @@ function renderFallback(data, lang) {
 <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
 
   <tr><td style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);padding:32px 36px;">
-    <div style="font-size:11px;color:#64748b;letter-spacing:2px;margin-bottom:8px;">AI FRONTIER DIGEST</div>
+    <div style="font-size:12px;color:#64748b;letter-spacing:2px;margin-bottom:8px;">AI FRONTIER DIGEST</div>
     <div style="font-size:26px;font-weight:800;color:#ffffff;line-height:1.3;margin-bottom:6px;">AI Signal · 信号</div>
     <div style="font-size:13px;color:#94a3b8;">${dateStr} · 每天 ${data.config?.deliveryTime || '10:00'} 北京时间</div>
   </td></tr>
@@ -527,7 +525,7 @@ function renderFallback(data, lang) {
   </td></tr>
 
   <tr><td style="background:#f9fafb;padding:24px 36px;border-top:1px solid #e5e7eb;">
-    <div style="font-size:11px;color:#9ca3af;line-height:1.8;">
+    <div style="font-size:12px;color:#9ca3af;line-height:1.8;">
       <strong style="color:#6b7280;">AI Signal · 信号</strong> · 追踪 AI 领域顶级 builder 的每日动态<br>
       自动发送至 ${esc(data.config?.delivery?.email || '')} · 每天 ${data.config?.deliveryTime || '10:00'} 北京时间
     </div>
