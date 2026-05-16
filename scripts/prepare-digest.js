@@ -16,7 +16,7 @@
 // Output: JSON to stdout
 // ============================================================================
 
-import { readFile, mkdir } from 'fs/promises';
+import { readFile, writeFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
@@ -158,7 +158,16 @@ async function main() {
     errors: errors.length > 0 ? errors : undefined
   };
 
-  console.log(JSON.stringify(output, null, 2));
+  const json = JSON.stringify(output, null, 2);
+  console.log(json);
+
+  // Support --out <file> for pipe-free data transfer
+  const args = process.argv.slice(2);
+  const outIdx = args.indexOf('--out');
+  if (outIdx !== -1 && args[outIdx + 1]) {
+    await writeFile(args[outIdx + 1], json, 'utf-8');
+    console.error(`[ai-signal] 数据已写入: ${args[outIdx + 1]}`);
+  }
 }
 
 console.error(`[ai-signal] 拉取 feed 数据...`);

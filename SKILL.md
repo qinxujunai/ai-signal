@@ -96,19 +96,34 @@ Run the pipeline immediately (see below). After showing the digest:
 
 Once onboarded, every `/ai` invocation runs:
 
+**On Windows (PowerShell):**
+```powershell
+$TMP = "$env:USERPROFILE\.ai-signal\tmp"
+New-Item -ItemType Directory -Force $TMP | Out-Null
+$OutputEncoding = [System.Text.Encoding]::UTF8
+node prepare-digest.js --out "$TMP\feed.json"
+if ($LASTEXITCODE -eq 0) { node remix-digest.js --file "$TMP\feed.json" --out "$TMP\digest.html" }
+if ($LASTEXITCODE -eq 0) { node deliver.js --file "$TMP\digest.html" --force }
+```
+
+**On Linux/macOS (bash):**
 ```bash
-cd <SKILL_DIR>/scripts
-node prepare-digest.js 2>/dev/null | node remix-digest.js 2>/dev/null | node deliver.js
+TMP="$HOME/.ai-signal/tmp"
+mkdir -p "$TMP"
+node prepare-digest.js --out "$TMP/feed.json" && \
+node remix-digest.js --file "$TMP/feed.json" --out "$TMP/digest.html" && \
+node deliver.js --file "$TMP/digest.html" --force
 ```
 
 This:
 1. Fetches the latest tweets + podcast transcripts from the central feed
-2. Sends them through DeepSeek for curation and bilingual formatting
-3. Delivers based on config (stdout: displays here; email: sends via Resend)
+2. Writes to temp files instead of relying on shell pipes (avoids encoding corruption)
+3. Sends through DeepSeek for curation and bilingual formatting
+4. Delivers based on config (stdout: displays here; email: sends via Resend)
 
-### Fallback behavior
+### Why file-based, not pipe-based
 
-If the LLM fails, a template-based fallback ensures you always get content.
+PowerShell 5.1 defaults `$OutputEncoding` to US-ASCII. Piping `node a.js | node b.js` transcodes UTF-8 Chinese through ASCII, turning all non-ASCII characters into `?`. Bash pipes are byte-transparent but file-based is consistently safe everywhere.
 
 ---
 
