@@ -9,13 +9,16 @@ AI Signal 是一个全自动化的 AI 行业每日简报系统。每天定时抓
 ## 核心架构
 
 ```
-Windows 任务计划 (每天 10:00)
-  → WSL bash → run-digest.sh
-    → prepare-digest.js  (拉取中央 feed，无需个人 API key)
-    → remix-digest.js    (DeepSeek LLM 策展 + HTML 模板渲染)
-    → deliver.js         (Resend API 发送邮件)
-    → QQ邮箱
+GitHub Actions / Windows 任务计划 (每天 10:00)
+  → prepare-digest.js  (拉取中央 feed，无需个人 API key)
+  → remix-digest.js    (DeepSeek LLM 策展 + HTML 模板渲染)
+  → deliver.js         (stdout / Resend 邮件)
 ```
+
+## 调度方式
+
+- **推荐**: GitHub Actions — 免费，电脑关了也能跑
+- **备选**: Windows 任务计划 + WSL、Linux cron
 
 ## 关键文件
 
