@@ -264,16 +264,12 @@ function renderHTML(content, lang) {
     for (const item of content.mustRead) {
       sectionsHTML += `
       <tr><td style="padding-bottom:16px;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,0.08);border:1px solid #e5e7eb;">
           <tr><td style="padding:22px 24px;">
             <div style="font-size:12px;color:#9ca3af;margin-bottom:8px;letter-spacing:0.3px;">${esc(item.source || '')}</div>
             <div style="font-size:17px;font-weight:700;color:#0f172a;line-height:1.45;margin-bottom:8px;">${titleText(item.title_cn, item.title_en)}</div>
             <div style="font-size:15px;color:#374151;line-height:1.7;">${bodyText(item.body_cn, item.body_en)}</div>
-            <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:14px;">
-              <tr><td style="background:#2563eb;border-radius:6px;">
-                <a href="${esc(item.url)}" target="_blank" style="display:inline-block;padding:8px 20px;color:#ffffff;font-size:13px;font-weight:600;text-decoration:none;">${btnLabel}</a>
-              </td></tr>
-            </table>
+            <a href="${esc(item.url)}" target="_blank" style="display:inline-block;margin-top:12px;color:#2563eb;font-size:13px;font-weight:600;text-decoration:none;border:1px solid #2563eb;border-radius:6px;padding:6px 16px;">${btnLabel}</a>
           </td></tr>
         </table>
       </td></tr>`;
@@ -293,12 +289,12 @@ function renderHTML(content, lang) {
     for (const item of (sec.items || [])) {
       sectionsHTML += `
       <tr><td style="padding-bottom:12px;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fafbfc;border-radius:10px;">
-          <tr><td style="padding:18px 22px;">
-            <div style="font-size:12px;color:#9ca3af;margin-bottom:6px;letter-spacing:0.3px;">${esc(item.source || '')}</div>
-            <div style="font-size:15px;font-weight:700;color:#0f172a;line-height:1.5;margin-bottom:6px;">${titleText(item.title_cn, item.title_en)}</div>
-            <div style="font-size:15px;color:#374151;line-height:1.7;">${bodyText(item.body_cn, item.body_en)}</div>
-            <a href="${esc(item.url)}" target="_blank" style="display:inline-block;margin-top:10px;color:#2563eb;font-size:12px;font-weight:600;text-decoration:none;border-bottom:1px solid #93c5fd;padding-bottom:1px;">${btnLabel}</a>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:1px solid #edf2f7;">
+          <tr><td style="padding:16px 20px;">
+            <div style="font-size:12px;color:#9ca3af;margin-bottom:6px;">${esc(item.source || '')}</div>
+            <div style="font-size:15px;font-weight:700;color:#1f2937;line-height:1.5;margin-bottom:6px;">${titleText(item.title_cn, item.title_en)}</div>
+            <div style="font-size:15px;color:#4b5563;line-height:1.7;">${bodyText(item.body_cn, item.body_en)}</div>
+            <a href="${esc(item.url)}" target="_blank" style="display:inline-block;margin-top:8px;color:#2563eb;font-size:12px;font-weight:500;text-decoration:underline;">${btnLabel}</a>
           </td></tr>
         </table>
       </td></tr>`;
@@ -393,24 +389,27 @@ function renderHTML(content, lang) {
 
   <!-- HEADLINE -->
   ${content.headline ? `
-  <tr><td style="background:#1e293b;padding:0 32px 24px 32px;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid rgba(148,163,184,0.15);">
+  <tr><td style="background:linear-gradient(135deg,#1e40af 0%,#2563eb 100%);padding:16px 24px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
       <tr>
-        <td style="padding-top:16px;">
-          <span style="display:inline-block;background:rgba(147,197,253,0.15);color:#93c5fd;font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:0.5px;">今日焦点</span>
-        </td>
+        <td style="font-size:12px;color:#93c5fd;font-weight:700;letter-spacing:1px;padding-bottom:4px;">今日焦点</td>
       </tr>
       <tr>
-        <td style="font-size:15px;color:#e2e8f0;line-height:1.7;padding-top:10px;">
+        <td style="font-size:16px;color:#ffffff;font-weight:700;line-height:1.5;">
           ${esc(content.headline.text_cn || content.headline.text_en)}
-          ${(content.headline.text_en && content.headline.text_cn && isBilingual) ? `<span style="color:#94a3b8;"> · ${esc(content.headline.text_en)}</span>` : ''}
         </td>
       </tr>
+      ${(content.headline.text_en && content.headline.text_cn && isBilingual) ? `
+      <tr>
+        <td style="font-size:14px;color:#93c5fd;line-height:1.5;padding-top:4px;">
+          ${esc(content.headline.text_en)}
+        </td>
+      </tr>` : ''}
     </table>
   </td></tr>` : ''}
 
   <!-- CONTENT -->
-  <tr><td style="padding:24px 28px;background:#ffffff;">
+  <tr><td style="padding:20px 16px;background:#fafbfc;">
 
     ${sectionsHTML}
     ${podcastHTML}
@@ -498,11 +497,11 @@ function renderFallback(data, lang) {
     for (const t of (b.tweets || []).slice(0, 2)) {
       items += `
         <tr><td style="padding-bottom:12px;">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fafbfc;border-radius:10px;">
-            <tr><td style="padding:18px 22px;">
-              <div style="font-size:12px;color:#9ca3af;margin-bottom:6px;letter-spacing:0.3px;">${esc(b.name)} · ${esc(role)}</div>
-              <div style="font-size:15px;color:#0f172a;line-height:1.7;">${esc(t.text)}</div>
-              <a href="${esc(t.url)}" target="_blank" style="display:inline-block;margin-top:10px;color:#2563eb;font-size:12px;font-weight:600;text-decoration:none;border-bottom:1px solid #93c5fd;padding-bottom:1px;">查看原文 →</a>
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:1px solid #edf2f7;">
+            <tr><td style="padding:16px 20px;">
+              <div style="font-size:12px;color:#9ca3af;margin-bottom:6px;">${esc(b.name)} · ${esc(role)}</div>
+              <div style="font-size:14px;color:#1f2937;line-height:1.7;">${esc(t.text)}</div>
+              <a href="${esc(t.url)}" target="_blank" style="display:inline-block;margin-top:8px;color:#2563eb;font-size:12px;font-weight:500;text-decoration:underline;">查看原文 →</a>
             </td></tr>
           </table>
         </td></tr>`;
