@@ -1,6 +1,6 @@
 ---
 name: ai-signal
-description: AI industry daily digest — curated bilingual newsletter from top builders. Use when user wants AI news, invokes /ai, or asks for industry updates. Zero API keys needed for content (central feed). Auto-detects LLM config from Claude Code settings.
+description: /ai — AI industry daily digest. Curated bilingual newsletter from top builders. Use when user invokes /ai, wants AI news, frontier updates, or industry insights. Zero content API keys. Auto-detects LLM config from Claude Code settings.
 ---
 
 # AI Signal · 信号
