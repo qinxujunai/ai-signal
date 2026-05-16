@@ -169,7 +169,8 @@ const systemPrompt = `你是 AI Signal · 信号的主编。你的读者是中�
       {
         "point_cn": "核心洞察",
         "point_en": "Core insight",
-        "quote": "最有记忆点的原话（可选）"
+        "quote": "原话英文原文（可选）",
+        "quote_cn": "原话中文翻译，如果有 quote 就必须有 quote_cn"
       }
     ]
   }
@@ -315,8 +316,8 @@ function renderHTML(content, lang) {
         <table width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,#faf5ff 0%,#f3e8ff 100%);border-radius:10px;border:1px solid #e9d5ff;">
           <tr><td style="padding:22px 24px;">
             <!-- Episode info -->
-            <div style="font-size:18px;font-weight:700;color:#4c1d95;line-height:1.4;margin-bottom:2px;">${esc(p.title || '')}</div>
-            <div style="font-size:13px;color:#7c3aed;margin-bottom:8px;">${esc(p.name || '')}</div>
+            <div style="font-size:13px;color:#7c3aed;margin-bottom:4px;">${esc(p.name || '')}</div>
+            <div style="font-size:18px;font-weight:700;color:#4c1d95;line-height:1.4;margin-bottom:8px;">${esc(p.title || '')}</div>
             ${p.takeaway_cn ? `<div style="background:#ffffff;border-radius:8px;border:1px solid #e9d5ff;padding:12px 14px;margin-bottom:16px;">
               <div style="font-size:12px;color:#7c3aed;font-weight:700;margin-bottom:4px;">💡 核心结论 · The Takeaway</div>
               <div style="font-size:14px;color:#1f2937;line-height:1.6;font-weight:600;">${bodyText(p.takeaway_cn, p.takeaway_en)}</div>
@@ -328,7 +329,10 @@ function renderHTML(content, lang) {
               <tr><td style="padding:14px 16px;">
                 <div style="font-size:14px;font-weight:600;color:#1f2937;line-height:1.6;margin-bottom:4px;">${bodyText(ins.point_cn, ins.point_en)}</div>`;
       if (ins.quote) {
-        podcastHTML += `<div style="font-size:13px;color:#6b7280;line-height:1.6;font-style:italic;border-left:3px solid #c4b5fd;padding-left:12px;margin-top:6px;">"${esc(ins.quote.slice(0, 300))}"</div>`;
+        podcastHTML += `<div style="font-size:14px;color:#374151;line-height:1.7;font-style:italic;border-left:3px solid #c4b5fd;padding-left:12px;margin-top:8px;">"${esc(ins.quote.slice(0, 300))}"</div>`;
+        if (ins.quote_cn) {
+          podcastHTML += `<div style="font-size:13px;color:#6b7280;line-height:1.6;padding-left:12px;margin-top:2px;">${esc(ins.quote_cn)}</div>`;
+        }
       }
       podcastHTML += `
               </td></tr>
@@ -364,36 +368,33 @@ function renderHTML(content, lang) {
 <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
 
   <!-- HEADER -->
-  <tr><td style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);padding:28px 24px;">
+  <tr><td style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);padding:24px 24px 20px 24px;">
     <table width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td>
-          <div style="font-size:12px;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">AI FRONTIER DIGEST</div>
-          <div style="font-size:24px;font-weight:800;color:#ffffff;line-height:1.3;margin-bottom:4px;">AI Signal · 信号</div>
-          <div style="font-size:14px;color:#94a3b8;">${dateStr} · 每天 ${deliveryTime} 北京时间</div>
+          <div style="font-size:12px;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">AI FRONTIER DIGEST</div>
+          <div style="font-size:22px;font-weight:700;color:#ffffff;line-height:1.3;margin-bottom:4px;">AI Signal · 信号</div>
+          <div style="font-size:14px;color:#94a3b8;">${dateStr}</div>
         </td>
       </tr>
     </table>
   </td></tr>
 
-  <!-- HEADLINE -->
+  <!-- HEADLINE: merged into header -->
   ${content.headline ? `
-  <tr><td style="background:linear-gradient(135deg,#1e40af 0%,#2563eb 100%);padding:16px 24px;">
-    <table width="100%" cellpadding="0" cellspacing="0">
+  <tr><td style="background:#1e293b;padding:0 24px 20px 24px;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid rgba(148,163,184,0.15);">
       <tr>
-        <td style="font-size:12px;color:#93c5fd;font-weight:700;letter-spacing:1px;padding-bottom:4px;">今日焦点</td>
+        <td style="padding-top:14px;">
+          <span style="font-size:12px;color:#93c5fd;font-weight:600;">今日焦点</span>
+        </td>
       </tr>
       <tr>
-        <td style="font-size:16px;color:#ffffff;font-weight:700;line-height:1.5;">
+        <td style="font-size:15px;color:#e2e8f0;line-height:1.6;padding-top:4px;">
           ${esc(content.headline.text_cn || content.headline.text_en)}
+          ${(content.headline.text_en && content.headline.text_cn && isBilingual) ? `<span style="color:#94a3b8;"> · ${esc(content.headline.text_en)}</span>` : ''}
         </td>
       </tr>
-      ${(content.headline.text_en && content.headline.text_cn && isBilingual) ? `
-      <tr>
-        <td style="font-size:14px;color:#93c5fd;line-height:1.5;padding-top:4px;">
-          ${esc(content.headline.text_en)}
-        </td>
-      </tr>` : ''}
     </table>
   </td></tr>` : ''}
 
