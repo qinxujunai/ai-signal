@@ -328,10 +328,11 @@ function renderHTML(content, lang) {
             <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:10px;background:#ffffff;border-radius:8px;border:1px solid #ede9fe;">
               <tr><td style="padding:14px 16px;">
                 <div style="font-size:14px;font-weight:600;color:#1f2937;line-height:1.6;margin-bottom:4px;">${bodyText(ins.point_cn, ins.point_en)}</div>`;
-      if (ins.quote) {
-        podcastHTML += `<div style="font-size:14px;color:#374151;line-height:1.7;font-style:italic;border-left:3px solid #c4b5fd;padding-left:12px;margin-top:8px;">"${esc(ins.quote.slice(0, 300))}"</div>`;
-        if (ins.quote_cn) {
-          podcastHTML += `<div style="font-size:13px;color:#6b7280;line-height:1.6;padding-left:12px;margin-top:2px;">${esc(ins.quote_cn)}</div>`;
+      if (ins.quote || ins.quote_cn) {
+        const quoteText = ins.quote_cn || ins.quote;
+        podcastHTML += `<div style="font-size:14px;color:#374151;line-height:1.7;font-style:italic;border-left:3px solid #c4b5fd;padding-left:12px;margin-top:8px;">"${esc(quoteText.slice(0, 300))}"</div>`;
+        if (ins.quote_cn && ins.quote) {
+          podcastHTML += `<div style="font-size:12px;color:#9ca3af;line-height:1.5;padding-left:12px;margin-top:4px;font-style:italic;">${esc(ins.quote.slice(0, 200))}</div>`;
         }
       }
       podcastHTML += `
@@ -509,7 +510,7 @@ function renderFallback(data, lang) {
 <body style="margin:0;padding:0;background:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;">
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6;padding:20px 0;">
 <tr><td align="center">
-<table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
 
   <tr><td style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);padding:32px 36px;">
     <div style="font-size:12px;color:#64748b;letter-spacing:2px;margin-bottom:8px;">AI FRONTIER DIGEST</div>
