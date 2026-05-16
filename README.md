@@ -14,13 +14,11 @@ No X API key. No YouTube API key. All content comes from a centralized feed.
 
 ---
 
-## Demo
+## 📮 Demo
 
-👉 **[查看最新一期摘要效果](https://raw.githubusercontent.com/qinxujunai/ai-signal/master/demo.html)**（HTML 邮件，可在浏览器中直接预览）
+👉 **[查看最新一期邮件样例 →](https://qinxujunai.github.io/ai-signal/)**
 
-该样例由 AI Signal 实时生成，展示默认标准输出样式。如配置邮件推送，收到的即是此格式的专业排版邮件。
-
-> 注意：样例中的链接和内容来自公开 feed，具有时效性。
+点击即可在浏览器中看到 AI Signal 邮件的完整效果——卡片布局、渐变头图、中英双语、可点击链接。该样例由 AI Signal 实时生成，内容来自公开 feed。
 
 ---
 
