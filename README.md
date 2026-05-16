@@ -158,11 +158,11 @@ No content API keys are ever needed — all tweets and podcast transcripts come 
 Want the digest as a professionally formatted HTML email instead?
 
 1. Sign up at [resend.com](https://resend.com), verify a domain
-2. Create `~/.follow-builders/.env`:
+2. Create `~/.ai-signal/.env`:
 ```env
 RESEND_API_KEY=re_xxxxxxxxxxxx
 ```
-3. Create `~/.follow-builders/config.json`:
+3. Create `~/.ai-signal/config.json`:
 ```json
 {
   "language": "bilingual",
@@ -214,7 +214,7 @@ Just tell Claude Code: "Switch to weekly digests", "Change language to Chinese",
 
 ## How It's Different
 
-| | Original follow-builders | AI Frontier Digest |
+| | Central feed based tools | AI Signal |
 |---|---|---|
 | **Content format** | Plain text / markdown | Professional HTML email |
 | **Trigger** | Manual (`/ai` in agent) | Automatic (daily schedule) + manual (`/ai`) |
@@ -229,9 +229,9 @@ Just tell Claude Code: "Switch to weekly digests", "Change language to Chinese",
 
 ## Credits
 
-- Feed data sourced via [follow-builders](https://github.com/zarazhangrui/follow-builders) by [zarazhangrui](https://github.com/zarazhangrui)
 - LLM curation & HTML template system built from scratch
 - Email delivery via [Resend](https://resend.com)
+- Default feed source: community-maintained builder tracking
 
 ---
 

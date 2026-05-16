@@ -28,7 +28,10 @@ import { config as loadEnv } from 'dotenv';
 
 // -- Constants ---------------------------------------------------------------
 
-const USER_DIR = join(homedir(), '.follow-builders');
+// Config dir: ~/.ai-signal (primary) with ~/.follow-builders fallback
+const NEW_USER_DIR = join(homedir(), '.ai-signal');
+const LEGACY_USER_DIR = join(homedir(), '.follow-builders');
+const USER_DIR = existsSync(NEW_USER_DIR) ? NEW_USER_DIR : LEGACY_USER_DIR;
 const CONFIG_PATH = join(USER_DIR, 'config.json');
 const ENV_PATH = join(USER_DIR, '.env');
 

@@ -1,6 +1,6 @@
 ---
 name: ai
-description: /ai — AI industry daily digest. Use when user invokes /ai, wants AI news, frontier updates, or industry insights. Handles first-time setup automatically.
+description: /ai — AI Signal · 信号。AI 行业每日简报，LLM 策展、中英双语、专业排版。Type /ai for your curated daily AI digest. Handles first-time setup automatically.
 ---
 
 # AI Signal · 信号

@@ -22,7 +22,11 @@ const data = JSON.parse(Buffer.concat(chunks).toString('utf-8'));
 
 // ── 加载配置 ──────────────────────────────────────────────────────────────────
 let API_KEY, MODEL;
-for (const p of [join(homedir(), '.follow-builders', '.env')]) {
+// Check ~/.ai-signal first, fall back to legacy ~/.follow-builders
+for (const p of [
+  join(homedir(), '.ai-signal', '.env'),
+  join(homedir(), '.follow-builders', '.env')
+]) {
   try { loadEnv({ path: p }); break; } catch {}
 }
 API_KEY = process.env.DEEPSEEK_API_KEY;
