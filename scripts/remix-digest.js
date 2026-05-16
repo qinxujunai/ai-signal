@@ -231,11 +231,18 @@ function renderHTML(content, lang) {
   const isZh = lang === 'zh';
   const esc = s => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
-  // 中文优先的正文渲染：中文在前，英文灰字在后
+  // 中文优先的正文渲染：中文一段，英文灰字另起一段
   const bodyText = (cn, en) => {
     if (isZh) return esc(cn);
     if (lang === 'en') return esc(en);
-    return esc(cn) + (en ? '<br><span style="color:#6b7280;font-size:13px;line-height:1.6;">' + esc(en) + '</span>' : '');
+    return esc(cn);
+  };
+
+  // 双语正文：中文正文 + 英文灰字分段显示
+  const bilingualBody = (cn, en) => {
+    if (isZh || lang === 'en') return '';
+    if (!en || en === cn) return '';
+    return `<div style="font-size:13px;color:#6b7280;line-height:1.6;margin-top:8px;">${esc(en)}</div>`;
   };
 
   // 双语标题：中文大标题，英文小字灰
@@ -265,10 +272,11 @@ function renderHTML(content, lang) {
       sectionsHTML += `
       <tr><td style="padding-bottom:16px;">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,0.08);border:1px solid #e5e7eb;">
-          <tr><td style="padding:22px 24px;">
+          <tr><td style="padding:24px;">
             <div style="font-size:12px;color:#9ca3af;margin-bottom:8px;letter-spacing:0.3px;">${esc(item.source || '')}</div>
             <div style="font-size:17px;font-weight:700;color:#0f172a;line-height:1.45;margin-bottom:8px;">${titleText(item.title_cn, item.title_en)}</div>
             <div style="font-size:15px;color:#374151;line-height:1.7;">${bodyText(item.body_cn, item.body_en)}</div>
+            ${bilingualBody(item.body_cn, item.body_en)}
             <a href="${esc(item.url)}" target="_blank" style="display:inline-block;margin-top:12px;color:#2563eb;font-size:13px;font-weight:600;text-decoration:none;border:1px solid #2563eb;border-radius:6px;padding:6px 16px;">${btnLabel}</a>
           </td></tr>
         </table>
@@ -294,6 +302,7 @@ function renderHTML(content, lang) {
             <div style="font-size:12px;color:#9ca3af;margin-bottom:6px;">${esc(item.source || '')}</div>
             <div style="font-size:15px;font-weight:700;color:#1f2937;line-height:1.5;margin-bottom:6px;">${titleText(item.title_cn, item.title_en)}</div>
             <div style="font-size:15px;color:#4b5563;line-height:1.7;">${bodyText(item.body_cn, item.body_en)}</div>
+            ${bilingualBody(item.body_cn, item.body_en)}
             <a href="${esc(item.url)}" target="_blank" style="display:inline-block;margin-top:8px;color:#2563eb;font-size:12px;font-weight:500;text-decoration:underline;">${btnLabel}</a>
           </td></tr>
         </table>
@@ -409,7 +418,7 @@ function renderHTML(content, lang) {
   </td></tr>` : ''}
 
   <!-- CONTENT -->
-  <tr><td style="padding:20px 16px;background:#fafbfc;">
+  <tr><td style="padding:24px;background:#fafbfc;">
 
     ${sectionsHTML}
     ${podcastHTML}
