@@ -257,19 +257,23 @@ function renderHTML(content, lang) {
   if (content.mustRead && content.mustRead.length > 0) {
     sectionsHTML += `
     <!-- MUST READ -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
-      <tr><td style="padding:0 0 14px 0;">
-        <span style="background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;padding:4px 10px;border-radius:4px;letter-spacing:0.5px;">🔥 今日必读</span>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+      <tr><td style="padding:0 0 12px 0;">
+        <span style="display:inline-block;background:#fef3c7;color:#92400e;font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:0.5px;">🔥 今日必读</span>
       </td></tr>`;
     for (const item of content.mustRead) {
       sectionsHTML += `
       <tr><td style="padding-bottom:16px;">
-        <table width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,0.08);border:1px solid #e5e7eb;">
-          <tr><td style="padding:20px 22px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+          <tr><td style="padding:22px 24px;">
             <div style="font-size:12px;color:#9ca3af;margin-bottom:8px;letter-spacing:0.3px;">${esc(item.source || '')}</div>
-            <div style="font-size:17px;font-weight:700;color:#111827;line-height:1.5;margin-bottom:8px;">${titleText(item.title_cn, item.title_en)}</div>
+            <div style="font-size:17px;font-weight:700;color:#0f172a;line-height:1.45;margin-bottom:8px;">${titleText(item.title_cn, item.title_en)}</div>
             <div style="font-size:15px;color:#374151;line-height:1.7;">${bodyText(item.body_cn, item.body_en)}</div>
-            <a href="${esc(item.url)}" target="_blank" style="display:inline-block;margin-top:12px;color:#2563eb;font-size:13px;font-weight:600;text-decoration:none;border:1px solid #2563eb;border-radius:6px;padding:6px 16px;">${btnLabel}</a>
+            <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:14px;">
+              <tr><td style="background:#2563eb;border-radius:6px;">
+                <a href="${esc(item.url)}" target="_blank" style="display:inline-block;padding:8px 20px;color:#ffffff;font-size:13px;font-weight:600;text-decoration:none;">${btnLabel}</a>
+              </td></tr>
+            </table>
           </td></tr>
         </table>
       </td></tr>`;
@@ -282,19 +286,19 @@ function renderHTML(content, lang) {
     const tagLabel = (sec.emoji || '') + ' ' + esc(sec.tag || '');
     sectionsHTML += `
     <!-- SECTION -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
-      <tr><td style="padding:0 0 14px 0;">
-        <span style="background:#e0e7ff;color:#3730a3;font-size:12px;font-weight:700;padding:4px 10px;border-radius:4px;letter-spacing:0.5px;">${tagLabel}</span>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+      <tr><td style="padding:0 0 12px 0;">
+        <span style="display:inline-block;background:#e0e7ff;color:#3730a3;font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:0.5px;">${tagLabel}</span>
       </td></tr>`;
     for (const item of (sec.items || [])) {
       sectionsHTML += `
       <tr><td style="padding-bottom:12px;">
-        <table width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:1px solid #edf2f7;">
-          <tr><td style="padding:16px 20px;">
-            <div style="font-size:12px;color:#9ca3af;margin-bottom:6px;">${esc(item.source || '')}</div>
-            <div style="font-size:15px;font-weight:700;color:#1f2937;line-height:1.5;margin-bottom:6px;">${titleText(item.title_cn, item.title_en)}</div>
-            <div style="font-size:15px;color:#4b5563;line-height:1.7;">${bodyText(item.body_cn, item.body_en)}</div>
-            <a href="${esc(item.url)}" target="_blank" style="display:inline-block;margin-top:8px;color:#2563eb;font-size:12px;font-weight:500;text-decoration:underline;">${btnLabel}</a>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fafbfc;border-radius:10px;">
+          <tr><td style="padding:18px 22px;">
+            <div style="font-size:12px;color:#9ca3af;margin-bottom:6px;letter-spacing:0.3px;">${esc(item.source || '')}</div>
+            <div style="font-size:15px;font-weight:700;color:#0f172a;line-height:1.5;margin-bottom:6px;">${titleText(item.title_cn, item.title_en)}</div>
+            <div style="font-size:15px;color:#374151;line-height:1.7;">${bodyText(item.body_cn, item.body_en)}</div>
+            <a href="${esc(item.url)}" target="_blank" style="display:inline-block;margin-top:10px;color:#2563eb;font-size:12px;font-weight:600;text-decoration:none;border-bottom:1px solid #93c5fd;padding-bottom:1px;">${btnLabel}</a>
           </td></tr>
         </table>
       </td></tr>`;
@@ -308,31 +312,31 @@ function renderHTML(content, lang) {
     const p = content.podcast;
     podcastHTML = `
     <!-- PODCAST -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
-      <tr><td style="padding:0 0 14px 0;">
-        <span style="background:#f3e8ff;color:#6b21a8;font-size:12px;font-weight:700;padding:4px 10px;border-radius:4px;letter-spacing:0.5px;">🎙️ 深度播客</span>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+      <tr><td style="padding:0 0 12px 0;">
+        <span style="display:inline-block;background:#f3e8ff;color:#6b21a8;font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:0.5px;">🎙️ 深度播客</span>
       </td></tr>
       <tr><td style="padding-bottom:16px;">
-        <table width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,#faf5ff 0%,#f3e8ff 100%);border-radius:10px;border:1px solid #e9d5ff;">
-          <tr><td style="padding:22px 24px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,#faf5ff 0%,#f3e8ff 100%);border-radius:10px;border:1px solid #e9d5ff;">
+          <tr><td style="padding:24px;">
             <!-- Episode info -->
-            <div style="font-size:13px;color:#7c3aed;margin-bottom:4px;">${esc(p.name || '')}</div>
-            <div style="font-size:18px;font-weight:700;color:#4c1d95;line-height:1.4;margin-bottom:8px;">${esc(p.title || '')}</div>
-            ${p.takeaway_cn ? `<div style="background:#ffffff;border-radius:8px;border:1px solid #e9d5ff;padding:12px 14px;margin-bottom:16px;">
-              <div style="font-size:12px;color:#7c3aed;font-weight:700;margin-bottom:4px;">💡 核心结论 · The Takeaway</div>
+            <div style="font-size:12px;color:#7c3aed;margin-bottom:4px;font-weight:600;letter-spacing:0.3px;">${esc(p.name || '')}</div>
+            <div style="font-size:18px;font-weight:700;color:#4c1d95;line-height:1.4;margin-bottom:12px;">${esc(p.title || '')}</div>
+            ${p.takeaway_cn ? `<div style="background:#ffffff;border-radius:8px;border:1px solid #e9d5ff;padding:14px 16px;margin-bottom:16px;">
+              <div style="font-size:11px;color:#7c3aed;font-weight:700;margin-bottom:6px;letter-spacing:0.5px;">💡 核心结论</div>
               <div style="font-size:14px;color:#1f2937;line-height:1.6;font-weight:600;">${bodyText(p.takeaway_cn, p.takeaway_en)}</div>
             </div>` : ''}
             ${p.why_cn ? `<div style="font-size:12px;color:#7c3aed;margin-bottom:14px;line-height:1.5;">${esc('🎯 ' + (p.why_cn || p.why_en))}</div>` : ''}`;
     for (const ins of (p.insights || [])) {
       podcastHTML += `
-            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:10px;background:#ffffff;border-radius:8px;border:1px solid #ede9fe;">
-              <tr><td style="padding:14px 16px;">
-                <div style="font-size:14px;font-weight:600;color:#1f2937;line-height:1.6;margin-bottom:4px;">${bodyText(ins.point_cn, ins.point_en)}</div>`;
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:10px;background:#ffffff;border-radius:8px;border:1px solid #ede9fe;">
+              <tr><td style="padding:16px;">
+                <div style="font-size:14px;font-weight:600;color:#0f172a;line-height:1.6;margin-bottom:6px;">${bodyText(ins.point_cn, ins.point_en)}</div>`;
       if (ins.quote || ins.quote_cn) {
         const quoteText = ins.quote_cn || ins.quote;
-        podcastHTML += `<div style="font-size:14px;color:#374151;line-height:1.7;font-style:italic;border-left:3px solid #c4b5fd;padding-left:12px;margin-top:8px;">"${esc(quoteText.slice(0, 300))}"</div>`;
+        podcastHTML += `<div style="font-size:14px;color:#374151;line-height:1.7;font-style:italic;border-left:3px solid #c4b5fd;padding-left:14px;margin-top:10px;">"${esc(quoteText.slice(0, 300))}"</div>`;
         if (ins.quote_cn && ins.quote) {
-          podcastHTML += `<div style="font-size:12px;color:#9ca3af;line-height:1.5;padding-left:12px;margin-top:4px;font-style:italic;">${esc(ins.quote.slice(0, 200))}</div>`;
+          podcastHTML += `<div style="font-size:12px;color:#9ca3af;line-height:1.5;padding-left:14px;margin-top:4px;font-style:italic;">${esc(ins.quote.slice(0, 200))}</div>`;
         }
       }
       podcastHTML += `
@@ -340,7 +344,11 @@ function renderHTML(content, lang) {
             </table>`;
     }
     podcastHTML += `
-            <a href="${esc(p.url)}" target="_blank" style="display:inline-block;margin-top:10px;color:#7c3aed;font-size:13px;font-weight:600;text-decoration:underline;">🎧 ${isZh ? '收听完整播客' : 'Listen'} →</a>
+            <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:12px;">
+              <tr><td style="background:#7c3aed;border-radius:6px;">
+                <a href="${esc(p.url)}" target="_blank" style="display:inline-block;padding:8px 20px;color:#ffffff;font-size:13px;font-weight:600;text-decoration:none;">🎧 ${isZh ? '收听完整播客' : 'Listen'}</a>
+              </td></tr>
+            </table>
           </td></tr>
         </table>
       </td></tr>
@@ -349,49 +357,51 @@ function renderHTML(content, lang) {
 
   // ── Full HTML document ───────────────────────────────────────────────────
   return `<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light">
 <meta name="supported-color-schemes" content="light">
+<meta name="x-apple-disable-message-reformatting">
 <title>AI Signal · 信号 | ${dateStr}</title>
-<!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->
+<!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->
 </head>
-<body style="margin:0;padding:0;background:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6;padding:16px 0;">
-<tr><td align="center">
+<body style="margin:0;padding:0;background:#f4f5f7;font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;word-spacing:normal;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;">
+<tr><td align="center" style="padding:24px 8px;">
 
 <!-- PREVIEW TEXT -->
-<div style="display:none;max-height:0;overflow:hidden;">${esc(content.headline?.text_cn || '')} — ${esc(content.mustRead?.[0]?.title_cn || '')}</div>
+<div style="display:none;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;">${esc(content.headline?.text_cn || '')} — ${esc(content.mustRead?.[0]?.title_cn || '')}</div>
 
 <!-- CONTAINER -->
-<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
 
   <!-- HEADER -->
-  <tr><td style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);padding:24px 24px 20px 24px;">
-    <table width="100%" cellpadding="0" cellspacing="0">
+  <!--[if mso]><tr><td style="background:#0f172a;padding:28px 32px 24px 32px;"><![endif]-->
+  <!--[if !mso]><!--><tr><td style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);padding:28px 32px 24px 32px;"><!--<![endif]-->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td>
-          <div style="font-size:12px;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">AI FRONTIER DIGEST</div>
-          <div style="font-size:22px;font-weight:700;color:#ffffff;line-height:1.3;margin-bottom:4px;">AI Signal · 信号</div>
-          <div style="font-size:14px;color:#94a3b8;">${dateStr}</div>
+          <div style="font-size:11px;color:#64748b;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px;font-weight:600;">AI FRONTIER DIGEST</div>
+          <div style="font-size:26px;font-weight:800;color:#ffffff;line-height:1.2;letter-spacing:-0.5px;margin-bottom:6px;">AI Signal · 信号</div>
+          <div style="font-size:13px;color:#94a3b8;">${dateStr}</div>
         </td>
       </tr>
     </table>
   </td></tr>
 
-  <!-- HEADLINE: merged into header -->
+  <!-- HEADLINE -->
   ${content.headline ? `
-  <tr><td style="background:#1e293b;padding:0 24px 20px 24px;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid rgba(148,163,184,0.15);">
+  <tr><td style="background:#1e293b;padding:0 32px 24px 32px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid rgba(148,163,184,0.12);">
       <tr>
-        <td style="padding-top:14px;">
-          <span style="font-size:12px;color:#93c5fd;font-weight:600;">今日焦点</span>
+        <td style="padding-top:16px;">
+          <span style="display:inline-block;background:rgba(147,197,253,0.15);color:#93c5fd;font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:0.5px;">今日焦点</span>
         </td>
       </tr>
       <tr>
-        <td style="font-size:15px;color:#e2e8f0;line-height:1.6;padding-top:4px;">
+        <td style="font-size:15px;color:#e2e8f0;line-height:1.7;padding-top:10px;">
           ${esc(content.headline.text_cn || content.headline.text_en)}
           ${(content.headline.text_en && content.headline.text_cn && isBilingual) ? `<span style="color:#94a3b8;"> · ${esc(content.headline.text_en)}</span>` : ''}
         </td>
@@ -400,7 +410,7 @@ function renderHTML(content, lang) {
   </td></tr>` : ''}
 
   <!-- CONTENT -->
-  <tr><td style="padding:20px 16px;background:#fafbfc;">
+  <tr><td style="padding:24px 28px;background:#ffffff;">
 
     ${sectionsHTML}
     ${podcastHTML}
@@ -408,11 +418,11 @@ function renderHTML(content, lang) {
   </td></tr>
 
   <!-- FOOTER -->
-  <tr><td style="background:#f9fafb;padding:20px 24px;border-top:1px solid #e5e7eb;">
-    <table width="100%" cellpadding="0" cellspacing="0">
-      <tr><td style="font-size:12px;color:#9ca3af;line-height:1.8;">
+  <tr><td style="background:#f8f9fa;padding:20px 28px;border-top:1px solid #f0f0f0;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      <tr><td style="font-size:12px;color:#9ca3af;line-height:1.7;">
         <strong style="color:#6b7280;">AI Signal · 信号</strong> · 从 AI 噪音中提取信号<br>
-        发送至 ${esc(toEmail)} · 每天 ${deliveryTime} 北京时间
+        ${esc(toEmail)} · 每天 ${deliveryTime} 北京时间
       </td></tr>
     </table>
   </td></tr>
@@ -488,11 +498,11 @@ function renderFallback(data, lang) {
     for (const t of (b.tweets || []).slice(0, 2)) {
       items += `
         <tr><td style="padding-bottom:12px;">
-          <table width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:1px solid #edf2f7;">
-            <tr><td style="padding:16px 20px;">
-              <div style="font-size:12px;color:#9ca3af;margin-bottom:6px;">${esc(b.name)} · ${esc(role)}</div>
-              <div style="font-size:14px;color:#1f2937;line-height:1.7;">${esc(t.text)}</div>
-              <a href="${esc(t.url)}" target="_blank" style="display:inline-block;margin-top:8px;color:#2563eb;font-size:12px;font-weight:500;text-decoration:underline;">查看原文 →</a>
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fafbfc;border-radius:10px;">
+            <tr><td style="padding:18px 22px;">
+              <div style="font-size:12px;color:#9ca3af;margin-bottom:6px;letter-spacing:0.3px;">${esc(b.name)} · ${esc(role)}</div>
+              <div style="font-size:15px;color:#0f172a;line-height:1.7;">${esc(t.text)}</div>
+              <a href="${esc(t.url)}" target="_blank" style="display:inline-block;margin-top:10px;color:#2563eb;font-size:12px;font-weight:600;text-decoration:none;border-bottom:1px solid #93c5fd;padding-bottom:1px;">查看原文 →</a>
             </td></tr>
           </table>
         </td></tr>`;
@@ -505,31 +515,36 @@ function renderFallback(data, lang) {
   })();
 
   return `<!DOCTYPE html>
-<html lang="zh-CN">
-<head><meta charset="utf-8"></head>
-<body style="margin:0;padding:0;background:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6;padding:20px 0;">
-<tr><td align="center">
-<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+</head>
+<body style="margin:0;padding:0;background:#f4f5f7;font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;">
+<tr><td align="center" style="padding:24px 8px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
 
-  <tr><td style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);padding:32px 36px;">
-    <div style="font-size:12px;color:#64748b;letter-spacing:2px;margin-bottom:8px;">AI FRONTIER DIGEST</div>
-    <div style="font-size:26px;font-weight:800;color:#ffffff;line-height:1.3;margin-bottom:6px;">AI Signal · 信号</div>
+  <!--[if mso]><tr><td style="background:#0f172a;padding:28px 32px;"><![endif]-->
+  <!--[if !mso]><!--><tr><td style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);padding:28px 32px;"><!--<![endif]-->
+    <div style="font-size:11px;color:#64748b;letter-spacing:2.5px;font-weight:600;margin-bottom:10px;">AI FRONTIER DIGEST</div>
+    <div style="font-size:26px;font-weight:800;color:#ffffff;line-height:1.2;letter-spacing:-0.5px;margin-bottom:6px;">AI Signal · 信号</div>
     <div style="font-size:13px;color:#94a3b8;">${dateStr} · 每天 ${data.config?.deliveryTime || '10:00'} 北京时间</div>
   </td></tr>
 
-  <tr><td style="background:#fef3c7;padding:14px 36px;">
-    <div style="font-size:12px;color:#92400e;line-height:1.5;">⚠️ 本期为模板摘要（LLM 服务暂时不可达，已自动降级）。内容完整但无策展精炼。下一期自动恢复。</div>
+  <tr><td style="background:#fef3c7;padding:14px 28px;">
+    <div style="font-size:12px;color:#92400e;line-height:1.5;">⚠️ 本期为模板摘要（LLM 服务暂时不可达，已自动降级）。下一期自动恢复。</div>
   </td></tr>
 
-  <tr><td style="padding:28px 36px;background:#fafbfc;">
-    <table width="100%" cellpadding="0" cellspacing="0">${items}</table>
+  <tr><td style="padding:24px 28px;background:#ffffff;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${items}</table>
   </td></tr>
 
-  <tr><td style="background:#f9fafb;padding:24px 36px;border-top:1px solid #e5e7eb;">
-    <div style="font-size:12px;color:#9ca3af;line-height:1.8;">
-      <strong style="color:#6b7280;">AI Signal · 信号</strong> · 追踪 AI 领域顶级 builder 的每日动态<br>
-      自动发送至 ${esc(data.config?.delivery?.email || '')} · 每天 ${data.config?.deliveryTime || '10:00'} 北京时间
+  <tr><td style="background:#f8f9fa;padding:20px 28px;border-top:1px solid #f0f0f0;">
+    <div style="font-size:12px;color:#9ca3af;line-height:1.7;">
+      <strong style="color:#6b7280;">AI Signal · 信号</strong> · 从 AI 噪音中提取信号<br>
+      ${esc(data.config?.delivery?.email || '')} · 每天 ${data.config?.deliveryTime || '10:00'} 北京时间
     </div>
   </td></tr>
 
