@@ -73,7 +73,7 @@ if (data.podcasts && data.podcasts.length > 0) {
     feedData.push(`NAME: ${p.name}`);
     feedData.push(`TITLE: ${p.title}`);
     feedData.push(`URL: ${p.url}`);
-    feedData.push(`TRANSCRIPT:\n${(p.transcript || '').slice(0, 40000)}`);
+    feedData.push(`TRANSCRIPT:\n${(p.transcript || '').slice(0, 15000)}`);
   }
   feedData.push('');
 }
@@ -428,11 +428,16 @@ function renderHTML(content, lang) {
 
 // ── 主流程 ────────────────────────────────────────────────────────────────────
 async function main() {
-  const userPrompt = `根据以下原始数据生成 AI Signal · 信号的内容 JSON：\n\n${feedData.join('\n')}`;
+  const t0 = Date.now();
+  const userPrompt = `根据以下原始数据生成内容 JSON：\n\n${feedData.join('\n')}`;
+
+  const promptChars = systemPrompt.length + userPrompt.length;
+  console.error(`[ai-signal] 数据就绪 · ~${Math.round(promptChars/3)} tokens · 调用 ${MODEL}...`);
 
   let content;
   try {
     const raw = await callLLM(systemPrompt, userPrompt);
+    console.error(`[ai-signal] LLM 响应完成 (${((Date.now()-t0)/1000).toFixed(1)}s)`);
     let jsonStr = raw.trim();
     const match = jsonStr.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
     if (match) jsonStr = match[1];
@@ -468,6 +473,7 @@ async function main() {
   }
 
   process.stdout.write(renderHTML(content, lang));
+  console.error(`[ai-signal] 渲染完成 · 总耗时 ${((Date.now()-t0)/1000).toFixed(1)}s`);
 }
 
 // ── Fallback: 当 LLM JSON 彻底失败时，用模板引擎兜底 ──────────────────────────

@@ -161,6 +161,7 @@ async function main() {
   console.log(JSON.stringify(output, null, 2));
 }
 
+console.error(`[ai-signal] 拉取 feed 数据...`);
 main().catch(err => {
   console.error(JSON.stringify({
     status: 'error',
