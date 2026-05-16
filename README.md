@@ -14,6 +14,16 @@ No X API key. No YouTube API key. All content comes from a centralized feed.
 
 ---
 
+## Demo
+
+👉 **[查看最新一期摘要效果](https://raw.githubusercontent.com/qinxujunai/ai-signal/master/demo.html)**（HTML 邮件，可在浏览器中直接预览）
+
+该样例由 AI Signal 实时生成，展示默认标准输出样式。如配置邮件推送，收到的即是此格式的专业排版邮件。
+
+> 注意：样例中的链接和内容来自公开 feed，具有时效性。
+
+---
+
 ## Quick Start
 
 ```bash
@@ -159,7 +169,7 @@ ai-signal/
 
 本项目深受 [follow-builders](https://github.com/zarazhangrui/follow-builders) 启发，并**直接使用其精心维护的中央 feed 作为默认内容源**。
 
-> follow-builders 由 [zarazhangrui](https://github.com/zarazhangrui) 创建并维护，每月承担 X API 和 pod2txt API 费用，持续追踪 25 位 AI builder 和 6 个播客，并将结果免费公开。这是一种慷慨。
+> follow-builders 由 [zarazhangrui](https://github.com/zarazhangrui) 创建并维护，持续追踪 25 位顶级 AI builder 和 6 个播客，并将精心整理的 feed 免费公开。这种慷慨让本项目得以存在。
 
 我们在其基础之上构建了：
 - 独立的 DeepSeek LLM 策展引擎，替代 Agent 会话内 remix
