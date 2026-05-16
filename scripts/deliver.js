@@ -206,10 +206,26 @@ async function main() {
       }
 
       case 'stdout':
-      default:
-        // Just print to terminal — the agent or OpenClaw handles delivery
-        console.log(digestText);
+      default: {
+        // If HTML, strip tags for readable terminal output
+        const isHtml = digestText.trim().match(/^<(!DOCTYPE|html)/i);
+        if (isHtml) {
+          const plain = digestText
+            .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+            .replace(/<[^>]*>/g, '')
+            .replace(/&amp;/g, '&')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"')
+            .replace(/&#x27;/g, "'")
+            .replace(/\n{3,}/g, '\n\n')
+            .trim();
+          console.log(plain);
+        } else {
+          console.log(digestText);
+        }
         break;
+      }
     }
   } catch (err) {
     console.log(JSON.stringify({
