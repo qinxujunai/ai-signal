@@ -20,7 +20,7 @@
 //   - "stdout" (default): just prints to terminal
 // ============================================================================
 
-import { readFile } from 'fs/promises';
+import { readFile, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
@@ -34,6 +34,8 @@ const LEGACY_USER_DIR = join(homedir(), '.follow-builders');
 const USER_DIR = existsSync(NEW_USER_DIR) ? NEW_USER_DIR : LEGACY_USER_DIR;
 const CONFIG_PATH = join(USER_DIR, 'config.json');
 const ENV_PATH = join(USER_DIR, '.env');
+const LAST_SENT_PATH = join(USER_DIR, '.last-sent');
+const COOLDOWN_MS = 4 * 60 * 60 * 1000; // 4 hours
 
 // -- Read input --------------------------------------------------------------
 
@@ -161,7 +163,40 @@ async function sendEmail(text, apiKey, toEmail) {
 
 // -- Main --------------------------------------------------------------------
 
+// -- Cooldown ----------------------------------------------------------------
+
+async function checkCooldown(force) {
+  if (force) return true;
+  try {
+    if (!existsSync(LAST_SENT_PATH)) return true;
+    const lastSent = parseInt(await readFile(LAST_SENT_PATH, 'utf-8'), 10);
+    if (isNaN(lastSent)) return true;
+    const elapsed = Date.now() - lastSent;
+    if (elapsed < COOLDOWN_MS) {
+      const remaining = Math.ceil((COOLDOWN_MS - elapsed) / 60000);
+      console.log(JSON.stringify({
+        status: 'skipped',
+        reason: `Cooldown: last email sent ${Math.round(elapsed / 60000)}min ago, retry in ${remaining}min. Use --force to override.`
+      }));
+      return false;
+    }
+  } catch {}
+  return true;
+}
+
+async function recordSent() {
+  try {
+    await writeFile(LAST_SENT_PATH, String(Date.now()), 'utf-8');
+  } catch {}
+}
+
+// -- Main --------------------------------------------------------------------
+
 async function main() {
+  const args = process.argv.slice(2);
+  const force = args.includes('--force');
+  const dryRun = args.includes('--dry-run');
+
   // Load env and config
   loadEnv({ path: ENV_PATH });
 
@@ -178,6 +213,11 @@ async function main() {
     return;
   }
 
+  // Cooldown check for email/telegram delivery (skip for stdout)
+  if ((delivery.method === 'email' || delivery.method === 'telegram') && !dryRun) {
+    if (!(await checkCooldown(force))) return;
+  }
+
   try {
     switch (delivery.method) {
       case 'telegram': {
@@ -185,12 +225,13 @@ async function main() {
         const chatId = delivery.chatId;
         if (!botToken) throw new Error('TELEGRAM_BOT_TOKEN not found in .env');
         if (!chatId) throw new Error('delivery.chatId not found in config.json');
-        await sendTelegram(digestText, botToken, chatId);
-        console.log(JSON.stringify({
-          status: 'ok',
-          method: 'telegram',
-          message: 'Digest sent to Telegram'
-        }));
+        if (dryRun) {
+          console.log(JSON.stringify({ status: 'dry-run', method: 'telegram', message: 'Would send to Telegram' }));
+        } else {
+          await sendTelegram(digestText, botToken, chatId);
+          await recordSent();
+          console.log(JSON.stringify({ status: 'ok', method: 'telegram', message: 'Digest sent to Telegram' }));
+        }
         break;
       }
 
@@ -199,12 +240,13 @@ async function main() {
         const toEmail = delivery.email;
         if (!apiKey) throw new Error('RESEND_API_KEY not found in .env');
         if (!toEmail) throw new Error('delivery.email not found in config.json');
-        await sendEmail(digestText, apiKey, toEmail);
-        console.log(JSON.stringify({
-          status: 'ok',
-          method: 'email',
-          message: `Digest sent to ${toEmail}`
-        }));
+        if (dryRun) {
+          console.log(JSON.stringify({ status: 'dry-run', method: 'email', message: `Would send to ${toEmail}` }));
+        } else {
+          await sendEmail(digestText, apiKey, toEmail);
+          await recordSent();
+          console.log(JSON.stringify({ status: 'ok', method: 'email', message: `Digest sent to ${toEmail}` }));
+        }
         break;
       }
 

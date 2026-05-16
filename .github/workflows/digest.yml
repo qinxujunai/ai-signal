@@ -32,7 +32,7 @@ jobs:
           ENVEOF
 
       - name: Run digest pipeline
-        run: cd scripts && node prepare-digest.js | node remix-digest.js | node deliver.js
+        run: cd scripts && node prepare-digest.js | node remix-digest.js | node deliver.js --force
 
       - name: Check feed health
         run: cd scripts && node check-feed-health.js
