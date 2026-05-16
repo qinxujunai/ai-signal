@@ -23,7 +23,9 @@ import { homedir } from 'os';
 
 // -- Constants ---------------------------------------------------------------
 
-const USER_DIR = join(homedir(), '.follow-builders');
+const NEW_USER_DIR = join(homedir(), '.ai-signal');
+const LEGACY_USER_DIR = join(homedir(), '.follow-builders');
+const USER_DIR = existsSync(NEW_USER_DIR) ? NEW_USER_DIR : LEGACY_USER_DIR;
 const CONFIG_PATH = join(USER_DIR, 'config.json');
 
 // Feed URLs — configurable via env or config.json. Defaults to follow-builders central feed.
@@ -88,7 +90,7 @@ async function main() {
 
   // 3. Load prompts with priority: user custom > remote (GitHub) > local default
   //
-  // If the user has a custom prompt at ~/.follow-builders/prompts/<file>,
+  // If the user has a custom prompt at ~/.ai-signal/prompts/<file> (or legacy ~/.follow-builders/prompts/),
   // use that (they personalized it — don't overwrite with remote updates).
   // Otherwise, fetch the latest from GitHub so they get central improvements.
   // If GitHub is unreachable, fall back to the local copy shipped with the skill.

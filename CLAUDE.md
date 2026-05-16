@@ -32,14 +32,14 @@ Windows 任务计划 (每天 10:00)
 
 | 文件 | 内容 |
 |------|------|
-| `~/.follow-builders/config.json` | 语言、频率、推送时间、邮箱 |
-| `~/.follow-builders/.env` | `RESEND_API_KEY`、`DEEPSEEK_API_KEY`、`DEEPSEEK_MODEL` |
+| `~/.ai-signal/config.json` | 语言、频率、推送时间、邮箱 |
+| `~/.ai-signal/.env` | `RESEND_API_KEY`、`DEEPSEEK_API_KEY`、`DEEPSEEK_MODEL` |
 | `~/.claude/settings.json` | API key 和 model 自动回读（无需重复配） |
 
 ## 模型自动跟随
 
 `remix-digest.js` 启动时会按以下优先级找模型：
-1. `~/.follow-builders/.env` 里的 `DEEPSEEK_MODEL`
+1. `~/.ai-signal/.env` 里的 `DEEPSEEK_MODEL`
 2. `~/.claude/settings.json` → `ANTHROPIC_DEFAULT_OPUS_MODEL`
 3. 兜底 `deepseek-chat`
 
@@ -58,8 +58,8 @@ LLM 生成 JSON → 修复常见错误（trailing comma 等）
 
 - **立即发送一期**：在 Claude Code 里输入 `/ai`
 - **改频率/语言/邮箱**：直接跟我说
-- **测试管道**：`wsl -e bash /root/.follow-builders/run-digest.sh`
-- **查看日志**：`wsl -e bash -c 'tail -20 /root/.follow-builders/cron.log'`
+- **测试管道**：`wsl -e bash /root/.ai-signal/run-digest.sh`
+- **查看日志**：`wsl -e bash -c 'tail -20 /root/.ai-signal/cron.log'`
 
 ## 故障排查
 
@@ -68,7 +68,7 @@ LLM 生成 JSON → 修复常见错误（trailing comma 等）
 | 没收到邮件 | 检查 QQ 邮箱垃圾箱；Resend dashboard 看 delivery status |
 | 收到模板版而非精炼版 | LLM 临时不可达，下期自动恢复 |
 | 任务计划没跑 | `Get-ScheduledTask -TaskName "AI Frontier Digest"` |
-| JSON 解析失败 | 查看 `~/.follow-builders/cron-errors.log` |
+| JSON 解析失败 | 查看 `~/.ai-signal/cron-errors.log` |
 
 ## 技术栈
 
@@ -82,7 +82,7 @@ LLM 生成 JSON → 修复常见错误（trailing comma 等）
 
 - Repo: `github.com/qinxujunai/ai-signal`
 - 作者: 秦徐俊
-- 基于 follow-builders 的中央 feed，策展引擎和邮件系统完全自建
+- 中央 feed 数据源，策展引擎和邮件系统完全自建
 
 ## 发件品牌
 
