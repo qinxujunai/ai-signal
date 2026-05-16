@@ -1,0 +1,19 @@
+{
+  "name": "ai-signal",
+  "version": "1.0.0",
+  "description": "AI Signal — Extract signal from AI noise. Automated daily digest.",
+  "type": "module",
+  "scripts": {
+    "prepare": "node prepare-digest.js",
+    "remix": "node remix-digest.js",
+    "deliver": "node deliver.js",
+    "digest": "node prepare-digest.js | node remix-digest.js | node deliver.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}
