@@ -64,7 +64,25 @@ chmod +x "$CONFIG_DIR/run-digest.sh"
 echo "  ✓ 调度脚本已部署"
 
 # 6. Offer cron setup
-echo "[4/4] 定时任务..."
+echo "[4/5] 注册 /ai 到 Claude Code..."
+CLAUDE_MD="$HOME/.claude/CLAUDE.md"
+CLAUDE_LINE='- `/ai` — AI industry daily digest. When user invokes /ai, run: `cd ~/.claude/skills/ai-signal/scripts && node prepare-digest.js 2>/dev/null | node remix-digest.js 2>/dev/null | node deliver.js`. Auto-detects API key from settings.'
+if [ ! -f "$CLAUDE_MD" ]; then
+  mkdir -p "$(dirname "$CLAUDE_MD")"
+  printf "## Available Skills\n\n%s\n" "$CLAUDE_LINE" > "$CLAUDE_MD"
+  echo "  ✓ CLAUDE.md created, /ai registered"
+elif ! grep -q '/ai.*ai-signal' "$CLAUDE_MD" 2>/dev/null; then
+  if grep -q '## Available Skills' "$CLAUDE_MD" 2>/dev/null; then
+    sed -i "/## Available Skills/a $CLAUDE_LINE" "$CLAUDE_MD"
+  else
+    printf "\n## Available Skills\n%s\n" "$CLAUDE_LINE" >> "$CLAUDE_MD"
+  fi
+  echo "  ✓ /ai registered in CLAUDE.md"
+else
+  echo "  ✓ /ai already registered"
+fi
+
+echo "[5/5] 定时任务..."
 if command -v crontab &> /dev/null; then
   read -p "  是否添加每天 10:00 的定时任务？(y/n) " -n 1 -r
   echo
