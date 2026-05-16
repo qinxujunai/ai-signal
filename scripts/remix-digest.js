@@ -378,14 +378,14 @@ function renderHTML(content, lang) {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
 
   <!-- HEADER -->
-  <!--[if mso]><tr><td style="background:#0f172a;padding:28px 32px 24px 32px;"><![endif]-->
-  <!--[if !mso]><!--><tr><td style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);padding:28px 32px 24px 32px;"><!--<![endif]-->
+  <!--[if mso]><tr><td style="background:#1e40af;padding:28px 32px 24px 32px;"><![endif]-->
+  <!--[if !mso]><!--><tr><td style="background:linear-gradient(135deg,#1e40af 0%,#2563eb 100%);padding:28px 32px 24px 32px;"><!--<![endif]-->
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td>
-          <div style="font-size:11px;color:#64748b;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px;font-weight:600;">AI FRONTIER DIGEST</div>
+          <div style="font-size:11px;color:#93c5fd;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px;font-weight:600;">AI FRONTIER DIGEST</div>
           <div style="font-size:26px;font-weight:800;color:#ffffff;line-height:1.2;letter-spacing:-0.5px;margin-bottom:6px;">AI Signal · 信号</div>
-          <div style="font-size:13px;color:#94a3b8;">${dateStr}</div>
+          <div style="font-size:13px;color:#bfdbfe;">${dateStr}</div>
         </td>
       </tr>
     </table>
@@ -393,17 +393,17 @@ function renderHTML(content, lang) {
 
   <!-- HEADLINE -->
   ${content.headline ? `
-  <tr><td style="background:#1e293b;padding:0 32px 24px 32px;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid rgba(148,163,184,0.12);">
+  <tr><td style="background:#1e3a8a;padding:0 32px 24px 32px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid rgba(147,197,253,0.2);">
       <tr>
         <td style="padding-top:16px;">
-          <span style="display:inline-block;background:rgba(147,197,253,0.15);color:#93c5fd;font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:0.5px;">今日焦点</span>
+          <span style="display:inline-block;background:rgba(147,197,253,0.2);color:#93c5fd;font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:0.5px;">今日焦点</span>
         </td>
       </tr>
       <tr>
-        <td style="font-size:15px;color:#e2e8f0;line-height:1.7;padding-top:10px;">
+        <td style="font-size:15px;color:#e0e7ff;line-height:1.7;padding-top:10px;">
           ${esc(content.headline.text_cn || content.headline.text_en)}
-          ${(content.headline.text_en && content.headline.text_cn && isBilingual) ? `<span style="color:#94a3b8;"> · ${esc(content.headline.text_en)}</span>` : ''}
+          ${(content.headline.text_en && content.headline.text_cn && isBilingual) ? `<span style="color:#93c5fd;"> · ${esc(content.headline.text_en)}</span>` : ''}
         </td>
       </tr>
     </table>
@@ -526,11 +526,11 @@ function renderFallback(data, lang) {
 <tr><td align="center" style="padding:24px 8px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
 
-  <!--[if mso]><tr><td style="background:#0f172a;padding:28px 32px;"><![endif]-->
-  <!--[if !mso]><!--><tr><td style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);padding:28px 32px;"><!--<![endif]-->
-    <div style="font-size:11px;color:#64748b;letter-spacing:2.5px;font-weight:600;margin-bottom:10px;">AI FRONTIER DIGEST</div>
+  <!--[if mso]><tr><td style="background:#1e40af;padding:28px 32px;"><![endif]-->
+  <!--[if !mso]><!--><tr><td style="background:linear-gradient(135deg,#1e40af 0%,#2563eb 100%);padding:28px 32px;"><!--<![endif]-->
+    <div style="font-size:11px;color:#93c5fd;letter-spacing:2.5px;font-weight:600;margin-bottom:10px;">AI FRONTIER DIGEST</div>
     <div style="font-size:26px;font-weight:800;color:#ffffff;line-height:1.2;letter-spacing:-0.5px;margin-bottom:6px;">AI Signal · 信号</div>
-    <div style="font-size:13px;color:#94a3b8;">${dateStr} · 每天 ${data.config?.deliveryTime || '10:00'} 北京时间</div>
+    <div style="font-size:13px;color:#bfdbfe;">${dateStr} · 每天 ${data.config?.deliveryTime || '10:00'} 北京时间</div>
   </td></tr>
 
   <tr><td style="background:#fef3c7;padding:14px 28px;">
