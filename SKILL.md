@@ -1,5 +1,5 @@
 ---
-name: ai-signal
+name: ai
 description: /ai — AI industry daily digest. Use when user invokes /ai, wants AI news, frontier updates, or industry insights. Handles first-time setup automatically.
 ---
 
