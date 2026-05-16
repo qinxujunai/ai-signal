@@ -112,55 +112,53 @@ ai-signal/
 
 ## Quick Start
 
-### Prerequisites
-
-- **Node.js** ≥ 18
-- **A DeepSeek API key** (or use the one already configured in Claude Code — auto-detected)
-- **A Resend account** with a verified domain (for email delivery)
-- **Windows**: WSL enabled (Ubuntu recommended)
-- **Linux/Mac**: `cron` (usually pre-installed)
-
-### 1. Clone
+### Zero to Digest in 2 Minutes
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/ai-frontier-digest.git
-cd ai-frontier-digest
-npm install --prefix scripts
+# 1. Clone into Claude Code skills directory
+git clone https://github.com/qinxujunai/ai-signal.git ~/.claude/skills/ai-signal
+
+# 2. Install dependencies
+cd ~/.claude/skills/ai-signal/scripts && npm install
+
+# 3. Done. Type /ai in Claude Code.
 ```
 
-### 2. Configure
+**That's it.** If your Claude Code is already configured with a DeepSeek API key, the system auto-detects it. No `.env` file, no Resend, no domain, no cron needed.
 
-Create `~/.follow-builders/.env`:
+### What Happens When You Type `/ai`
 
+```
+/ai → Claude Code scans skill descriptions
+    → Matches "AI industry daily digest"
+    → Runs: prepare-digest.js → remix-digest.js → deliver.js
+    → Digest appears in your terminal (stdout mode)
+```
+
+No content API keys are ever needed — all tweets and podcast transcripts come from a centralized feed.
+
+### Optional: Email Delivery
+
+Want the digest as a professionally formatted HTML email instead?
+
+1. Sign up at [resend.com](https://resend.com), verify a domain
+2. Create `~/.follow-builders/.env`:
 ```env
-# Resend API key for email delivery
 RESEND_API_KEY=re_xxxxxxxxxxxx
-
-# DeepSeek API key (optional — auto-reads from ~/.claude/settings.json)
-DEEPSEEK_API_KEY=sk-xxxxxxxxxxxx
-
-# Model override (optional — defaults to Claude Code settings or deepseek-chat)
-DEEPSEEK_MODEL=deepseek-v4-pro
 ```
-
-Create `~/.follow-builders/config.json`:
-
+3. Create `~/.follow-builders/config.json`:
 ```json
 {
-  "platform": "other",
   "language": "bilingual",
   "timezone": "Asia/Shanghai",
   "frequency": "daily",
   "deliveryTime": "10:00",
-  "delivery": {
-    "method": "email",
-    "email": "your-email@qq.com"
-  },
+  "delivery": { "method": "email", "email": "you@example.com" },
   "onboardingComplete": true
 }
 ```
 
-### 3. Schedule
+### Optional: Daily Auto-Send
 
 **Windows (Task Scheduler + WSL):**
 ```powershell
@@ -169,21 +167,15 @@ Create `~/.follow-builders/config.json`:
 
 **Linux/Mac (cron):**
 ```bash
-(crontab -l 2>/dev/null; echo "0 10 * * * /path/to/scripts/run-digest.sh") | crontab -
+bash install.sh
 ```
 
-### 4. Test
+### Test the Pipeline
 
 ```bash
-cd scripts
+cd ~/.claude/skills/ai-signal/scripts
 node prepare-digest.js | node remix-digest.js | node deliver.js
 ```
-
-Check your email. You should receive a professionally formatted AI digest.
-
-### 5. Manual Trigger
-
-In Claude Code, type `/ai` to trigger an immediate digest.
 
 ---
 
