@@ -3,7 +3,7 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")/scripts" && pwd)"
-CONFIG_DIR="$HOME/.follow-builders"
+CONFIG_DIR="$HOME/.ai-signal"
 
 echo "========================================"
 echo "  AI Signal · 安装程序"
@@ -11,13 +11,13 @@ echo "========================================"
 echo ""
 
 # 1. Install npm dependencies
-echo "[1/4] 安装依赖..."
+echo "[1/5] 安装依赖..."
 cd "$SCRIPT_DIR" && npm install --silent
 echo "  ✓ npm 依赖完成"
 
 # 2. Create config directory
-echo "[2/4] 创建配置目录..."
-mkdir -p "$CONFIG_DIR"
+echo "[2/5] 创建配置目录..."
+mkdir -p "$CONFIG_DIR/drafts"
 
 # 3. Create .env if missing
 if [ ! -f "$CONFIG_DIR/.env" ]; then
@@ -57,16 +57,16 @@ else
   echo "  ✓ config.json 已存在"
 fi
 
-# 5. Create WSL/Linux cron wrapper
-echo "[3/4] 配置调度脚本..."
+# 5. Deploy scheduling script
+echo "[3/5] 部署调度脚本..."
 cp "$SCRIPT_DIR/run-digest.sh" "$CONFIG_DIR/run-digest.sh"
 chmod +x "$CONFIG_DIR/run-digest.sh"
 echo "  ✓ 调度脚本已部署"
 
-# 6. Offer cron setup
+# 6. Register /ai in Claude Code
 echo "[4/5] 注册 /ai 到 Claude Code..."
 CLAUDE_MD="$HOME/.claude/CLAUDE.md"
-CLAUDE_LINE='- `/ai` — AI industry daily digest. When user invokes /ai, run: `cd ~/.claude/skills/ai-signal/scripts && node prepare-digest.js 2>/dev/null | node remix-digest.js 2>/dev/null | node deliver.js`. Auto-detects API key from settings.'
+CLAUDE_LINE='- `/ai` — AI Signal daily digest. Run: `cd ~/.claude/skills/ai-signal/scripts && node prepare-digest.js 2>/dev/null | node remix-digest.js 2>/dev/null | node deliver.js`'
 if [ ! -f "$CLAUDE_MD" ]; then
   mkdir -p "$(dirname "$CLAUDE_MD")"
   printf "## Available Skills\n\n%s\n" "$CLAUDE_LINE" > "$CLAUDE_MD"
@@ -77,18 +77,20 @@ elif ! grep -q '/ai.*ai-signal' "$CLAUDE_MD" 2>/dev/null; then
   else
     printf "\n## Available Skills\n%s\n" "$CLAUDE_LINE" >> "$CLAUDE_MD"
   fi
-  echo "  ✓ /ai registered in CLAUDE.md"
+  echo "  ✓ /ai registered in CLAUDE_MD"
 else
   echo "  ✓ /ai already registered"
 fi
 
+# 7. Cron setup — two-stage (09:45 generate + 10:00 send)
 echo "[5/5] 定时任务..."
 if command -v crontab &> /dev/null; then
-  read -p "  是否添加每天 10:00 的定时任务？(y/n) " -n 1 -r
+  read -p "  是否添加每天 09:45+10:00 的定时任务？(y/n) " -n 1 -r
   echo
   if [[ $REPLY =~ ^[Yy]$ ]]; then
-    (crontab -l 2>/dev/null; echo "0 10 * * * $CONFIG_DIR/run-digest.sh") | crontab -
-    echo "  ✓ cron 已配置（每天 10:00）"
+    # Remove old entry if exists
+    crontab -l 2>/dev/null | grep -v 'run-digest.sh' | { cat; echo "45 9 * * * $CONFIG_DIR/run-digest.sh generate >> $CONFIG_DIR/cron.log 2>&1"; echo "0 10 * * * $CONFIG_DIR/run-digest.sh send >> $CONFIG_DIR/cron.log 2>&1"; } | crontab -
+    echo "  ✓ cron 已配置（09:45 生成 + 10:00 发送）"
   else
     echo "  ⊘ 跳过。随时输 /ai 手动获取"
   fi
@@ -101,6 +103,6 @@ echo "========================================"
 echo "  安装完成！"
 echo "========================================"
 echo ""
+echo "  调度安排：09:45 生成草稿 → 10:00 发送邮件"
 echo "  手动获取：在 Claude Code 中输入 /ai"
-echo "  （如果你已经配了 DeepSeek API key，零额外配置）"
 echo ""
