@@ -6,7 +6,7 @@
 //        → stdout → deliver.js → QQ邮箱
 // ────────────────────────────────────────────────────────────────────────────────
 
-import { readFile } from 'fs/promises';
+import { readFile, writeFile } from 'fs/promises';
 import { join, dirname } from 'path';
 import { homedir } from 'os';
 import { fileURLToPath } from 'url';
@@ -16,9 +16,21 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const SKILL_DIR = join(__dirname, '..');
 
 // ── 读取输入 ──────────────────────────────────────────────────────────────────
-const chunks = [];
-for await (const chunk of process.stdin) chunks.push(chunk);
-const data = JSON.parse(Buffer.concat(chunks).toString('utf-8'));
+const args = process.argv.slice(2);
+const outIdx = args.indexOf('--out');
+const outFile = outIdx !== -1 ? args[outIdx + 1] : null;
+const fileIdx = args.indexOf('--file');
+const inFile = fileIdx !== -1 ? args[fileIdx + 1] : null;
+
+let raw;
+if (inFile) {
+  raw = await readFile(inFile, 'utf-8');
+} else {
+  const chunks = [];
+  for await (const chunk of process.stdin) chunks.push(chunk);
+  raw = Buffer.concat(chunks).toString('utf-8').replace(/^﻿/, '');
+}
+const data = JSON.parse(raw);
 
 // ── 加载配置 ──────────────────────────────────────────────────────────────────
 let API_KEY, MODEL;
@@ -35,12 +47,20 @@ MODEL = process.env.DEEPSEEK_MODEL;
 if (!API_KEY || !MODEL) {
   try {
     const s = JSON.parse(await readFile(join(homedir(), '.claude', 'settings.json'), 'utf-8'));
-    if (!API_KEY) API_KEY = s.env?.ANTHROPIC_AUTH_TOKEN;
+    // API key: only use ANTHROPIC_AUTH_TOKEN if it looks like a DeepSeek key (starts with 'sk-')
+    if (!API_KEY) {
+      const tk = s.env?.ANTHROPIC_AUTH_TOKEN;
+      if (tk && tk.startsWith('sk-')) API_KEY = tk;
+    }
     if (!MODEL) {
-      const m = s.env?.ANTHROPIC_DEFAULT_OPUS_MODEL ||
+      // Prefer the clean name (ANTHROPIC_DEFAULT_OPUS_MODEL_NAME) over the one with suffix
+      const m = s.env?.ANTHROPIC_DEFAULT_OPUS_MODEL_NAME ||
+                s.env?.ANTHROPIC_DEFAULT_OPUS_MODEL ||
                 s.env?.ANTHROPIC_DEFAULT_SONNET_MODEL ||
                 s.env?.ANTHROPIC_MODEL || '';
-      if (m.startsWith('deepseek')) MODEL = m.replace(/\[1m\]/g, '');
+      // Strip any bracket suffix like [1M], [1T], [context], etc.
+      const cleaned = m.replace(/\[.*?\]/gi, '').trim();
+      if (cleaned.startsWith('deepseek')) MODEL = cleaned;
     }
   } catch {}
 }
@@ -485,12 +505,19 @@ async function main() {
       content = JSON.parse(retryStr);
     } catch (e2) {
       console.error('LLM JSON parse error (retry also failed):', e2.message);
-      process.stdout.write(renderFallback(data, lang));
+      const fallbackHtml = renderFallback(data, lang);
+      process.stdout.write(fallbackHtml);
+      if (outFile) await writeFile(outFile, fallbackHtml, 'utf-8');
       return;
     }
   }
 
-  process.stdout.write(renderHTML(content, lang));
+  const html = renderHTML(content, lang);
+  process.stdout.write(html);
+  if (outFile) {
+    await writeFile(outFile, html, 'utf-8');
+    console.error(`[ai-signal] 输出已写入: ${outFile}`);
+  }
   console.error(`[ai-signal] 渲染完成 · 总耗时 ${((Date.now()-t0)/1000).toFixed(1)}s`);
 }
 
@@ -563,7 +590,11 @@ function renderFallback(data, lang) {
 </html>`;
 }
 
-main().catch(e => {
+main().catch(async e => {
   console.error('LLM failed, using fallback:', e.message);
-  try { process.stdout.write(renderFallback(data, lang)); } catch {}
+  try {
+    const fb = renderFallback(data, lang);
+    process.stdout.write(fb);
+    if (outFile) await writeFile(outFile, fb, 'utf-8');
+  } catch {}
 });
