@@ -49,7 +49,7 @@ Windows PowerShell 管道默认 US-ASCII，会损坏中文 UTF-8。
 |------|------|
 | `scripts/remix-digest.js` | ★ 核心引擎：LLM 策展 + HTML 模板渲染 + 兜底。`--file` 读输入，`--out` 写输出 |
 | `scripts/prepare-digest.js` | 从中央 GitHub feed 拉取推文/播客数据。`--out` 写输出 |
-| `scripts/deliver.js` | Resend API 邮件发送（HTML + 纯文本双模）。`--file` 读输入 |
+| `scripts/deliver.js` | Resend API 邮件发送（HTML + 纯文本双模，自动重试 3 次）。`--file` 读输入。日志写入 `~/.ai-signal/cron.log` |
 | `scripts/format-auto-digest.js` | LLM 失败时的模板兜底 |
 | `scripts/run-digest.sh` | WSL 调度入口脚本（两阶段：generate/send） |
 | `install.ps1` | Windows 一键安装（WSL Ubuntu + 任务计划） |
@@ -115,8 +115,9 @@ Two-stage design: **generate at 09:45, send at 10:00** — ensures email arrives
 
 | 问题 | 排查 |
 |------|------|
-| 没收到邮件 | 检查 QQ 邮箱垃圾箱；Resend dashboard 看 delivery status |
-| 邮件中文乱码/问号 | 用文件传递模式（`--file`/`--out`），勿用 `\|` 管道 |
+| 没收到邮件 | 检查 QQ 邮箱垃圾箱；Resend dashboard 看 delivery status；新域名首次发送可能需要预热（连续发几封后正常） |
+| 邮件到达服务器但不在收件箱 | QQ 邮箱静默丢弃 — 预热后自动恢复，或切换到 stdout 模式 |
+| 邮件中文乱码/问号 | 管道损坏 — 用文件传递模式（`--file`/`--out`），勿用 `\|` 管道 |
 | 收到模板版而非精炼版 | LLM 临时不可达，下期自动恢复 |
 | 任务计划没跑 | `Get-ScheduledTask -TaskName "AI Signal Daily Digest*"` |
 | Draft 没生成 | 查看 `~/.ai-signal/cron.log` 中 GENERATE 阶段错误 |
