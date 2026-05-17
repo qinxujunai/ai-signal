@@ -250,6 +250,8 @@ async function main() {
   const delivery = config.delivery || { method: 'stdout' };
   const digestText = await getDigestText();
 
+  await logDelivery('RUN', `method=${delivery.method} force=${force} file=${args.includes('--file') ? args[args.indexOf('--file') + 1] : 'stdin'}`);
+
   if (!digestText || digestText.trim().length === 0) {
     console.log(JSON.stringify({ status: 'skipped', reason: 'Empty digest text' }));
     return;
