@@ -44,9 +44,12 @@ No Resend. No domain. No cron. No WSL.
 
 ```
 /ai (or terminal / cron / GitHub Actions)
-  → prepare-digest.js  拉取 AI builder 动态 → feed JSON
-  → remix-digest.js    DeepSeek LLM 策展 → 双语结构化内容
-  → deliver.js         输出纯文本 (stdout) 或 HTML 邮件 (email)
+  → prepare-digest.js  拉取 feed → feed.json
+  → remix-digest.js    DeepSeek LLM 策展 → digest.html
+  → deliver.js         读取 digest.html → 终端纯文本 (stdout) 或 HTML 邮件 (email)
+
+三个脚本通过临时文件传递数据（--file / --out），不依赖 shell 管道。
+避免 Windows PowerShell 默认 US-ASCII 管道编码导致中文乱码。
 ```
 
 ---
@@ -112,22 +115,27 @@ GitHub 免费提供 2000 分钟/月，每天跑一次用不了 5%。
 ```
 SCHEDULER (cron / Task Scheduler / GitHub Actions)
   ↓
-prepare-digest.js  →  中央 feed（无个人 API key）
+prepare-digest.js  →  feed.json (tmp file, UTF-8)
   ↓
 remix-digest.js   →  DeepSeek LLM 策展 + 双语
   ↓                  (JSON修复 → retry → 模板兜底)
+  ↓                  digest.html (tmp file, UTF-8)
 deliver.js        →  stdout / Resend Email
 ```
+
+Pipeline scripts pass data through temp files (`--file` / `--out`), not shell pipes. This avoids UTF-8 corruption on Windows PowerShell (default pipe encoding: US-ASCII). Also works transparently on Linux/macOS.
 
 ---
 
 ## Auto-Detection
 
-| 配置项 | 来源 |
-|--------|------|
-| API key | `~/.ai-signal/.env` → `~/.claude/settings.json` |
-| Model | `DEEPSEEK_MODEL` env → `ANTHROPIC_DEFAULT_OPUS_MODEL` → `deepseek-chat` |
+| 配置项 | 优先级 |
+|--------|--------|
+| API key | `~/.ai-signal/.env` → `~/.claude/settings.json`（仅当 token 以 `sk-` 开头） |
+| Model | `DEEPSEEK_MODEL` → `ANTHROPIC_DEFAULT_OPUS_MODEL_NAME` → `ANTHROPIC_DEFAULT_OPUS_MODEL`（自动剥离 `[1M]` 等后缀）→ `deepseek-chat` |
 | Feed | 默认中央 feed，可通过 `FEED_BASE_URL` 自定义 |
+
+模型名后缀如 `[1M]` `[1T]` `[context]` 会被自动剥离，确保传给 DeepSeek API 的是合法模型名。
 
 ---
 
@@ -167,7 +175,7 @@ ai-signal/
 
 本项目深受 [follow-builders](https://github.com/zarazhangrui/follow-builders) 启发，并**直接使用其精心维护的中央 feed 作为默认内容源**。
 
-> follow-builders 由 [zarazhangrui](https://github.com/zarazhangrui) 创建并维护，持续追踪 25 位顶级 AI builder 和 6 个播客，并将精心整理的 feed 免费公开。这种慷慨让本项目得以存在。
+> follow-builders 由 [zarazhangrui](https://github.com/zarazhangrui) 创建并维护，每月承担 X API 和 pod2txt API 费用，持续追踪 25 位 AI builder 和 6 个播客，并将结果免费公开。这是一种慷慨。
 
 我们在其基础之上构建了：
 - 独立的 DeepSeek LLM 策展引擎，替代 Agent 会话内 remix

@@ -42,9 +42,11 @@ generate() {
     fi
   fi
 
-  "$NODE" prepare-digest.js 2>/dev/null \
-    | "$NODE" remix-digest.js 2>>"$ERR" \
-    > "$DRAFT"
+  # File-based pipeline (UTF-8 safe, no shell pipes)
+  TMP="$DATA_DIR/tmp"
+  mkdir -p "$TMP"
+  "$NODE" prepare-digest.js --out "$TMP/feed.json" 2>/dev/null && \
+  "$NODE" remix-digest.js --file "$TMP/feed.json" --out "$DRAFT" 2>>"$ERR"
 
   if [ -s "$DRAFT" ]; then
     log "GENERATE ok → $DRAFT ($(wc -c < "$DRAFT") bytes)"
@@ -68,7 +70,7 @@ send() {
   # Convert WSL path to Windows path (Node.js is a Windows binary)
   WIN_DRAFT=$(wslpath -w "$DRAFT" 2>/dev/null || echo "$DRAFT")
 
-  RESULT=$("$NODE" deliver.js --file "$WIN_DRAFT" 2>&1)
+  RESULT=$("$NODE" deliver.js --file "$WIN_DRAFT" --force 2>&1)
   echo "$RESULT" >> "$LOG"
   log "SEND done: $RESULT"
 }
@@ -85,9 +87,11 @@ case "$STAGE" in
     # Full pipeline (backward compat): generate + send in one shot
     log "FULL start"
     cd "$SCRIPTS" || { log "ERROR: cannot cd to $SCRIPTS"; exit 1; }
-    "$NODE" prepare-digest.js 2>/dev/null \
-      | "$NODE" remix-digest.js 2>>"$ERR" \
-      | "$NODE" deliver.js 2>&1 >> "$LOG"
+    TMP="$DATA_DIR/tmp"
+    mkdir -p "$TMP"
+    "$NODE" prepare-digest.js --out "$TMP/feed.json" 2>/dev/null && \
+    "$NODE" remix-digest.js --file "$TMP/feed.json" --out "$TMP/digest.html" 2>>"$ERR" && \
+    "$NODE" deliver.js --file "$TMP/digest.html" --force 2>&1 >> "$LOG"
     log "FULL done"
     ;;
 esac
