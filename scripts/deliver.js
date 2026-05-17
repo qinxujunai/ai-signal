@@ -127,11 +127,24 @@ async function sendTelegram(text, botToken, chatId) {
   }
 }
 
+// -- Logging ------------------------------------------------------------------
+
+const LOG_PATH = join(USER_DIR, 'cron.log');
+
+async function logDelivery(status, message) {
+  const timestamp = new Date().toISOString();
+  const line = `[${timestamp}] ${status}: ${message}\n`;
+  try {
+    await writeFile(LOG_PATH, line, { flag: 'a', encoding: 'utf-8' });
+  } catch {}
+  if (status === 'ERROR') process.stderr.write(line);
+}
+
 // -- Email Delivery (Resend) -------------------------------------------------
 
 // Sends the digest via Resend's email API.
-// The user provides their own Resend API key and email address.
-async function sendEmail(text, apiKey, toEmail) {
+// Retries up to 3 times with exponential backoff on transient failures.
+async function sendEmailWithRetry(text, apiKey, toEmail, maxRetries = 3) {
   const isHtml = text.trim().match(/^<(!DOCTYPE|html)/i);
   const emailBody = {
     from: 'AI Signal · 信号 <digest@praxisai.online>',
@@ -146,18 +159,47 @@ async function sendEmail(text, apiKey, toEmail) {
   } else {
     emailBody.text = text;
   }
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`
-    },
-    body: JSON.stringify(emailBody)
-  });
 
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(`Resend API error: ${err.message || JSON.stringify(err)}`);
+  let lastError;
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify(emailBody)
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        await logDelivery('OK', `Email sent to ${toEmail} (id: ${data.id}, attempt: ${attempt})`);
+        return data;
+      }
+
+      const err = await res.json();
+      lastError = `Resend API error: ${err.message || JSON.stringify(err)}`;
+
+      // Don't retry on client errors (4xx except 429)
+      if (res.status >= 400 && res.status < 500 && res.status !== 429) {
+        await logDelivery('ERROR', `${lastError} (status: ${res.status}, not retryable)`);
+        throw new Error(lastError);
+      }
+
+      await logDelivery('WARN', `${lastError} (attempt ${attempt}/${maxRetries}, retrying...)`);
+    } catch (err) {
+      lastError = err.message;
+      if (attempt === maxRetries) {
+        await logDelivery('ERROR', `Failed after ${maxRetries} attempts: ${lastError}`);
+        throw err;
+      }
+    }
+
+    // Exponential backoff: 2s, 4s, 8s...
+    if (attempt < maxRetries) {
+      await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));
+    }
   }
 }
 
@@ -230,6 +272,7 @@ async function main() {
         } else {
           await sendTelegram(digestText, botToken, chatId);
           await recordSent();
+          await logDelivery('OK', `Telegram sent to chat ${chatId}`);
           console.log(JSON.stringify({ status: 'ok', method: 'telegram', message: 'Digest sent to Telegram' }));
         }
         break;
@@ -243,7 +286,7 @@ async function main() {
         if (dryRun) {
           console.log(JSON.stringify({ status: 'dry-run', method: 'email', message: `Would send to ${toEmail}` }));
         } else {
-          await sendEmail(digestText, apiKey, toEmail);
+          await sendEmailWithRetry(digestText, apiKey, toEmail);
           await recordSent();
           console.log(JSON.stringify({ status: 'ok', method: 'email', message: `Digest sent to ${toEmail}` }));
         }
