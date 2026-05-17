@@ -9,7 +9,7 @@ Extract signal from AI noise. A fully automated, LLM-curated daily digest of the
 
 ## Detection
 
-Before anything, check: does `~/.follow-builders/config.json` exist AND have `"onboardingComplete": true`?
+Before anything, check: does `~/.ai-signal/config.json` exist AND have `"onboardingComplete": true`?
 
 - **NO → Run First-Time Setup below.**
 - **YES → Run Digest Pipeline below.**
@@ -28,14 +28,14 @@ Let's get you set up in under a minute."
 
 ### Step 2: API Key
 
-Check `~/.claude/settings.json` for `ANTHROPIC_AUTH_TOKEN`. Also check `~/.follow-builders/.env` for `DEEPSEEK_API_KEY`.
+Check `~/.claude/settings.json` for `ANTHROPIC_AUTH_TOKEN`. Also check `~/.ai-signal/.env` for `DEEPSEEK_API_KEY`.
 
 If neither exists: "First — do you have a DeepSeek API key? (If you already use Claude Code with DeepSeek, this is auto-detected and you can skip.)"
 
 If they provide one, save it:
 ```bash
-mkdir -p ~/.follow-builders
-cat > ~/.follow-builders/.env << 'ENVEOF'
+mkdir -p ~/.ai-signal
+cat > ~/.ai-signal/.env << 'ENVEOF'
 DEEPSEEK_API_KEY=<their key>
 ENVEOF
 ```
@@ -63,10 +63,10 @@ Ask: "Language preference?"
 
 ### Step 5: Save Config
 
-Save `~/.follow-builders/config.json`:
+Save `~/.ai-signal/config.json`:
 
 ```bash
-cat > ~/.follow-builders/config.json << 'CFGEOF'
+cat > ~/.ai-signal/config.json << 'CFGEOF'
 {
   "platform": "other",
   "language": "<bilingual|zh|en>",
@@ -114,7 +114,7 @@ If the LLM fails, a template-based fallback ensures you always get content.
 
 ## Auto-Detection
 
-- API key: `~/.follow-builders/.env` → `~/.claude/settings.json` (auto)
+- API key: `~/.ai-signal/.env` → `~/.claude/settings.json` (auto)
 - Model: `DEEPSEEK_MODEL` env → `ANTHROPIC_DEFAULT_OPUS_MODEL` in settings → `deepseek-chat` (fallback)
 - No content API keys EVER needed (X, YouTube, etc.)
 

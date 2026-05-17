@@ -1,94 +1,121 @@
-# 📡 AI Signal · 信号
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+# AI Signal · 信号
 
 > 从 AI 噪音中提取信号。全自动 LLM 策展、中英双语、专业 HTML 排版、每日邮件送达。
 
-## 项目概述
+## Development Commands
 
-AI Signal 是一个全自动化的 AI 行业每日简报系统。每天定时抓取 AI 领域顶级 builder 的推文和播客，通过 DeepSeek LLM 策展为中英双语摘要，渲染为专业 HTML 邮件，发送到指定邮箱。
+```bash
+# Install dependencies
+cd scripts && npm install
 
-## 核心架构
+# Run full pipeline (stdout mode — displays in terminal)
+cd scripts && npm run digest
+
+# Run individual steps
+cd scripts && node prepare-digest.js                    # fetch feed → stdout JSON
+cd scripts && node prepare-digest.js | node remix-digest.js   # curate → stdout HTML
+cd scripts && node prepare-digest.js | node remix-digest.js | node deliver.js  # full pipe
+
+# Email mode (requires Resend config)
+cd scripts && node prepare-digest.js | node remix-digest.js | node deliver.js --force
+
+# Dry run (check without sending)
+cd scripts && node prepare-digest.js | node remix-digest.js | node deliver.js --dry-run
+
+# Feed health check
+cd scripts && node check-feed-health.js
+
+# WSL test (Windows)
+wsl -e bash /root/.ai-signal/run-digest.sh
+```
+
+## Architecture
 
 ```
-GitHub Actions / Windows 任务计划 (每天 10:00)
-  → prepare-digest.js  (拉取中央 feed，无需个人 API key)
-  → remix-digest.js    (DeepSeek LLM 策展 + HTML 模板渲染)
-  → deliver.js         (stdout / Resend 邮件)
+prepare-digest.js  →  fetches central feed JSON (no personal API key needed)
+     ↓ stdin JSON
+remix-digest.js    →  DeepSeek LLM curation + HTML template rendering
+     ↓ stdout HTML
+deliver.js         →  stdout (terminal) / Resend email / Telegram
 ```
 
-## 调度方式
+All scripts communicate via **stdin/stdout piping**. `prepare-digest.js` outputs a single JSON blob; `remix-digest.js` consumes it and outputs HTML; `deliver.js` sends or displays the result.
 
-- **推荐**: GitHub Actions — 免费，电脑关了也能跑
-- **备选**: Windows 任务计划 + WSL、Linux cron
+## Key Files
 
-## 关键文件
-
-| 文件 | 职责 |
+| File | Role |
 |------|------|
-| `scripts/remix-digest.js` | ★ 核心引擎：LLM 策展 + HTML 模板渲染 + 兜底 |
-| `scripts/prepare-digest.js` | 从中央 GitHub feed 拉取推文/播客数据 |
-| `scripts/deliver.js` | Resend API 邮件发送（HTML + 纯文本双模） |
-| `scripts/format-auto-digest.js` | LLM 失败时的模板兜底 |
-| `scripts/run-digest.sh` | WSL 调度入口脚本 |
-| `install.ps1` | Windows 一键安装（WSL + 任务计划） |
+| `scripts/remix-digest.js` | Core engine: LLM curation + HTML rendering + fallback |
+| `scripts/prepare-digest.js` | Central feed fetching (tweets, podcasts, blogs) |
+| `scripts/deliver.js` | Delivery: stdout / Resend email / Telegram |
+| `scripts/format-auto-digest.js` | Template fallback when LLM fails |
+| `scripts/check-feed-health.js` | Feed staleness monitor |
+| `scripts/run-digest.sh` | WSL/Linux scheduling entry point |
+| `SKILL.md` | Claude Code `/ai` skill definition |
 
-## 配置位置
+## Configuration
 
-| 文件 | 内容 |
-|------|------|
-| `~/.ai-signal/config.json` | 语言、频率、推送时间、邮箱 |
-| `~/.ai-signal/.env` | `RESEND_API_KEY`、`DEEPSEEK_API_KEY`、`DEEPSEEK_MODEL` |
-| `~/.claude/settings.json` | API key 和 model 自动回读（无需重复配） |
+| Path | Content |
+|------|---------|
+| `~/.ai-signal/config.json` | Language, frequency, delivery time, email |
+| `~/.ai-signal/.env` | `RESEND_API_KEY`, `DEEPSEEK_API_KEY`, `DEEPSEEK_MODEL` |
 
-## 模型自动跟随
+Legacy fallback: `~/.follow-builders/` is checked if `~/.ai-signal/` doesn't exist.
 
-`remix-digest.js` 启动时会按以下优先级找模型：
-1. `~/.ai-signal/.env` 里的 `DEEPSEEK_MODEL`
-2. `~/.claude/settings.json` → `ANTHROPIC_DEFAULT_OPUS_MODEL`
-3. 兜底 `deepseek-chat`
+## Model Auto-Detection
 
-在 Claude Code 里切模型 → 邮件摘要自动用新模型。
+`remix-digest.js` resolves the model in this order:
+1. `DEEPSEEK_MODEL` in `~/.ai-signal/.env`
+2. `ANTHROPIC_DEFAULT_OPUS_MODEL` / `ANTHROPIC_DEFAULT_SONNET_MODEL` / `ANTHROPIC_MODEL` from `~/.claude/settings.json`
+3. Fallback: `deepseek-chat`
 
-## 可靠性设计
+API key: `DEEPSEEK_API_KEY` env → `ANTHROPIC_AUTH_TOKEN` in `~/.claude/settings.json`
+
+## Reliability
 
 ```
-LLM 生成 JSON → 修复常见错误（trailing comma 等）
-  → 失败？→ retry 一次（带 fix prompt）
-  → 还是失败？→ 模板兜底（renderFallback）
-  → 无论如何，每天会收到一封邮件
+LLM generates JSON → repair common errors (trailing comma, control chars)
+  → fails? → retry once with fix prompt
+  → still fails? → renderFallback (template-based HTML)
+  → user always gets an email
 ```
 
-## 手动操作
+## Delivery Modes
 
-- **立即发送一期**：在 Claude Code 里输入 `/ai`
-- **改频率/语言/邮箱**：直接跟我说
-- **测试管道**：`wsl -e bash /root/.ai-signal/run-digest.sh`
-- **查看日志**：`wsl -e bash -c 'tail -20 /root/.ai-signal/cron.log'`
+| Mode | Output | Requirements |
+|------|--------|-------------|
+| stdout (default) | Plain text in terminal | Node.js + DeepSeek key |
+| email | HTML email via Resend | Above + Resend account + domain |
+| telegram | Markdown via Bot API | Above + bot token + chat ID |
 
-## 故障排查
+## Scheduling
 
-| 问题 | 排查 |
-|------|------|
-| 没收到邮件 | 检查 QQ 邮箱垃圾箱；Resend dashboard 看 delivery status |
-| 收到模板版而非精炼版 | LLM 临时不可达，下期自动恢复 |
-| 任务计划没跑 | `Get-ScheduledTask -TaskName "AI Frontier Digest"` |
-| JSON 解析失败 | 查看 `~/.ai-signal/cron-errors.log` |
+Two-stage design: **generate at 09:45, send at 10:00** — ensures email arrives exactly on time.
 
-## 技术栈
+- **Windows Task Scheduler** (primary): `.\install.ps1` — creates two daily tasks via WSL Ubuntu
+  - "AI Signal Daily Digest (Generate)" at 09:45 → saves HTML draft
+  - "AI Signal Daily Digest (Send)" at 10:00 → delivers pre-generated draft
+- **GitHub Actions** (cloud fallback): `.github/workflows/digest.yml` — runs daily at 02:00 UTC (10:00 Beijing)
+- **Linux/Mac cron**: `bash install.sh`
 
-- Node.js (v24) + ESM
-- DeepSeek API (native `/v1/chat/completions`)
+## Troubleshooting
+
+| Problem | Check |
+|---------|-------|
+| No email received | QQ email spam folder; Resend dashboard delivery status |
+| Template version instead of curated | LLM temporarily unreachable — auto-recovers next run |
+| Task Scheduler not running | `Get-ScheduledTask -TaskName "AI Signal Daily Digest*"` |
+| Draft not generated | Check `~/.ai-signal/cron.log` for GENERATE stage errors |
+| JSON parse failure | `~/.ai-signal/cron-errors.log` |
+
+## Tech Stack
+
+- Node.js (v24) + ESM (`"type": "module"`)
+- DeepSeek API (`/v1/chat/completions` native, no SDK)
 - Resend Email API
-- Windows Task Scheduler + WSL (Ubuntu)
-- HTML 邮件模板（table 布局、内联 CSS、600px 容器）
-
-## GitHub
-
-- Repo: `github.com/qinxujunai/ai-signal`
-- 作者: 秦徐俊
-- 中央 feed 数据源，策展引擎和邮件系统完全自建
-
-## 发件品牌
-
-- 发件名: AI Signal · 信号
-- 发件地址: digest@praxisai.online
-- 标题格式: 📡 AI Signal | 2026年X月X日星期X
+- HTML email templates: table layout, inline CSS, 600px container, MSO conditionals
+- dotenv for env loading
