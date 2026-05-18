@@ -1,0 +1,9 @@
+# AI Signal — Windsurf Rules
+
+本项目是 AI 行业每日简报系统。详见 README.md。
+
+用户克隆后，帮他们：
+1. `cd scripts && npm install`
+2. 检测已有 API key（环境变量、~/.claude/settings.json）
+3. 创建 ~/.ai-signal/.env 和 ~/.ai-signal/config.json
+4. 运行管道验证

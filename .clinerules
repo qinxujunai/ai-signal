@@ -1,0 +1,10 @@
+# AI Signal — Cline Rules
+
+本项目是 AI 行业每日简报系统。详见 README.md。
+
+帮用户配置：
+1. cd scripts && npm install
+2. 检测 API key（环境变量、~/.claude/settings.json 中 sk- 开头的 token）
+3. 创建 ~/.ai-signal/.env（QQ_EMAIL、QQ_SMTP_AUTH、DEEPSEEK_API_KEY）
+4. 创建 ~/.ai-signal/config.json
+5. 运行管道验证
