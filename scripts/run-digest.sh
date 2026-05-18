@@ -16,12 +16,20 @@ DATA_DIR="/root/.ai-signal"
 DRAFT_DIR="$DATA_DIR/drafts"
 LOG="$DATA_DIR/cron.log"
 ERR="$DATA_DIR/cron-errors.log"
+TMP="$DATA_DIR/tmp"
 
-mkdir -p "$DRAFT_DIR" "$(dirname "$LOG")"
+mkdir -p "$DRAFT_DIR" "$TMP" "$(dirname "$LOG")"
 
 STAGE="${1:-full}"
 TODAY=$(date +%F)
 DRAFT="$DRAFT_DIR/$TODAY.html"
+
+# Node.js is a Windows binary — all file paths passed to it must be Windows paths
+WIN_SCRIPTS=$(wslpath -w "$SCRIPTS")
+WIN_TMP=$(wslpath -w "$TMP")
+WIN_DRAFT=$(wslpath -w "$DRAFT")
+WIN_LOG=$(wslpath -w "$LOG")
+WIN_ERR=$(wslpath -w "$ERR")
 
 log() { echo "=== [$TODAY $(date +%H:%M:%S)] $1 ===" >> "$LOG"; }
 
@@ -42,11 +50,9 @@ generate() {
     fi
   fi
 
-  # File-based pipeline (UTF-8 safe, no shell pipes)
-  TMP="$DATA_DIR/tmp"
-  mkdir -p "$TMP"
-  "$NODE" prepare-digest.js --out "$TMP/feed.json" 2>/dev/null && \
-  "$NODE" remix-digest.js --file "$TMP/feed.json" --out "$DRAFT" 2>>"$ERR"
+  # File-based pipeline — all paths converted to Windows for Node.js
+  "$NODE" prepare-digest.js --out "$WIN_TMP\\feed.json" 2>/dev/null && \
+  "$NODE" remix-digest.js --file "$WIN_TMP\\feed.json" --out "$WIN_DRAFT" 2>>"$ERR"
 
   if [ -s "$DRAFT" ]; then
     log "GENERATE ok → $DRAFT ($(wc -c < "$DRAFT") bytes)"
@@ -67,9 +73,6 @@ send() {
     exit 1
   fi
 
-  # Convert WSL path to Windows path (Node.js is a Windows binary)
-  WIN_DRAFT=$(wslpath -w "$DRAFT" 2>/dev/null || echo "$DRAFT")
-
   RESULT=$("$NODE" deliver.js --file "$WIN_DRAFT" --force 2>&1)
   echo "$RESULT" >> "$LOG"
   log "SEND done: $RESULT"
@@ -87,11 +90,9 @@ case "$STAGE" in
     # Full pipeline (backward compat): generate + send in one shot
     log "FULL start"
     cd "$SCRIPTS" || { log "ERROR: cannot cd to $SCRIPTS"; exit 1; }
-    TMP="$DATA_DIR/tmp"
-    mkdir -p "$TMP"
-    "$NODE" prepare-digest.js --out "$TMP/feed.json" 2>/dev/null && \
-    "$NODE" remix-digest.js --file "$TMP/feed.json" --out "$TMP/digest.html" 2>>"$ERR" && \
-    "$NODE" deliver.js --file "$TMP/digest.html" --force 2>&1 >> "$LOG"
+    "$NODE" prepare-digest.js --out "$WIN_TMP\\feed.json" 2>/dev/null && \
+    "$NODE" remix-digest.js --file "$WIN_TMP\\feed.json" --out "$WIN_TMP\\digest.html" 2>>"$ERR" && \
+    "$NODE" deliver.js --file "$WIN_TMP\\digest.html" --force 2>&1 >> "$LOG"
     log "FULL done"
     ;;
 esac
