@@ -1,6 +1,29 @@
-# AI Signal
+<p align="center">
+  <h1 align="center">AI Signal</h1>
+  <p align="center">AI 行业每日简报。LLM 策展、中英双语、QQ 邮箱直达。</p>
+</p>
 
-> AI 行业每日简报。LLM 策展、中英双语、QQ 邮箱直达。
+<p align="center">
+  <a href="README.md"><img src="https://img.shields.io/badge/简体中文-readable?style=flat-square&labelColor=gray" alt="中文"></a>
+  <a href="README_EN.md"><img src="https://img.shields.io/badge/English-readable?style=flat-square&labelColor=gray" alt="English"></a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Node.js-≥18-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js">
+  <img src="https://img.shields.io/badge/Windows-✓-0078D4?style=flat-square&logo=windows&logoColor=white" alt="Windows">
+  <img src="https://img.shields.io/badge/Linux-✓-FCC624?style=flat-square&logo=linux&logoColor=black" alt="Linux">
+  <img src="https://img.shields.io/badge/macOS-✓-000000?style=flat-square&logo=apple&logoColor=white" alt="macOS">
+  <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT License">
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Claude_Code-✓-D97757?style=flat-square" alt="Claude Code">
+  <img src="https://img.shields.io/badge/Cursor-✓-000000?style=flat-square" alt="Cursor">
+  <img src="https://img.shields.io/badge/Copilot-✓-1F6FEB?style=flat-square" alt="Copilot">
+  <img src="https://img.shields.io/badge/Windsurf-✓-00C8FF?style=flat-square" alt="Windsurf">
+  <img src="https://img.shields.io/badge/Cline-✓-FF6B6B?style=flat-square" alt="Cline">
+  <img src="https://img.shields.io/badge/Codex-✓-412991?style=flat-square" alt="Codex">
+</p>
 
 ---
 
