@@ -140,67 +140,43 @@ async function logDelivery(status, message) {
   if (status === 'ERROR') process.stderr.write(line);
 }
 
-// -- Email Delivery (Resend) -------------------------------------------------
+// -- Email Delivery (QQ SMTP) ------------------------------------------------
 
-// Sends the digest via Resend's email API.
-// Retries up to 3 times with exponential backoff on transient failures.
-async function sendEmailWithRetry(text, apiKey, toEmail, maxRetries = 3) {
+import { createTransport } from 'nodemailer';
+
+async function sendEmailQQ(text, toEmail) {
   const isHtml = text.trim().match(/^<(!DOCTYPE|html)/i);
-  const emailBody = {
-    from: process.env.RESEND_FROM || 'AI Signal · 信号 <digest@praxisai.online>',
-    to: [toEmail],
-    subject: `📡 AI Signal | ${new Date().toLocaleDateString('zh-CN', {
-      year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
-    })}`
+  const fromEmail = process.env.QQ_EMAIL || '2575244383@qq.com';
+  const authCode = process.env.QQ_SMTP_AUTH;
+  if (!authCode) throw new Error('QQ_SMTP_AUTH not found in .env');
+
+  const transporter = createTransport({
+    host: 'smtp.qq.com',
+    port: 465,
+    secure: true,
+    auth: { user: fromEmail, pass: authCode }
+  });
+
+  const subject = `📡 AI Signal | ${new Date().toLocaleDateString('zh-CN', {
+    year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
+  })}`;
+
+  const mailOptions = {
+    from: `"AI Signal · 信号" <${fromEmail}>`,
+    to: toEmail,
+    subject
   };
+
   if (isHtml) {
-    emailBody.html = text;
-    emailBody.text = text.replace(/<[^>]*>/g, ' ').replace(/\s{2,}/g, '\n').trim().slice(0, 5000);
+    mailOptions.html = text;
+    mailOptions.text = text.replace(/<[^>]*>/g, ' ').replace(/\s{2,}/g, '\n').trim().slice(0, 5000);
   } else {
-    emailBody.text = text;
+    mailOptions.text = text;
   }
 
-  let lastError;
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      const res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify(emailBody)
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        await logDelivery('OK', `Email sent to ${toEmail} (id: ${data.id}, attempt: ${attempt})`);
-        return data;
-      }
-
-      const err = await res.json();
-      lastError = `Resend API error: ${err.message || JSON.stringify(err)}`;
-
-      // Don't retry on client errors (4xx except 429)
-      if (res.status >= 400 && res.status < 500 && res.status !== 429) {
-        await logDelivery('ERROR', `${lastError} (status: ${res.status}, not retryable)`);
-        throw new Error(lastError);
-      }
-
-      await logDelivery('WARN', `${lastError} (attempt ${attempt}/${maxRetries}, retrying...)`);
-    } catch (err) {
-      lastError = err.message;
-      if (attempt === maxRetries) {
-        await logDelivery('ERROR', `Failed after ${maxRetries} attempts: ${lastError}`);
-        throw err;
-      }
-    }
-
-    // Exponential backoff: 2s, 4s, 8s...
-    if (attempt < maxRetries) {
-      await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));
-    }
-  }
+  const info = await transporter.sendMail(mailOptions);
+  await logDelivery('OK', `Email sent to ${toEmail} (id: ${info.messageId})`);
+  return info;
 }
 
 // -- Main --------------------------------------------------------------------
@@ -281,14 +257,12 @@ async function main() {
       }
 
       case 'email': {
-        const apiKey = process.env.RESEND_API_KEY;
         const toEmail = delivery.email;
-        if (!apiKey) throw new Error('RESEND_API_KEY not found in .env');
         if (!toEmail) throw new Error('delivery.email not found in config.json');
         if (dryRun) {
           console.log(JSON.stringify({ status: 'dry-run', method: 'email', message: `Would send to ${toEmail}` }));
         } else {
-          await sendEmailWithRetry(digestText, apiKey, toEmail);
+          await sendEmailQQ(digestText, toEmail);
           await recordSent();
           console.log(JSON.stringify({ status: 'ok', method: 'email', message: `Digest sent to ${toEmail}` }));
         }

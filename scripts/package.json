@@ -10,7 +10,8 @@
     "digest": "node prepare-digest.js | node remix-digest.js | node deliver.js"
   },
   "dependencies": {
-    "dotenv": "^16.4.0"
+    "dotenv": "^16.4.0",
+    "nodemailer": "^8.0.7"
   },
   "engines": {
     "node": ">=18"
