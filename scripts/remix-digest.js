@@ -34,13 +34,7 @@ const data = JSON.parse(raw);
 
 // ── 加载配置 ──────────────────────────────────────────────────────────────────
 let API_KEY, MODEL;
-// Check ~/.ai-signal first, fall back to legacy ~/.follow-builders
-for (const p of [
-  join(homedir(), '.ai-signal', '.env'),
-  join(homedir(), '.follow-builders', '.env')
-]) {
-  try { loadEnv({ path: p }); break; } catch {}
-}
+try { loadEnv({ path: join(homedir(), '.ai-signal', '.env') }); } catch {}
 API_KEY = process.env.DEEPSEEK_API_KEY;
 MODEL = process.env.DEEPSEEK_MODEL;
 

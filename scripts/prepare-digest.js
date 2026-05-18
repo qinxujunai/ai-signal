@@ -1,50 +1,19 @@
 #!/usr/bin/env node
+// AI Signal — Fetch feed data for LLM curation
 
-// ============================================================================
-// Follow Builders — Prepare Digest
-// ============================================================================
-// Gathers everything the LLM needs to produce a digest:
-// - Fetches the central feeds (tweets + podcasts)
-// - Fetches the latest prompts from GitHub
-// - Reads the user's config (language, delivery method)
-// - Outputs a single JSON blob to stdout
-//
-// The LLM's ONLY job is to read this JSON, remix the content, and output
-// the digest text. Everything else is handled here deterministically.
-//
-// Usage: node prepare-digest.js
-// Output: JSON to stdout
-// ============================================================================
-
-import { readFile, writeFile, mkdir } from 'fs/promises';
+import { readFile, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 
-// -- Constants ---------------------------------------------------------------
-
-const NEW_USER_DIR = join(homedir(), '.ai-signal');
-const LEGACY_USER_DIR = join(homedir(), '.follow-builders');
-const USER_DIR = existsSync(NEW_USER_DIR) ? NEW_USER_DIR : LEGACY_USER_DIR;
+const USER_DIR = join(homedir(), '.ai-signal');
 const CONFIG_PATH = join(USER_DIR, 'config.json');
 
-// Feed URLs — configurable via env or config.json. Defaults to follow-builders central feed.
 const FEED_BASE = process.env.FEED_BASE_URL ||
   'https://raw.githubusercontent.com/zarazhangrui/follow-builders/main';
 const FEED_X_URL = process.env.FEED_X_URL || `${FEED_BASE}/feed-x.json`;
 const FEED_PODCASTS_URL = process.env.FEED_PODCASTS_URL || `${FEED_BASE}/feed-podcasts.json`;
 const FEED_BLOGS_URL = process.env.FEED_BLOGS_URL || `${FEED_BASE}/feed-blogs.json`;
-
-const PROMPTS_BASE = process.env.PROMPTS_BASE_URL || `${FEED_BASE}/prompts`;
-const PROMPT_FILES = [
-  'summarize-podcast.md',
-  'summarize-tweets.md',
-  'summarize-blogs.md',
-  'digest-intro.md',
-  'translate.md'
-];
-
-// -- Fetch helpers -----------------------------------------------------------
 
 async function fetchJSON(url) {
   const res = await fetch(url);
@@ -52,97 +21,34 @@ async function fetchJSON(url) {
   return res.json();
 }
 
-async function fetchText(url) {
-  const res = await fetch(url);
-  if (!res.ok) return null;
-  return res.text();
-}
-
-// -- Main --------------------------------------------------------------------
-
 async function main() {
   const errors = [];
 
-  // 1. Read user config
-  let config = {
-    language: 'en',
-    frequency: 'daily',
-    delivery: { method: 'stdout' }
-  };
+  let config = { language: 'bilingual', frequency: 'daily', delivery: { method: 'email' } };
   if (existsSync(CONFIG_PATH)) {
-    try {
-      config = JSON.parse(await readFile(CONFIG_PATH, 'utf-8'));
-    } catch (err) {
-      errors.push(`Could not read config: ${err.message}`);
-    }
+    try { config = JSON.parse(await readFile(CONFIG_PATH, 'utf-8')); }
+    catch (err) { errors.push(`Config read error: ${err.message}`); }
   }
 
-  // 2. Fetch all three feeds
   const [feedX, feedPodcasts, feedBlogs] = await Promise.all([
-    fetchJSON(FEED_X_URL),
-    fetchJSON(FEED_PODCASTS_URL),
-    fetchJSON(FEED_BLOGS_URL)
+    fetchJSON(FEED_X_URL), fetchJSON(FEED_PODCASTS_URL), fetchJSON(FEED_BLOGS_URL)
   ]);
 
   if (!feedX) errors.push('Could not fetch tweet feed');
   if (!feedPodcasts) errors.push('Could not fetch podcast feed');
   if (!feedBlogs) errors.push('Could not fetch blog feed');
 
-  // 3. Load prompts with priority: user custom > remote (GitHub) > local default
-  //
-  // If the user has a custom prompt at ~/.ai-signal/prompts/<file> (or legacy ~/.follow-builders/prompts/),
-  // use that (they personalized it — don't overwrite with remote updates).
-  // Otherwise, fetch the latest from GitHub so they get central improvements.
-  // If GitHub is unreachable, fall back to the local copy shipped with the skill.
-  const prompts = {};
-  const scriptDir = decodeURIComponent(new URL('.', import.meta.url).pathname);
-  const localPromptsDir = join(scriptDir, '..', 'prompts');
-  const userPromptsDir = join(USER_DIR, 'prompts');
-
-  for (const filename of PROMPT_FILES) {
-    const key = filename.replace('.md', '').replace(/-/g, '_');
-    const userPath = join(userPromptsDir, filename);
-    const localPath = join(localPromptsDir, filename);
-
-    // Priority 1: user's custom prompt (they personalized it)
-    if (existsSync(userPath)) {
-      prompts[key] = await readFile(userPath, 'utf-8');
-      continue;
-    }
-
-    // Priority 2: latest from GitHub (central updates)
-    const remote = await fetchText(`${PROMPTS_BASE}/${filename}`);
-    if (remote) {
-      prompts[key] = remote;
-      continue;
-    }
-
-    // Priority 3: local copy shipped with the skill
-    if (existsSync(localPath)) {
-      prompts[key] = await readFile(localPath, 'utf-8');
-    } else {
-      errors.push(`Could not load prompt: ${filename}`);
-    }
-  }
-
-  // 4. Build the output — everything the LLM needs in one blob
   const output = {
     status: 'ok',
     generatedAt: new Date().toISOString(),
-
-    // User preferences
     config: {
-      language: config.language || 'en',
+      language: config.language || 'bilingual',
       frequency: config.frequency || 'daily',
-      delivery: config.delivery || { method: 'stdout' }
+      delivery: config.delivery || { method: 'email' }
     },
-
-    // Content to remix
     podcasts: feedPodcasts?.podcasts || [],
     x: feedX?.x || [],
     blogs: feedBlogs?.blogs || [],
-
-    // Stats for the LLM to reference
     stats: {
       podcastEpisodes: feedPodcasts?.podcasts?.length || 0,
       xBuilders: feedX?.x?.length || 0,
@@ -150,31 +56,22 @@ async function main() {
       blogPosts: feedBlogs?.blogs?.length || 0,
       feedGeneratedAt: feedX?.generatedAt || feedPodcasts?.generatedAt || feedBlogs?.generatedAt || null
     },
-
-    // Prompts — the LLM reads these and follows the instructions
-    prompts,
-
-    // Non-fatal errors
     errors: errors.length > 0 ? errors : undefined
   };
 
   const json = JSON.stringify(output, null, 2);
   console.log(json);
 
-  // Support --out <file> for pipe-free data transfer
   const args = process.argv.slice(2);
   const outIdx = args.indexOf('--out');
   if (outIdx !== -1 && args[outIdx + 1]) {
     await writeFile(args[outIdx + 1], json, 'utf-8');
-    console.error(`[ai-signal] 数据已写入: ${args[outIdx + 1]}`);
+    console.error(`[ai-signal] Feed data written to: ${args[outIdx + 1]}`);
   }
 }
 
-console.error(`[ai-signal] 拉取 feed 数据...`);
+console.error('[ai-signal] Fetching feed data...');
 main().catch(err => {
-  console.error(JSON.stringify({
-    status: 'error',
-    message: err.message
-  }));
+  console.error(JSON.stringify({ status: 'error', message: err.message }));
   process.exit(1);
 });
