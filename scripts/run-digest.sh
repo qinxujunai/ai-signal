@@ -12,6 +12,12 @@ WIN_DRAFT="$WIN_DRAFT_DIR\\$TODAY.html"
 WSL_DRAFT="/mnt/c/Users/25752/.ai-signal/drafts/$TODAY.html"
 mkdir -p "/mnt/c/Users/25752/.ai-signal/drafts" "/mnt/c/Users/25752/.ai-signal/tmp" "$(dirname "$LOG")"
 log() { echo "=== [$TODAY $(date +%H:%M:%S)] $1 ===" >> "$LOG"; }
+do_generate() {
+  cd "$SCRIPTS" || exit 1
+  "$NODE" prepare-digest.js --out "$WIN_TMP\\feed.json" 2>/dev/null && \
+  "$NODE" remix-digest.js --file "$WIN_TMP\\feed.json" --out "$WIN_DRAFT" 2>>"$ERR"
+  [ -s "$WSL_DRAFT" ]
+}
 generate() {
   log "GENERATE start"
   cd "$SCRIPTS" || { log "ERROR: cannot cd"; exit 1; }
@@ -20,18 +26,15 @@ generate() {
     age=$(( $(date +%s) - $(stat -c %Y "$WSL_DRAFT" 2>/dev/null || echo 0) ))
     if [ "$age" -lt 14400 ]; then log "SKIP: draft exists"; exit 0; fi
   fi
-  "$NODE" prepare-digest.js --out "$WIN_TMP\\feed.json" 2>/dev/null && \
-  "$NODE" remix-digest.js --file "$WIN_TMP\\feed.json" --out "$WIN_DRAFT" 2>>"$ERR"
-  if [ -s "$WSL_DRAFT" ]; then log "GENERATE ok"; else log "GENERATE FAIL"; rm -f "$WSL_DRAFT"; exit 1; fi
+  if do_generate; then log "GENERATE ok"; else log "GENERATE FAIL"; rm -f "$WSL_DRAFT"; exit 1; fi
 }
 send() {
   log "SEND start"
   cd "$SCRIPTS" || { log "ERROR: cannot cd"; exit 1; }
+  # If no draft, generate now — no matter what, the email goes out
   if [ ! -f "$WSL_DRAFT" ]; then
-    log "No draft, emergency generate..."
-    "$NODE" prepare-digest.js --out "$WIN_TMP\\feed.json" 2>/dev/null && \
-    "$NODE" remix-digest.js --file "$WIN_TMP\\feed.json" --out "$WIN_DRAFT" 2>>"$ERR"
-    if [ ! -s "$WSL_DRAFT" ]; then log "SEND FAIL: emergency generate failed"; exit 1; fi
+    log "No draft, generating now..."
+    if ! do_generate; then log "SEND FAIL: generate failed"; exit 1; fi
   fi
   RESULT=$("$NODE" deliver.js --file "$WIN_DRAFT" --force 2>&1)
   echo "$RESULT" >> "$LOG"
