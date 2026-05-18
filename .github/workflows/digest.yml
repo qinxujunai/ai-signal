@@ -2,127 +2,61 @@ name: AI Signal Daily Digest
 
 on:
   schedule:
-    # 两阶段: 09:45 UTC+8 生成 = 01:45 UTC, 10:00 UTC+8 发送 = 02:00 UTC
     - cron: '45 1 * * *'  # 09:45 Beijing — generate
     - cron: '0 2 * * *'   # 10:00 Beijing — send
   workflow_dispatch:
     inputs:
       stage:
-        description: 'Run stage (generate/send/full)'
+        description: 'Stage (generate/send/full)'
         required: false
         default: 'full'
 
 jobs:
   generate:
-    if: github.event.schedule == '45 1 * * *' || (github.event_name == 'workflow_dispatch' && (inputs.stage == 'generate' || inputs.stage == 'full' || inputs.stage == ''))
+    if: github.event.schedule == '45 1 * * *' || (github.event_name == 'workflow_dispatch' && inputs.stage != 'send')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: cd scripts && npm install
-
-      - name: Write config
-        run: |
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: cd scripts && npm install
+      - run: |
           mkdir -p ~/.ai-signal/drafts
           echo '${{ secrets.AI_SIGNAL_CONFIG }}' > ~/.ai-signal/config.json
           cat > ~/.ai-signal/.env << 'ENVEOF'
           DEEPSEEK_API_KEY=${{ secrets.DEEPSEEK_API_KEY }}
-          RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
+          QQ_EMAIL=${{ secrets.QQ_EMAIL }}
+          QQ_SMTP_AUTH=${{ secrets.QQ_SMTP_AUTH }}
           ENVEOF
-
-      - name: Generate digest draft
-        run: cd scripts && node prepare-digest.js | node remix-digest.js > ~/.ai-signal/drafts/$(date +%F).html
-
-      - name: Upload draft artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: digest-draft
-          path: ~/.ai-signal/drafts/*.html
-          retention-days: 1
+      - run: cd scripts && node prepare-digest.js --out ~/.ai-signal/drafts/$(date +%F).json && node remix-digest.js --file ~/.ai-signal/drafts/$(date +%F).json --out ~/.ai-signal/drafts/$(date +%F).html
 
   send:
-    if: github.event.schedule == '0 2 * * *' || (github.event_name == 'workflow_dispatch' && (inputs.stage == 'send' || inputs.stage == 'full' || inputs.stage == ''))
+    if: github.event.schedule == '0 2 * * *' || (github.event_name == 'workflow_dispatch' && inputs.stage != 'generate')
     runs-on: ubuntu-latest
     needs: generate
     timeout-minutes: 5
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: cd scripts && npm install
-
-      - name: Write config
-        run: |
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: cd scripts && npm install
+      - run: |
           mkdir -p ~/.ai-signal/drafts
           echo '${{ secrets.AI_SIGNAL_CONFIG }}' > ~/.ai-signal/config.json
           cat > ~/.ai-signal/.env << 'ENVEOF'
           DEEPSEEK_API_KEY=${{ secrets.DEEPSEEK_API_KEY }}
-          RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
+          QQ_EMAIL=${{ secrets.QQ_EMAIL }}
+          QQ_SMTP_AUTH=${{ secrets.QQ_SMTP_AUTH }}
           ENVEOF
-
-      - name: Download draft artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: digest-draft
-          path: ~/.ai-signal/drafts
-
-      - name: Send digest
-        run: cd scripts && node deliver.js --file ~/.ai-signal/drafts/$(date +%F).html --force
-
-  # Full pipeline for manual dispatch (backward compat)
-  full:
-    if: github.event_name == 'workflow_dispatch' && inputs.stage == 'full'
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: cd scripts && npm install
-
-      - name: Write config
-        run: |
-          mkdir -p ~/.ai-signal
-          echo '${{ secrets.AI_SIGNAL_CONFIG }}' > ~/.ai-signal/config.json
-          cat > ~/.ai-signal/.env << 'ENVEOF'
-          DEEPSEEK_API_KEY=${{ secrets.DEEPSEEK_API_KEY }}
-          RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
-          ENVEOF
-
-      - name: Run full pipeline
-        run: cd scripts && node prepare-digest.js | node remix-digest.js | node deliver.js --force
+      - run: cd scripts && node deliver.js --file ~/.ai-signal/drafts/$(date +%F).html --force
 
   health-check:
     if: always()
     runs-on: ubuntu-latest
-    needs: [generate, send]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Check feed health
-        run: cd scripts && node check-feed-health.js
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: cd scripts && node check-feed-health.js
         continue-on-error: true
