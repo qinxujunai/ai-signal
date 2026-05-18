@@ -147,7 +147,7 @@ async function logDelivery(status, message) {
 async function sendEmailWithRetry(text, apiKey, toEmail, maxRetries = 3) {
   const isHtml = text.trim().match(/^<(!DOCTYPE|html)/i);
   const emailBody = {
-    from: 'AI Signal · 信号 <digest@praxisai.online>',
+    from: process.env.RESEND_FROM || 'AI Signal · 信号 <digest@praxisai.online>',
     to: [toEmail],
     subject: `📡 AI Signal | ${new Date().toLocaleDateString('zh-CN', {
       year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
