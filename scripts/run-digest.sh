@@ -1,15 +1,5 @@
 #!/bin/bash
-# AI Signal — Two-stage digest runner
-# Stage "generate": fetch feed + LLM curate → save HTML draft
-# Stage "send":     deliver pre-generated draft
-#
-# Usage:
-#   run-digest.sh generate   (run at ~09:45, saves draft)
-#   run-digest.sh send       (run at 10:00, sends email)
-#   run-digest.sh            (default: generate + send in one shot)
-
 export HOME=/root
-
 NODE="/mnt/d/Apps/Dev/NodeJS/node.exe"
 SCRIPTS="/mnt/c/Users/25752/Desktop/ai-signal/scripts"
 DATA_DIR="/root/.ai-signal"
@@ -17,82 +7,43 @@ DRAFT_DIR="$DATA_DIR/drafts"
 LOG="$DATA_DIR/cron.log"
 ERR="$DATA_DIR/cron-errors.log"
 TMP="$DATA_DIR/tmp"
-
 mkdir -p "$DRAFT_DIR" "$TMP" "$(dirname "$LOG")"
-
 STAGE="${1:-full}"
 TODAY=$(date +%F)
 DRAFT="$DRAFT_DIR/$TODAY.html"
-
-# Node.js is a Windows binary — all file paths passed to it must be Windows paths
 WIN_SCRIPTS=$(wslpath -w "$SCRIPTS")
 WIN_TMP=$(wslpath -w "$TMP")
 WIN_DRAFT=$(wslpath -w "$DRAFT")
-WIN_LOG=$(wslpath -w "$LOG")
-WIN_ERR=$(wslpath -w "$ERR")
-
 log() { echo "=== [$TODAY $(date +%H:%M:%S)] $1 ===" >> "$LOG"; }
-
-# ── Generate stage ───────────────────────────────────────────────────────
 generate() {
   log "GENERATE start"
-  cd "$SCRIPTS" || { log "ERROR: cannot cd to $SCRIPTS"; exit 1; }
-
-  # Remove stale draft from previous days
+  cd "$SCRIPTS" || { log "ERROR: cannot cd"; exit 1; }
   find "$DRAFT_DIR" -name "*.html" -mtime +1 -delete 2>/dev/null
-
-  # Check cooldown: skip if draft already exists and is recent (< 4 hours)
   if [ -f "$DRAFT" ]; then
-    age=$(( $(date +%s) - $(stat -c %Y "$DRAFT" 2>/dev/null || echo 0) ) )
-    if [ "$age" -lt 14400 ]; then
-      log "SKIP: draft exists (${age}s old), skipping generate"
-      exit 0
-    fi
+    age=$(( $(date +%s) - $(stat -c %Y "$DRAFT" 2>/dev/null || echo 0) ))
+    if [ "$age" -lt 14400 ]; then log "SKIP: draft exists"; exit 0; fi
   fi
-
-  # File-based pipeline — all paths converted to Windows for Node.js
-  "$NODE" prepare-digest.js --out "$WIN_TMP\\feed.json" 2>/dev/null && \
-  "$NODE" remix-digest.js --file "$WIN_TMP\\feed.json" --out "$WIN_DRAFT" 2>>"$ERR"
-
-  if [ -s "$DRAFT" ]; then
-    log "GENERATE ok → $DRAFT ($(wc -c < "$DRAFT") bytes)"
-  else
-    log "GENERATE FAIL: empty draft"
-    rm -f "$DRAFT"
-    exit 1
-  fi
+  "$NODE" prepare-digest.js --out "$WIN_TMP/feed.json" 2>/dev/null && \
+  "$NODE" remix-digest.js --file "$WIN_TMP/feed.json" --out "$WIN_DRAFT" 2>>"$ERR"
+  if [ -s "$DRAFT" ]; then log "GENERATE ok"; else log "GENERATE FAIL"; rm -f "$DRAFT"; exit 1; fi
 }
-
-# ── Send stage ───────────────────────────────────────────────────────────
 send() {
   log "SEND start"
-  cd "$SCRIPTS" || { log "ERROR: cannot cd to $SCRIPTS"; exit 1; }
-
-  if [ ! -f "$DRAFT" ]; then
-    log "SEND FAIL: no draft at $DRAFT — run 'generate' first"
-    exit 1
-  fi
-
+  cd "$SCRIPTS" || { log "ERROR: cannot cd"; exit 1; }
+  if [ ! -f "$DRAFT" ]; then log "SEND FAIL: no draft"; exit 1; fi
   RESULT=$("$NODE" deliver.js --file "$WIN_DRAFT" --force 2>&1)
   echo "$RESULT" >> "$LOG"
-  log "SEND done: $RESULT"
+  log "SEND done"
 }
-
-# ── Main ─────────────────────────────────────────────────────────────────
 case "$STAGE" in
-  generate)
-    generate
-    ;;
-  send)
-    send
-    ;;
+  generate) generate ;;
+  send) send ;;
   *)
-    # Full pipeline (backward compat): generate + send in one shot
     log "FULL start"
-    cd "$SCRIPTS" || { log "ERROR: cannot cd to $SCRIPTS"; exit 1; }
-    "$NODE" prepare-digest.js --out "$WIN_TMP\\feed.json" 2>/dev/null && \
-    "$NODE" remix-digest.js --file "$WIN_TMP\\feed.json" --out "$WIN_TMP\\digest.html" 2>>"$ERR" && \
-    "$NODE" deliver.js --file "$WIN_TMP\\digest.html" --force 2>&1 >> "$LOG"
+    cd "$SCRIPTS" || { log "ERROR: cannot cd"; exit 1; }
+    "$NODE" prepare-digest.js --out "$WIN_TMP/feed.json" 2>/dev/null && \
+    "$NODE" remix-digest.js --file "$WIN_TMP/feed.json" --out "$WIN_TMP/digest.html" 2>>"$ERR" && \
+    "$NODE" deliver.js --file "$WIN_TMP/digest.html" --force 2>&1 >> "$LOG"
     log "FULL done"
     ;;
 esac
