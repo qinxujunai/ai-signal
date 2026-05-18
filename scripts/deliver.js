@@ -105,7 +105,7 @@ async function main() {
   let config = {};
   if (existsSync(CONFIG_PATH)) config = JSON.parse(await readFile(CONFIG_PATH, 'utf-8'));
 
-  const delivery = config.delivery || { method: 'email' };
+  const delivery = config.delivery || { method: 'stdout' };
   const digestText = await getDigestText();
 
   if (!digestText || digestText.trim().length === 0) {
