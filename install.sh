@@ -25,8 +25,9 @@ if [ ! -f "$CONFIG_DIR/.env" ]; then
 # DeepSeek API key (optional — auto-reads from ~/.claude/settings.json if blank)
 DEEPSEEK_API_KEY=
 
-# Resend API key (only needed for email delivery)
-RESEND_API_KEY=
+# QQ SMTP for email delivery
+QQ_EMAIL=
+QQ_SMTP_AUTH=
 
 # Model override (optional — auto-reads from Claude Code settings)
 # DEEPSEEK_MODEL=deepseek-v4-pro
