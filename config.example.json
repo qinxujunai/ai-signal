@@ -1,0 +1,11 @@
+{
+  "language": "bilingual",
+  "timezone": "Asia/Shanghai",
+  "frequency": "daily",
+  "deliveryTime": "10:00",
+  "delivery": {
+    "method": "email",
+    "email": "your-email@qq.com"
+  },
+  "onboardingComplete": true
+}
