@@ -107,8 +107,8 @@ do_send() {
 generate() {
   log "GENERATE start"
 
-  # Clean old drafts (>1 day)
-  find "$CONFIG_DIR/drafts" -name "*.html" -mtime +1 -delete 2>/dev/null || true
+  # Clean old drafts (>7 days) - keep more for fallback
+  find "$CONFIG_DIR/drafts" -name "*.html" -mtime +7 -delete 2>/dev/null || true
 
   # Skip if draft exists and is <4 hours old
   if [ -f "$DRAFT" ]; then
