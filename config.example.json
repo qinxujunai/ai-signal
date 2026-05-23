@@ -7,5 +7,6 @@
     "method": "email",
     "email": "your-email@qq.com"
   },
+  "interests": ["LLM", "Agent", "RAG", "Fine-tuning", "Open Source"],
   "onboardingComplete": true
 }
