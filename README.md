@@ -1,6 +1,6 @@
 <p align="center">
   <h1 align="center">🔔 AI Signal</h1>
-  <p align="center">每天自动追踪 AI 顶级 builder，LLM 策展筛选，中英双语摘要，邮件直达。</p>
+  <p align="center">每天自动追踪 AI 行业动态，多源信息聚合，LLM 策展筛选，中英双语摘要，邮件直达。</p>
 </p>
 
 <p align="center">
@@ -19,17 +19,22 @@
 
 ## 它解决什么问题
 
-> AI 信息太多了。Twitter、播客、博客……每天几百条推文，真正值得看的不到 5 条。
+> AI 信息太多了。Twitter、播客、博客、论文、GitHub……每天几百条信息，真正值得看的不到 5 条。
 
 AI Signal 帮你做筛选：
 
 1. **追踪 25+ 位 AI 顶级 builder**（Sam Altman、Andrej Karpathy、Swyx 等）的 X 推文
 2. **追踪 6+ 个 AI 播客**的最新一期
 3. **追踪 AI 博客**的关键更新
-4. **DeepSeek LLM 自动策展**——从海量信息中筛选真正重要的，翻译成中英双语
-5. **每天早上 10:00 邮件直达**——打开就能看，不用刷信息流
+4. **新增：Hacker News AI 热帖** — 开发者社区最关注的讨论
+5. **新增：ArXiv AI 论文** — 最新学术研究动态
+6. **新增：GitHub Trending** — 热门 AI 开源项目
+7. **新增：中文 AI 媒体** — 机器之心、量子位等中文资讯
+8. **DeepSeek LLM 自动策展**——从海量信息中筛选真正重要的，翻译成中英双语
+9. **个性化推荐**——基于你的兴趣领域过滤内容
+10. **每天早上 10:00 邮件直达**——打开就能看，不用刷信息流
 
-**无需 X API key、YouTube API key。** 所有内容来自公开的中央 feed。
+**无需 X API key、YouTube API key。** 所有内容来自公开的中央 feed 和 API。
 
 👉 **[查看最新一期邮件样例](https://qinxujunai.github.io/ai-signal/)**
 
@@ -58,8 +63,9 @@ AI Signal 帮你做筛选：
 ```
 ┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
 │  prepare-digest  │────▶│   remix-digest    │────▶│    deliver      │
-│  拉取 RSS Feed   │     │  DeepSeek LLM    │     │  QQ SMTP 邮件   │
-│  (X/播客/博客)   │     │  策展 + 中英翻译  │     │  发送到你的邮箱  │
+│  多源数据拉取    │     │  DeepSeek LLM    │     │  QQ SMTP 邮件   │
+│  (X/播客/博客/  │     │  策展 + 中英翻译  │     │  发送到你的邮箱  │
+│   HN/ArXiv/GH)  │     │  + 个性化过滤    │     │                 │
 └─────────────────┘     └──────────────────┘     └─────────────────┘
 ```
 
@@ -69,13 +75,17 @@ AI Signal 帮你做筛选：
 
 ## 信源
 
-数据来自 [follow-builders](https://github.com/zarazhangrui/follow-builders)——一个持续追踪 AI 领域 builder 的开源项目：
+数据来自多个来源，确保信息全面性：
 
-| 类型 | 内容 | 数量 |
-|------|------|------|
-| X 推文 | AI builder 的最新推文（含转推、回复） | 25+ 人 |
-| 播客 | AI 相关播客最新一期（含完整 transcript） | 6+ 个 |
-| 博客 | AI 公司/研究机构的博客更新 | 多个 |
+| 类型 | 内容 | 数量 | 来源 |
+|------|------|------|------|
+| X 推文 | AI builder 的最新推文（含转推、回复） | 25+ 人 | [follow-builders](https://github.com/zarazhangrui/follow-builders) |
+| 播客 | AI 相关播客最新一期（含完整 transcript） | 6+ 个 | follow-builders |
+| 博客 | AI 公司/研究机构的博客更新 | 多个 | follow-builders |
+| **Hacker News** | AI 相关热门讨论（100+ 分） | 10 条 | Hacker News API |
+| **ArXiv 论文** | 最新 AI/ML 学术论文 | 5 篇 | ArXiv API |
+| **GitHub Trending** | 热门 AI 开源项目 | 5 个 | GitHub API |
+| **中文 AI 新闻** | 机器之心、量子位等中文资讯 | 5 条 | RSS Feed |
 
 LLM 从这些原始数据中筛选出**真正值得看的**，翻译成中英双语摘要。
 
@@ -106,9 +116,26 @@ LLM 从这些原始数据中筛选出**真正值得看的**，翻译成中英双
     "method": "email",
     "email": "你的QQ邮箱@qq.com"
   },
+  "interests": ["LLM", "Agent", "RAG", "Fine-tuning", "Open Source"],
   "onboardingComplete": true
 }
 ```
+
+### 个性化配置
+
+`interests` 字段支持以下领域（不区分大小写）：
+- `LLM` — 大语言模型
+- `Agent` — AI Agent、自动化
+- `RAG` — 检索增强生成
+- `Fine-tuning` — 模型微调
+- `Open Source` — 开源项目
+- `Computer Vision` — 计算机视觉
+- `Robotics` — 机器人
+- `AI Safety` — AI 安全
+- `Startup` — AI 创业
+- `Investment` — AI 投资
+
+留空数组 `[]` 表示不过滤，显示所有内容。
 
 ### 自定义信源
 
@@ -128,8 +155,8 @@ FEED_BLOGS_URL=your-custom-blogs.json
 ```
 ai-signal/
 ├── scripts/
-│   ├── prepare-digest.js      # Feed 拉取（X/播客/博客）
-│   ├── remix-digest.js        # LLM 策展 + HTML 渲染
+│   ├── prepare-digest.js      # 多源数据拉取（X/播客/博客/HN/ArXiv/GH）
+│   ├── remix-digest.js        # LLM 策展 + 个性化 + HTML 渲染
 │   ├── deliver.js             # QQ SMTP 邮件发送
 │   └── check-feed-health.js   # Feed 健康监测
 ├── .github/workflows/
