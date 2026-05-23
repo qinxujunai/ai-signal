@@ -10,7 +10,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Node.js-≥18-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js">
-  <img src="https://img.shields.io/badge/GitHub_Actions-免费调度-2088FF?style=flat-square&logo=githubactions&logoColor=white" alt="GitHub Actions">
+  <img src="https://img.shields.io/badge/GitHub_Actions-免费云端调度-2088FF?style=flat-square&logo=githubactions&logoColor=white" alt="GitHub Actions">
   <img src="https://img.shields.io/badge/DeepSeek-v4--flash-4D8BFF?style=flat-square" alt="DeepSeek">
   <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT License">
 </p>
@@ -37,7 +37,7 @@ AI Signal 帮你做筛选：
 
 ## 30 秒快速开始
 
-### 方式一：GitHub Actions（推荐，免费云端运行）
+### GitHub Actions 云端调度（推荐）
 
 ```bash
 # 1. Fork 本仓库
@@ -49,29 +49,7 @@ AI Signal 帮你做筛选：
 # 3. 启用 Actions → 每天北京时间 10:00 自动发送
 ```
 
-### 方式二：本地运行
-
-```bash
-git clone https://github.com/qinxujunai/ai-signal.git
-cd ai-signal/scripts && npm install
-
-# 配置
-mkdir -p ~/.ai-signal
-cp ../config.example.json ~/.ai-signal/config.json
-# 编辑 ~/.ai-signal/config.json 填入你的邮箱
-
-cat > ~/.ai-signal/.env << 'EOF'
-DEEPSEEK_API_KEY=你的key
-QQ_EMAIL=你的QQ邮箱
-QQ_SMTP_AUTH=你的SMTP授权码
-DEEPSEEK_MODEL=deepseek-chat
-EOF
-
-# 运行
-node prepare-digest.js --out /tmp/feed.json
-node remix-digest.js --file /tmp/feed.json --out /tmp/digest.html
-node deliver.js --file /tmp/digest.html --force
-```
+**完全云端运行，无需本地电脑开机。** GitHub Actions 免费额度：公开仓库无限分钟数，私有仓库 2000 分钟/月。每天跑 2 分钟，绰绰有余。
 
 ---
 
@@ -105,7 +83,18 @@ LLM 从这些原始数据中筛选出**真正值得看的**，翻译成中英双
 
 ## 配置
 
-`~/.ai-signal/config.json`：
+### GitHub Actions Secrets
+
+在 GitHub 仓库的 Settings → Secrets and variables → Actions 中添加：
+
+| Secret 名称 | 说明 |
+|-------------|------|
+| `DEEPSEEK_API_KEY` | DeepSeek API key（platform.deepseek.com 注册） |
+| `QQ_EMAIL` | 你的 QQ 邮箱 |
+| `QQ_SMTP_AUTH` | QQ 邮箱 SMTP 授权码（QQ邮箱 → 设置 → 账户 → POP3/SMTP → 生成授权码） |
+| `AI_SIGNAL_CONFIG` | config.json 的内容（见下方） |
+
+### AI_SIGNAL_CONFIG 内容
 
 ```json
 {
@@ -119,15 +108,6 @@ LLM 从这些原始数据中筛选出**真正值得看的**，翻译成中英双
   },
   "onboardingComplete": true
 }
-```
-
-`~/.ai-signal/.env`：
-
-```env
-DEEPSEEK_API_KEY=sk-xxx          # DeepSeek API key（platform.deepseek.com）
-DEEPSEEK_MODEL=deepseek-chat     # 使用 deepseek-v4-flash（便宜快速）
-QQ_EMAIL=你的QQ邮箱@qq.com
-QQ_SMTP_AUTH=你的SMTP授权码       # QQ邮箱 → 设置 → 账户 → POP3/SMTP → 生成授权码
 ```
 
 ### 自定义信源
@@ -151,27 +131,12 @@ ai-signal/
 │   ├── prepare-digest.js      # Feed 拉取（X/播客/博客）
 │   ├── remix-digest.js        # LLM 策展 + HTML 渲染
 │   ├── deliver.js             # QQ SMTP 邮件发送
-│   ├── check-feed-health.js   # Feed 健康监测
-│   └── run-digest.sh          # 本地调度脚本
+│   └── check-feed-health.js   # Feed 健康监测
 ├── .github/workflows/
-│   └── digest.yml             # GitHub Actions 定时任务
+│   └── digest.yml             # GitHub Actions 定时任务（云端调度）
 ├── config.example.json        # 配置模板
-├── install.ps1                # Windows 一键安装
-├── install.sh                 # Linux/Mac 一键安装
 └── README.md
 ```
-
----
-
-## 定时调度
-
-| 方式 | 平台 | 成本 | 说明 |
-|------|------|------|------|
-| **GitHub Actions** | 云端 | 免费 | 推荐。fork 后配置 secrets 即可 |
-| Windows Task Scheduler | 本地 | 免费 | 需要电脑开着 |
-| Linux cron | 本地 | 免费 | 需要电脑开着 |
-
-GitHub Actions 免费额度：公开仓库无限分钟数，私有仓库 2000 分钟/月。每天跑 2 分钟，绰绰有余。
 
 ---
 

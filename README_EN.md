@@ -10,19 +10,9 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Node.js-≥18-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js">
-  <img src="https://img.shields.io/badge/Windows-✓-0078D4?style=flat-square&logo=windows&logoColor=white" alt="Windows">
-  <img src="https://img.shields.io/badge/Linux-✓-FCC624?style=flat-square&logo=linux&logoColor=black" alt="Linux">
-  <img src="https://img.shields.io/badge/macOS-✓-000000?style=flat-square&logo=apple&logoColor=white" alt="macOS">
+  <img src="https://img.shields.io/badge/GitHub_Actions-Free_Cloud_Scheduling-2088FF?style=flat-square&logo=githubactions&logoColor=white" alt="GitHub Actions">
+  <img src="https://img.shields.io/badge/DeepSeek-v4--flash-4D8BFF?style=flat-square" alt="DeepSeek">
   <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT License">
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Claude_Code-✓-D97757?style=flat-square" alt="Claude Code">
-  <img src="https://img.shields.io/badge/Cursor-✓-000000?style=flat-square" alt="Cursor">
-  <img src="https://img.shields.io/badge/Copilot-✓-1F6FEB?style=flat-square" alt="Copilot">
-  <img src="https://img.shields.io/badge/Windsurf-✓-00C8FF?style=flat-square" alt="Windsurf">
-  <img src="https://img.shields.io/badge/Cline-✓-FF6B6B?style=flat-square" alt="Cline">
-  <img src="https://img.shields.io/badge/Codex-✓-412991?style=flat-square" alt="Codex">
 </p>
 
 ---
@@ -31,68 +21,29 @@
 
 AI Signal tracks top AI builders on X and YouTube podcasts, remixes their content through DeepSeek LLM into a curated bilingual summary, renders it as a professional HTML email, and delivers it to your QQ mailbox.
 
+**Fully cloud-based. No local computer required.** Runs on GitHub Actions, free for public repos.
+
 No X API key. No YouTube API key. All content comes from a public central feed.
 
 **👉 [View latest email sample](https://qinxujunai.github.io/ai-signal/)**
 
 ---
 
-## AI Assistant Instructions
+## Quick Start
 
-> If you are an AI coding assistant (Claude Code, Cursor, Copilot, Windsurf, Cline, Codex, etc.), follow these steps to set up the project for the user.
-
-### Step 1: Install dependencies
+### GitHub Actions (Recommended)
 
 ```bash
-cd scripts && npm install
+# 1. Fork this repository
+# 2. In Settings → Secrets and variables → Actions, add:
+#    DEEPSEEK_API_KEY  — Your DeepSeek API key (platform.deepseek.com)
+#    QQ_EMAIL          — Your QQ email
+#    QQ_SMTP_AUTH      — QQ email SMTP auth code
+#    AI_SIGNAL_CONFIG  — config.json content (see below)
+# 3. Enable Actions → Daily at 10:00 AM Beijing time
 ```
 
-### Step 2: Detect existing API keys
-
-Check in this order, use the first one found:
-
-| Location | What to check |
-|----------|---------------|
-| Env var `DEEPSEEK_API_KEY` | DeepSeek API key |
-| Env var `QQ_SMTP_AUTH` | QQ SMTP auth code |
-| `~/.ai-signal/.env` | Project config |
-| `~/.claude/settings.json` | `ANTHROPIC_AUTH_TOKEN` (use if starts with `sk-`) |
-
-### Step 3: Create config files
-
-If `~/.ai-signal/config.json` doesn't exist, create it:
-
-```json
-{
-  "language": "bilingual",
-  "timezone": "Asia/Shanghai",
-  "frequency": "daily",
-  "deliveryTime": "10:00",
-  "delivery": { "method": "email", "email": "user@qq.com" },
-  "onboardingComplete": true
-}
-```
-
-If `~/.ai-signal/.env` doesn't exist, create it with detected keys:
-
-```env
-QQ_EMAIL=user@qq.com
-QQ_SMTP_AUTH=auth_code
-DEEPSEEK_API_KEY=detected_key
-```
-
-**Ask the user:**
-1. Do you have a DeepSeek API key? (If not, skip email mode, use terminal output)
-2. Email or terminal? (Email needs QQ SMTP auth code)
-
-### Step 4: Run the pipeline
-
-```bash
-cd scripts
-node prepare-digest.js --out /tmp/feed.json
-node remix-digest.js --file /tmp/feed.json --out /tmp/digest.html
-node deliver.js --file /tmp/digest.html --force
-```
+**Completely cloud-based, no local computer needed.** GitHub Actions free tier: unlimited minutes for public repos, 2000 minutes/month for private repos. Running 2 minutes daily is more than enough.
 
 ---
 
@@ -110,32 +61,44 @@ Three scripts pass data through temp files, no shell pipes, UTF-8 safe.
 
 ---
 
-## Email Setup
+## Configuration
 
-1. Enable QQ Mail SMTP (Settings → Account → POP3/SMTP), get auth code
-2. Configure `.env` and `config.json` (see AI assistant instructions above)
+### GitHub Actions Secrets
 
----
+Add these in your GitHub repo's Settings → Secrets and variables → Actions:
 
-## Automated Delivery
+| Secret Name | Description |
+|-------------|-------------|
+| `DEEPSEEK_API_KEY` | DeepSeek API key (platform.deepseek.com) |
+| `QQ_EMAIL` | Your QQ email |
+| `QQ_SMTP_AUTH` | QQ email SMTP auth code (QQ Mail → Settings → Account → POP3/SMTP → Generate auth code) |
+| `AI_SIGNAL_CONFIG` | config.json content (see below) |
 
-### Windows
+### AI_SIGNAL_CONFIG Content
 
-```powershell
-.\install.ps1
+```json
+{
+  "language": "bilingual",
+  "timezone": "Asia/Shanghai",
+  "frequency": "daily",
+  "deliveryTime": "10:00",
+  "delivery": {
+    "method": "email",
+    "email": "your-qq-email@qq.com"
+  },
+  "onboardingComplete": true
+}
 ```
 
-Three-stage: 09:45 generate → 09:55 retry → 10:00 send.
+### Custom Feeds
 
-### GitHub Actions
+Override default feeds via environment variables:
 
-1. Fork → Settings → Secrets: `DEEPSEEK_API_KEY`, `QQ_EMAIL`, `QQ_SMTP_AUTH`, `AI_SIGNAL_CONFIG`
-2. Enable Actions
-
-### Linux/Mac
-
-```bash
-bash install.sh
+```env
+FEED_BASE_URL=https://raw.githubusercontent.com/your-org/your-feed/main
+FEED_X_URL=your-custom-x-feed.json
+FEED_PODCASTS_URL=your-custom-podcasts.json
+FEED_BLOGS_URL=your-custom-blogs.json
 ```
 
 ---
@@ -145,36 +108,33 @@ bash install.sh
 ```
 ai-signal/
 ├── scripts/
-│   ├── prepare-digest.js      # Feed fetching
+│   ├── prepare-digest.js      # Feed fetching (X/podcasts/blogs)
 │   ├── remix-digest.js        # LLM curation + HTML rendering
 │   ├── deliver.js             # QQ SMTP email delivery
-│   ├── check-feed-health.js   # Feed health monitor
-│   └── run-digest.sh          # Scheduling script
-├── install.ps1 / install.sh   # One-click install
-├── .github/workflows/         # GitHub Actions
-├── CLAUDE.md                  # Claude Code instructions
-├── .cursor/rules/             # Cursor instructions
-├── .github/copilot-instructions.md  # Copilot instructions
-├── .windsurfrules             # Windsurf instructions
-├── .clinerules                # Cline instructions
-└── AGENTS.md                  # Codex instructions
+│   └── check-feed-health.js   # Feed health monitor
+├── .github/workflows/
+│   └── digest.yml             # GitHub Actions scheduled task (cloud-based)
+├── config.example.json        # Config template
+└── README.md
 ```
 
 ---
 
-## Auto-Detection
+## DeepSeek API Cost
 
-| Config | Priority |
-|--------|----------|
-| API key | `.env` → env vars → Claude Code settings.json |
-| Model | `DEEPSEEK_MODEL` → `ANTHROPIC_DEFAULT_OPUS_MODEL` → `deepseek-chat` |
-| Feed | Default central feed, customizable via `FEED_BASE_URL` |
+| Model | Input Price | Output Price | Daily Digest Cost |
+|-------|-------------|--------------|-------------------|
+| deepseek-chat (v4-flash) | $0.14/M tokens | $0.28/M tokens | ~$0.002 |
+| deepseek-reasoner (v4-pro) | $0.55/M tokens | $2.19/M tokens | ~$0.01 |
+
+**deepseek-chat costs about $0.73 per year, essentially free.** New accounts get 5M tokens free, enough for 333 days.
 
 ---
 
 ## Credits
 
-Data source: [follow-builders](https://github.com/zarazhangrui/follow-builders) — tracking 25 AI builders and 6 podcasts, freely available.
+- Data source: [follow-builders](https://github.com/zarazhangrui/follow-builders) — tracking 25 AI builders and 6 podcasts, freely available
+- LLM: [DeepSeek](https://platform.deepseek.com/) — high性价比的中文 LLM
 
 ---
 
