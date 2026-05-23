@@ -4,18 +4,21 @@
 
 ## 快速开始
 
-1. `cd scripts && npm install`
-2. 检测用户是否已有 DeepSeek API key 和 QQ SMTP 授权码
-3. 创建 `~/.ai-signal/.env` 和 `~/.ai-signal/config.json`
-4. 运行管道：`node prepare-digest.js --out /tmp/feed.json && node remix-digest.js --file /tmp/feed.json --out /tmp/digest.html && node deliver.js --file /tmp/digest.html --force`
+1. Fork 本仓库
+2. 在 Settings → Secrets and variables → Actions 中添加：
+   - `DEEPSEEK_API_KEY` — 你的 DeepSeek API key
+   - `QQ_EMAIL` — 你的 QQ 邮箱
+   - `QQ_SMTP_AUTH` — QQ 邮箱 SMTP 授权码
+   - `AI_SIGNAL_CONFIG` — config.json 的内容
+3. 启用 Actions → 每天北京时间 10:00 自动发送
 
 ## 关键文件
 
 - `scripts/remix-digest.js` — LLM 策展引擎（含 system prompt）
 - `scripts/prepare-digest.js` — Feed 数据拉取
 - `scripts/deliver.js` — QQ SMTP 邮件发送
-- `scripts/run-digest.sh` — 定时调度
+- `.github/workflows/digest.yml` — GitHub Actions 定时任务（云端调度）
 
 ## 配置检测
 
-API key 按优先级查找：`.env` → 环境变量 → `~/.claude/settings.json`（仅 `sk-` 开头）
+API key 通过 GitHub Secrets 配置，运行时注入到环境变量中。
