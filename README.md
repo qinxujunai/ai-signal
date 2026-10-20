@@ -1,190 +1,89 @@
-<p align="center">
-  <h1 align="center">🔔 AI Signal</h1>
-  <p align="center">每天自动追踪 AI 行业动态，多源信息聚合，LLM 策展筛选，中英双语摘要，邮件直达。</p>
-</p>
+<p align="right"><strong>中文</strong> · <a href="README_EN.md">English</a></p>
 
-<p align="center">
-  <a href="README.md"><img src="https://img.shields.io/badge/简体中文-readable?style=flat-square&labelColor=gray" alt="中文"></a>
-  <a href="README_EN.md"><img src="https://img.shields.io/badge/English-readable?style=flat-square&labelColor=gray" alt="English"></a>
-</p>
+# AI Signal · 信号
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Node.js-≥18-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js">
-  <img src="https://img.shields.io/badge/GitHub_Actions-免费云端调度-2088FF?style=flat-square&logo=githubactions&logoColor=white" alt="GitHub Actions">
-  <img src="https://img.shields.io/badge/DeepSeek-v4--flash-4D8BFF?style=flat-square" alt="DeepSeek">
-  <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT License">
-</p>
+**每天几百条 AI 资讯，3 分钟读完真正重要的那 20 条。**
 
----
+每天北京时间 10:00，AI Signal 读一遍这些来源：X 上的 AI builder、Hacker News、Hugging Face 论文热榜、GitHub 趋势、各家实验室的官方博客、中文媒体。DeepSeek 按一套写死的编辑标准挑选、合并、改写，结果发到你的邮箱，同时发布网页版。
 
-## 它解决什么问题
+👉 [最新一期](https://qinxujunai.github.io/ai-signal/) · [往期](https://qinxujunai.github.io/ai-signal/archive/)
 
-> AI 信息太多了。Twitter、播客、博客、论文、GitHub……每天几百条信息，真正值得看的不到 5 条。
+## 一期里有什么
 
-AI Signal 帮你做筛选：
+| 栏目 | 内容 |
+|---|---|
+| 标题 | 今天最重要的一件事，一句话；邮件主题也是它 |
+| 30 秒读完 | 3 条要点，每条带数字 |
+| 头条 | 发生了什么 + 为什么重要 |
+| 要闻 | 6–9 条，每条 1–2 句。下面一行写来源、热度和讨论链接；同一件事的多个来源合并成一条 |
+| 观点 | X 上值得听的 2–4 个判断，写明身份 |
+| 论文 | Hugging Face 今日热榜，按点赞排序，一句话说清做了什么 |
+| 开源 | GitHub 今日趋势里的 AI 项目，按今日新增 star 排序 |
+| 快讯 | 一行一条 |
+| 播客 | 有新一期时：一句话结论 + 3 条洞察 |
 
-1. **追踪 25+ 位 AI 顶级 builder**（Sam Altman、Andrej Karpathy、Swyx 等）的 X 推文
-2. **追踪 6+ 个 AI 播客**的最新一期
-3. **追踪 AI 博客**的关键更新
-4. **新增：Hacker News AI 热帖** — 开发者社区最关注的讨论
-5. **新增：ArXiv AI 论文** — 最新学术研究动态
-6. **新增：GitHub Trending** — 热门 AI 开源项目
-7. **新增：中文 AI 媒体** — 机器之心、量子位等中文资讯
-8. **DeepSeek LLM 自动策展**——从海量信息中筛选真正重要的，翻译成中英双语
-9. **个性化推荐**——基于你的兴趣领域过滤内容
-10. **每天早上 10:00 邮件直达**——打开就能看，不用刷信息流
+设计参照 TLDR、The Rundown、smol.ai AINews 和 Axios 的「Smart Brevity」：
+- 只有一栏，没有图片，没有追踪像素；
+- 标题就是事实；
+- 每条内容下面一行元信息。
 
-**无需 X API key、YouTube API key。** 所有内容来自公开的中央 feed 和 API。
+## 为什么可信
+- **模型不写链接。**
+  - 每条原始材料都有一个编号（H3、P1、G2…），模型只能引用编号；链接、分数、star 数由代码从原始数据回填。
+  - 引用了不存在的编号，这条就直接丢弃。
+  - 所以邮件里不可能出现编造的链接或数字。
+- **不重复。** 发过的链接记在 `data/seen.json`，保留 60 天，下一期自动跳过。
+- **不断供。**
+  - 模型无响应、或返回的 JSON 修不好时，按来源热度直接排出一期，并在邮件里写明。
+  - 某个信源挂了，页脚会写「今天没取到：…」。
 
-👉 **[查看最新一期邮件样例](https://qinxujunai.github.io/ai-signal/)**
-
----
-
-## 30 秒快速开始
-
-### GitHub Actions 云端调度（推荐）
-
-```bash
-# 1. Fork 本仓库
-# 2. 在 Settings → Secrets and variables → Actions 中添加：
-#    DEEPSEEK_API_KEY  — 你的 DeepSeek API key（platform.deepseek.com 注册）
-#    QQ_EMAIL          — 你的 QQ 邮箱
-#    QQ_SMTP_AUTH      — QQ 邮箱 SMTP 授权码
-#    AI_SIGNAL_CONFIG  — config.json 的内容（见下方配置）
-# 3. 启用 Actions → 每天北京时间 10:00 自动发送
+## 怎么工作
 ```
-
-**完全云端运行，无需本地电脑开机。** GitHub Actions 免费额度：公开仓库无限分钟数，私有仓库 2000 分钟/月。每天跑 2 分钟，绰绰有余。
-
----
-
-## 它怎么工作的
-
+prepare-digest.js   收集素材（36 小时内、去掉已发过的）
+        │  feed.json
+remix-digest.js     编号 → DeepSeek 编辑（JSON 输出）→ 编号回填链接与数字 → render.js 排版
+        │  email.html · docs/（网页版 + 往期）· data/seen.json
+deliver.js          QQ SMTP 发送，主题是当天的标题
 ```
-┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│  prepare-digest  │────▶│   remix-digest    │────▶│    deliver      │
-│  多源数据拉取    │     │  DeepSeek LLM    │     │  QQ SMTP 邮件   │
-│  (X/播客/博客/  │     │  策展 + 中英翻译  │     │  发送到你的邮箱  │
-│   HN/ArXiv/GH)  │     │  + 个性化过滤    │     │                 │
-└─────────────────┘     └──────────────────┘     └─────────────────┘
-```
+GitHub Actions（`.github/workflows/daily.yml`）每天 02:00 UTC 运行，发完把网页版和 `seen.json` 提交回仓库。
 
-三个脚本通过 JSON/HTML 文件传递数据，不依赖 shell 管道。
-
----
+这次提交还有一个作用：仓库 60 天没有活动时，GitHub 会暂停定时任务，每天提交能避免这一点。
 
 ## 信源
-
-数据来自多个来源，确保信息全面性：
-
-| 类型 | 内容 | 数量 | 来源 |
-|------|------|------|------|
-| X 推文 | AI builder 的最新推文（含转推、回复） | 25+ 人 | [follow-builders](https://github.com/zarazhangrui/follow-builders) |
-| 播客 | AI 相关播客最新一期（含完整 transcript） | 6+ 个 | follow-builders |
-| 博客 | AI 公司/研究机构的博客更新 | 多个 | follow-builders |
-| **Hacker News** | AI 相关热门讨论（100+ 分） | 10 条 | Hacker News API |
-| **ArXiv 论文** | 最新 AI/ML 学术论文 | 5 篇 | ArXiv API |
-| **GitHub Trending** | 热门 AI 开源项目 | 5 个 | GitHub API |
-| **中文 AI 新闻** | 机器之心、量子位等中文资讯 | 5 条 | RSS Feed |
-
-LLM 从这些原始数据中筛选出**真正值得看的**，翻译成中英双语摘要。
-
----
+| 类型 | 来源 | 规则 |
+|---|---|---|
+| X 推文、播客、部分博客 | [follow-builders](https://github.com/zarazhangrui/follow-builders) 开放 feed | 36 小时内，每人取互动最高的 3 条 |
+| 官方博客 | OpenAI、Google DeepMind、Google AI、Hugging Face、Simon Willison 的 RSS | 72 小时内 |
+| Hacker News | Algolia API | 36 小时内、60 分以上，标题按整词匹配 AI 关键词 |
+| 论文 | Hugging Face Daily Papers | 按点赞取前 8 篇 |
+| 开源 | GitHub Trending（今日）| 只留 AI 相关；抓取失败时改用 GitHub 搜索 API |
+| 中文 | 量子位 RSS | 48 小时内 |
 
 ## 配置
+在仓库 Settings → Secrets and variables → Actions 里添加：
 
-### GitHub Actions Secrets
+| Secret | 说明 |
+|---|---|
+| `DEEPSEEK_API_KEY` | DeepSeek API key |
+| `QQ_EMAIL` | 发件 QQ 邮箱 |
+| `QQ_SMTP_AUTH` | QQ 邮箱 SMTP 授权码 |
+| `AI_SIGNAL_CONFIG` | `config.example.json` 的内容：收件邮箱、`interests` 关注领域 |
 
-在 GitHub 仓库的 Settings → Secrets and variables → Actions 中添加：
-
-| Secret 名称 | 说明 |
-|-------------|------|
-| `DEEPSEEK_API_KEY` | DeepSeek API key（platform.deepseek.com 注册） |
-| `QQ_EMAIL` | 你的 QQ 邮箱 |
-| `QQ_SMTP_AUTH` | QQ 邮箱 SMTP 授权码（QQ邮箱 → 设置 → 账户 → POP3/SMTP → 生成授权码） |
-| `AI_SIGNAL_CONFIG` | config.json 的内容（见下方） |
-
-### AI_SIGNAL_CONFIG 内容
-
-```json
-{
-  "language": "bilingual",
-  "timezone": "Asia/Shanghai",
-  "frequency": "daily",
-  "deliveryTime": "10:00",
-  "delivery": {
-    "method": "email",
-    "email": "你的QQ邮箱@qq.com"
-  },
-  "interests": ["LLM", "Agent", "RAG", "Fine-tuning", "Open Source"],
-  "onboardingComplete": true
-}
+本地运行：
+```bash
+cd scripts && npm ci
+node prepare-digest.js --out /tmp/feed.json --seen ../data/seen.json
+node remix-digest.js --file /tmp/feed.json --out /tmp/email.html --web-dir /tmp/web
+node remix-digest.js --file /tmp/feed.json --dump-prompt   # 看模型拿到的编号素材
+node deliver.js --file /tmp/email.html --dry-run
 ```
+没有 `DEEPSEEK_API_KEY` 时会生成降级版，方便调排版。
 
-### 个性化配置
-
-`interests` 字段支持以下领域（不区分大小写）：
-- `LLM` — 大语言模型
-- `Agent` — AI Agent、自动化
-- `RAG` — 检索增强生成
-- `Fine-tuning` — 模型微调
-- `Open Source` — 开源项目
-- `Computer Vision` — 计算机视觉
-- `Robotics` — 机器人
-- `AI Safety` — AI 安全
-- `Startup` — AI 创业
-- `Investment` — AI 投资
-
-留空数组 `[]` 表示不过滤，显示所有内容。
-
-### 自定义信源
-
-可以通过环境变量覆盖默认 feed：
-
-```env
-FEED_BASE_URL=https://raw.githubusercontent.com/your-org/your-feed/main
-FEED_X_URL=your-custom-x-feed.json
-FEED_PODCASTS_URL=your-custom-podcasts.json
-FEED_BLOGS_URL=your-custom-blogs.json
-```
-
----
-
-## 项目结构
-
-```
-ai-signal/
-├── scripts/
-│   ├── prepare-digest.js      # 多源数据拉取（X/播客/博客/HN/ArXiv/GH）
-│   ├── remix-digest.js        # LLM 策展 + 个性化 + HTML 渲染
-│   ├── deliver.js             # QQ SMTP 邮件发送
-│   └── check-feed-health.js   # Feed 健康监测
-├── .github/workflows/
-│   └── digest.yml             # GitHub Actions 定时任务（云端调度）
-├── config.example.json        # 配置模板
-└── README.md
-```
-
----
-
-## DeepSeek API 成本
-
-| 模型 | 输入价格 | 输出价格 | 每日简报成本 |
-|------|----------|----------|-------------|
-| deepseek-chat (v4-flash) | $0.14/M tokens | $0.28/M tokens | ~$0.002 |
-| deepseek-reasoner (v4-pro) | $0.55/M tokens | $2.19/M tokens | ~$0.01 |
-
-**deepseek-chat 每年成本约 $0.73，约等于免费。** 新注册送 5M tokens，够用 333 天。
-
----
+## 成本
+- deepseek-chat 每期输入约 1.5 万 token、输出约 3 千 token：约 $0.003 一天，一年约 $1。
+- GitHub Actions 对公开仓库免费。
 
 ## 致谢
-
-- 数据源：[follow-builders](https://github.com/zarazhangrui/follow-builders)——持续追踪 AI builder 的开源 feed
-- LLM：[DeepSeek](https://platform.deepseek.com/)——高性价比的中文 LLM
-
----
-
-## License
+[follow-builders](https://github.com/zarazhangrui/follow-builders) · [DeepSeek](https://platform.deepseek.com/) · [Hacker News Algolia API](https://hn.algolia.com/api) · [Hugging Face Daily Papers](https://huggingface.co/papers)
 
 MIT
