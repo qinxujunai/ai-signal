@@ -1,259 +1,240 @@
 #!/usr/bin/env node
-// AI Signal — Fetch feed data for LLM curation (v2.0)
-// 新增：arxiv、Hacker News、中文AI源、GitHub Trending
+// AI Signal — collect the raw material for one issue (v3).
+//
+// Sources (every one is optional; a dead source is reported, never fatal):
+//   X posts, podcasts, lab blogs   follow-builders open feeds
+//   Lab blogs                      official RSS: OpenAI, Google DeepMind, Google AI, Hugging Face, Simon Willison
+//   Hacker News                    Algolia API: AI stories from the last 36 h with 60+ points
+//   Papers                         Hugging Face Daily Papers, ranked by community upvotes
+//   Open source                    GitHub Trending (today), AI repositories only
+//   Chinese media                  量子位 RSS
+//
+// Anything already sent in an earlier issue (data/seen.json) is dropped, so issues never repeat.
+//
+// Usage: node prepare-digest.js --out feed.json [--seen ../data/seen.json]
 
 import { readFile, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 
-const USER_DIR = join(homedir(), '.ai-signal');
-const CONFIG_PATH = join(USER_DIR, 'config.json');
+const args = process.argv.slice(2);
+const arg = (name) => { const i = args.indexOf(name); return i !== -1 ? args[i + 1] : null; };
+const CONFIG_PATH = join(homedir(), '.ai-signal', 'config.json');
+const SEEN_PATH = arg('--seen');
 
-// ── 数据源配置 ──────────────────────────────────────────────────────────────
-const FEED_BASE = process.env.FEED_BASE_URL ||
-  'https://raw.githubusercontent.com/zarazhangrui/follow-builders/main';
-const FEED_X_URL = process.env.FEED_X_URL || `${FEED_BASE}/feed-x.json`;
-const FEED_PODCASTS_URL = process.env.FEED_PODCASTS_URL || `${FEED_BASE}/feed-podcasts.json`;
-const FEED_BLOGS_URL = process.env.FEED_BLOGS_URL || `${FEED_BASE}/feed-blogs.json`;
+const HOURS = 3600 * 1000;
+const NOW = Date.now();
+const FRESH = 36 * HOURS; // news window
+const BLOG_FRESH = 72 * HOURS; // labs post less often
+const UA = 'Mozilla/5.0 (compatible; AI-Signal/3.0; +https://github.com/qinxujunai/ai-signal)';
 
-// ── 工具函数 ────────────────────────────────────────────────────────────────
-async function fetchJSON(url, timeout = 10000) {
+const FEED_BASE = process.env.FEED_BASE_URL || 'https://raw.githubusercontent.com/zarazhangrui/follow-builders/main';
+
+const RSS = [
+  ['OpenAI', 'https://openai.com/news/rss.xml'],
+  ['Google DeepMind', 'https://deepmind.google/blog/rss.xml'],
+  ['Google AI', 'https://blog.google/innovation-and-ai/technology/ai/rss/'],
+  ['Hugging Face', 'https://huggingface.co/blog/feed.xml'],
+  ['Simon Willison', 'https://simonwillison.net/atom/everything/'],
+];
+const CN_RSS = [['量子位', 'https://www.qbitai.com/feed']];
+
+// Word-boundary match, so "said" or "maintain" never count as "ai".
+const AI_RE = /\b(ai|a\.i\.|llms?|gpt[-\w.]*|claude|gemini|llama|mistral|qwen|deepseek|openai|anthropic|agentic|transformers?|diffusion|neural|machine learning|ml|rag|inference|fine-?tun\w*|embeddings?|copilot|cursor|chatgpt|reasoning model|foundation model|multimodal|vlm|mcp)\b/i;
+
+// ── fetch helpers ────────────────────────────────────────────────────────────
+async function get(url, { timeout = 15000, json = false, headers = {} } = {}) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeout);
   try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeout);
-    const res = await fetch(url, { signal: controller.signal });
+    const res = await fetch(url, { signal: controller.signal, redirect: 'follow', headers: { 'User-Agent': UA, ...headers } });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return json ? await res.json() : await res.text();
+  } finally {
     clearTimeout(timer);
-    if (!res.ok) return null;
-    return await res.json();
-  } catch {
-    return null;
   }
 }
 
-async function fetchText(url, timeout = 10000) {
-  try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeout);
-    const res = await fetch(url, { signal: controller.signal });
-    clearTimeout(timer);
-    if (!res.ok) return null;
-    return await res.text();
-  } catch {
-    return null;
-  }
+const entities = (s) => s
+  .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;|&#039;|&apos;/g, "'")
+  .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16))).replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(+n))
+  .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&');
+// CDATA → entities → tags → entities again (feeds often escape their HTML twice).
+const decode = (s = '') => entities(entities(s.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1')).replace(/<[^>]+>/g, ' '))
+  .replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+
+// Minimal RSS 2.0 / Atom parser: title, link, date, summary.
+function parseFeed(xml) {
+  const blocks = xml.split(/<item[\s>]|<entry[\s>]/).slice(1);
+  return blocks.map((b) => {
+    const tag = (t) => b.match(new RegExp(`<${t}[^>]*>([\\s\\S]*?)</${t}>`))?.[1];
+    const link = tag('link')?.trim() || b.match(/<link[^>]*href="([^"]+)"/)?.[1] || '';
+    const date = tag('pubDate') || tag('published') || tag('updated') || tag('dc:date');
+    return {
+      title: decode(tag('title')),
+      url: decode(link),
+      publishedAt: date ? new Date(decode(date)).toISOString() : null,
+      summary: decode(tag('description') || tag('summary') || tag('content') || '').slice(0, 400),
+    };
+  }).filter((x) => x.title && x.url);
 }
 
-// ── Hacker News API ────────────────────────────────────────────────────────
-async function fetchHackerNews() {
-  try {
-    // 获取前30条热门故事
-    const topRes = await fetch('https://hacker-news.firebaseio.com/v0/topstories.json');
-    if (!topRes.ok) return [];
-    const topIds = await topRes.json();
-    const ids = topIds.slice(0, 30);
+const fresh = (iso, window) => iso && NOW - new Date(iso).getTime() < window;
 
-    const stories = await Promise.all(
-      ids.map(async id => {
-        const res = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`);
-        if (!res.ok) return null;
-        return await res.json();
-      })
-    );
-
-    return stories
-      .filter(s => s && s.title && s.url)
-      .filter(s => {
-        const title = s.title.toLowerCase();
-        return title.includes('ai') || title.includes('llm') || title.includes('gpt') ||
-               title.includes('model') || title.includes('machine learning') ||
-               title.includes('neural') || title.includes('transformer') ||
-               title.includes('openai') || title.includes('anthropic') ||
-               title.includes('deepseek') || title.includes('agent');
-      })
-      .slice(0, 10)
-      .map(s => ({
-        title: s.title,
-        url: s.url,
-        score: s.score || 0,
-        comments: s.descendants || 0,
-        source: 'Hacker News'
-      }));
-  } catch {
-    return [];
-  }
+// ── sources ─────────────────────────────────────────────────────────────────
+async function followBuilders() {
+  const [x, podcasts, blogs] = await Promise.all(['feed-x', 'feed-podcasts', 'feed-blogs'].map((f) =>
+    get(`${FEED_BASE}/${f}.json`, { json: true }).catch(() => null)));
+  const builders = (x?.x || []).map((b) => ({
+    name: b.name, handle: b.handle, role: (b.bio || '').split('\n')[0].trim(),
+    tweets: (b.tweets || []).filter((t) => !t.createdAt || fresh(t.createdAt, FRESH))
+      .sort((a, b2) => ((b2.likes || 0) + (b2.retweets || 0) * 2) - ((a.likes || 0) + (a.retweets || 0) * 2))
+      .slice(0, 3)
+      .map((t) => ({ text: t.text, url: t.url, likes: t.likes || 0, retweets: t.retweets || 0, replies: t.replies || 0 })),
+  })).filter((b) => b.tweets.length);
+  return {
+    x: builders,
+    podcasts: (podcasts?.podcasts || []).filter((p) => !p.publishedAt || fresh(p.publishedAt, 10 * 24 * HOURS)),
+    blogs: (blogs?.blogs || []).map((b) => ({ source: b.name, title: decode(b.title), url: b.url, publishedAt: b.publishedAt || null, summary: decode(b.content || b.summary || '').slice(0, 600) })),
+    ok: { x: Boolean(x), podcasts: Boolean(podcasts), blogs: Boolean(blogs) },
+  };
 }
 
-// ── ArXiv AI Papers ────────────────────────────────────────────────────────
-async function fetchArxiv() {
-  try {
-    // 搜索最新的 AI/ML 论文
-    const query = 'cat:cs.AI+OR+cat:cs.LG+OR+cat:cs.CL';
-    const url = `http://export.arxiv.org/api/query?search_query=${query}&start=0&max_results=10&sortBy=submittedDate&sortOrder=descending`;
-    const text = await fetchText(url, 15000);
-    if (!text) return [];
-
-    // 简单解析 XML
-    const papers = [];
-    const entries = text.split('<entry>').slice(1);
-    for (const entry of entries.slice(0, 5)) {
-      const title = entry.match(/<title>([\s\S]*?)<\/title>/)?.[1]?.trim().replace(/\s+/g, ' ');
-      const summary = entry.match(/<summary>([\s\S]*?)<\/summary>/)?.[1]?.trim().slice(0, 300);
-      const link = entry.match(/<id>(.*?)<\/id>/)?.[1];
-      const authors = entry.match(/<author>[\s\S]*?<name>(.*?)<\/name>/g)
-        ?.map(a => a.match(/<name>(.*?)<\/name>/)?.[1])
-        .filter(Boolean)
-        .slice(0, 3)
-        .join(', ');
-
-      if (title && link) {
-        papers.push({
-          title,
-          summary,
-          url: link.replace('http', 'https'),
-          authors,
-          source: 'ArXiv'
-        });
-      }
-    }
-    return papers;
-  } catch {
-    return [];
-  }
-}
-
-// ── GitHub Trending AI ─────────────────────────────────────────────────────
-async function fetchGitHubTrending() {
-  try {
-    // 使用非官方 API 获取 AI 相关 trending
-    const url = 'https://api.gitterapp.com/repositories?language=&since=daily';
-    const data = await fetchJSON(url);
-    if (!data) return [];
-
-    return data
-      .filter(r => {
-        const desc = (r.description || '').toLowerCase();
-        const name = (r.name || '').toLowerCase();
-        return desc.includes('ai') || desc.includes('llm') || desc.includes('gpt') ||
-               desc.includes('model') || desc.includes('machine-learning') ||
-               name.includes('ai') || name.includes('llm');
-      })
-      .slice(0, 5)
-      .map(r => ({
-        name: r.name,
-        description: r.description?.slice(0, 200),
-        url: r.url,
-        stars: r.stars,
-        language: r.language,
-        source: 'GitHub Trending'
-      }));
-  } catch {
-    return [];
-  }
-}
-
-// ── 中文 AI 新闻源 ────────────────────────────────────────────────────────
-async function fetchChineseAINews() {
-  // 使用 RSS2JSON 转换中文 AI 博客的 RSS
-  const feeds = [
-    'https://api.rss2json.com/v1/api.json?rss_url=https://www.jiqizhixin.com/rss',
-    'https://api.rss2json.com/v1/api.json?rss_url=https://www.qbitai.com/feed'
-  ];
-
-  const articles = [];
-  for (const feedUrl of feeds) {
+async function labBlogs(list, window) {
+  const out = [];
+  const failed = [];
+  await Promise.all(list.map(async ([source, url]) => {
     try {
-      const data = await fetchJSON(feedUrl, 8000);
-      if (data?.items) {
-        for (const item of data.items.slice(0, 5)) {
-          articles.push({
-            title: item.title,
-            description: item.description?.slice(0, 200),
-            url: item.link,
-            pubDate: item.pubDate,
-            source: '中文AI媒体'
-          });
-        }
-      }
-    } catch {}
-  }
-  return articles;
+      const items = parseFeed(await get(url)).filter((i) => fresh(i.publishedAt, window)).slice(0, 4);
+      for (const i of items) out.push({ source, ...i });
+    } catch (e) {
+      failed.push(`${source}: ${e.message}`);
+    }
+  }));
+  return { items: out, failed };
 }
 
-// ── 主流程 ──────────────────────────────────────────────────────────────────
+async function hackerNews() {
+  const since = Math.floor((NOW - FRESH) / 1000);
+  const url = `https://hn.algolia.com/api/v1/search_by_date?tags=story&numericFilters=points%3E60,created_at_i%3E${since}&hitsPerPage=300`;
+  const data = await get(url, { json: true });
+  return (data.hits || [])
+    .filter((h) => h.title && AI_RE.test(h.title))
+    .sort((a, b) => b.points - a.points)
+    .slice(0, 15)
+    .map((h) => ({
+      title: h.title,
+      url: h.url || `https://news.ycombinator.com/item?id=${h.objectID}`,
+      discussion: `https://news.ycombinator.com/item?id=${h.objectID}`,
+      points: h.points,
+      comments: h.num_comments || 0,
+    }));
+}
+
+async function papers() {
+  const data = await get('https://huggingface.co/api/daily_papers?limit=50', { json: true });
+  return data
+    .map((d) => d.paper || d)
+    .sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0))
+    .slice(0, 8)
+    .map((p) => ({
+      title: p.title,
+      url: `https://huggingface.co/papers/${p.id}`,
+      upvotes: p.upvotes || 0,
+      summary: (p.ai_summary || p.summary || '').slice(0, 500),
+      github: p.githubRepo || null,
+    }));
+}
+
+// GitHub Trending has no API: read the server-rendered page; fall back to the search API.
+async function trending() {
+  try {
+    const html = await get('https://github.com/trending?since=daily');
+    const rows = html.split('<article class="Box-row">').slice(1);
+    const repos = rows.map((r) => {
+      const name = r.match(/<h2[^>]*>[\s\S]*?href="\/([^"]+)"/)?.[1]?.trim();
+      const desc = decode(r.match(/<p class="col-9[^"]*">([\s\S]*?)<\/p>/)?.[1] || '');
+      const today = r.match(/([\d,]+) stars? today/)?.[1]?.replace(/,/g, '');
+      const total = r.match(/href="\/[^"]+\/stargazers"[^>]*>[\s\S]*?([\d,]+)\s*<\/a>/)?.[1]?.replace(/,/g, '');
+      const lang = decode(r.match(/itemprop="programmingLanguage">([^<]+)</)?.[1] || '');
+      return name && { name, description: desc, url: `https://github.com/${name}`, starsToday: Number(today) || 0, stars: Number(total) || 0, language: lang };
+    }).filter(Boolean);
+    return repos.filter((r) => AI_RE.test(`${r.name} ${r.description}`)).slice(0, 8);
+  } catch (e) {
+    const week = new Date(NOW - 7 * 24 * HOURS).toISOString().slice(0, 10);
+    const headers = process.env.GITHUB_TOKEN ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` } : {};
+    const data = await get(`https://api.github.com/search/repositories?q=topic:llm+created:%3E${week}&sort=stars&order=desc&per_page=8`, { json: true, headers });
+    return (data.items || []).map((r) => ({ name: r.full_name, description: r.description || '', url: r.html_url, stars: r.stargazers_count, starsToday: 0, language: r.language || '' }));
+  }
+}
+
+// ── main ────────────────────────────────────────────────────────────────────
+const settle = async (name, p, errors) => {
+  try { return await p; } catch (e) { errors.push(`${name}: ${e.message}`); return []; }
+};
+
 async function main() {
   const errors = [];
-
-  let config = { language: 'bilingual', frequency: 'daily', delivery: { method: 'email' } };
+  let config = { language: 'zh', delivery: { method: 'email' } };
   if (existsSync(CONFIG_PATH)) {
-    try { config = JSON.parse(await readFile(CONFIG_PATH, 'utf-8')); }
-    catch (err) { errors.push(`Config read error: ${err.message}`); }
+    try { config = JSON.parse(await readFile(CONFIG_PATH, 'utf-8')); } catch (e) { errors.push(`config: ${e.message}`); }
   }
+  const seen = new Set(SEEN_PATH && existsSync(SEEN_PATH) ? Object.keys(JSON.parse(await readFile(SEEN_PATH, 'utf-8'))) : []);
+  const unseen = (items) => items.filter((i) => !seen.has(i.url));
 
-  console.error('[ai-signal] Fetching data from multiple sources...');
-
-  // 并行获取所有数据源
-  const [feedX, feedPodcasts, feedBlogs, hnStories, arxivPapers, ghTrending, cnNews] = await Promise.all([
-    fetchJSON(FEED_X_URL),
-    fetchJSON(FEED_PODCASTS_URL),
-    fetchJSON(FEED_BLOGS_URL),
-    fetchHackerNews(),
-    fetchArxiv(),
-    fetchGitHubTrending(),
-    fetchChineseAINews()
+  console.error('[ai-signal] fetching sources…');
+  const [fb, blogs, cn, hn, pp, gh] = await Promise.all([
+    followBuilders(),
+    labBlogs(RSS, BLOG_FRESH),
+    labBlogs(CN_RSS, 48 * HOURS),
+    settle('Hacker News', hackerNews(), errors),
+    settle('HF Daily Papers', papers(), errors),
+    settle('GitHub Trending', trending(), errors),
   ]);
+  if (!fb.ok.x) errors.push('follow-builders X feed unavailable');
+  if (!fb.ok.podcasts) errors.push('follow-builders podcast feed unavailable');
+  errors.push(...blogs.failed, ...cn.failed);
 
-  if (!feedX) errors.push('Could not fetch tweet feed');
-  if (!feedPodcasts) errors.push('Could not fetch podcast feed');
-  if (!feedBlogs) errors.push('Could not fetch blog feed');
-  if (hnStories.length === 0) errors.push('Could not fetch Hacker News');
-  if (arxivPapers.length === 0) errors.push('Could not fetch ArXiv papers');
-
-  const output = {
+  const x = fb.x.map((b) => ({ ...b, tweets: unseen(b.tweets) })).filter((b) => b.tweets.length);
+  const out = {
     status: 'ok',
     generatedAt: new Date().toISOString(),
     config: {
-      language: config.language || 'bilingual',
-      frequency: config.frequency || 'daily',
+      language: config.language || 'zh',
       delivery: config.delivery || { method: 'email' },
-      interests: config.interests || []
+      interests: config.interests || [],
     },
-    // 原有数据源
-    podcasts: feedPodcasts?.podcasts || [],
-    x: feedX?.x || [],
-    blogs: feedBlogs?.blogs || [],
-    // 新增数据源
-    hackernews: hnStories,
-    arxiv: arxivPapers,
-    githubTrending: ghTrending,
-    chineseNews: cnNews,
-    stats: {
-      podcastEpisodes: feedPodcasts?.podcasts?.length || 0,
-      xBuilders: feedX?.x?.length || 0,
-      totalTweets: (feedX?.x || []).reduce((sum, a) => sum + a.tweets.length, 0),
-      blogPosts: feedBlogs?.blogs?.length || 0,
-      hackernewsStories: hnStories.length,
-      arxivPapers: arxivPapers.length,
-      githubTrending: ghTrending.length,
-      chineseNews: cnNews.length,
-      feedGeneratedAt: feedX?.generatedAt || feedPodcasts?.generatedAt || feedBlogs?.generatedAt || null
-    },
-    errors: errors.length > 0 ? errors : undefined
+    x,
+    podcasts: unseen(fb.podcasts),
+    blogs: unseen([...fb.blogs, ...blogs.items.sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt)))]),
+    hackernews: unseen(hn),
+    papers: unseen(pp),
+    github: unseen(gh),
+    chinese: unseen(cn.items),
+    errors: errors.length ? errors : undefined,
   };
+  out.stats = {
+    tweets: x.reduce((s, b) => s + b.tweets.length, 0),
+    builders: x.length,
+    podcasts: out.podcasts.length,
+    blogs: out.blogs.length,
+    hackernews: out.hackernews.length,
+    papers: out.papers.length,
+    github: out.github.length,
+    chinese: out.chinese.length,
+    skippedSeen: seen.size,
+  };
+  out.stats.total = ['tweets', 'podcasts', 'blogs', 'hackernews', 'papers', 'github', 'chinese'].reduce((s, k) => s + out.stats[k], 0);
 
-  const json = JSON.stringify(output, null, 2);
-  console.log(json);
-
-  const args = process.argv.slice(2);
-  const outIdx = args.indexOf('--out');
-  if (outIdx !== -1 && args[outIdx + 1]) {
-    await writeFile(args[outIdx + 1], json, 'utf-8');
-    console.error(`[ai-signal] Feed data written to: ${args[outIdx + 1]}`);
-  }
+  const json = JSON.stringify(out, null, 2);
+  const file = arg('--out');
+  if (file) await writeFile(file, json, 'utf-8');
+  else process.stdout.write(json);
+  console.error(`[ai-signal] ${out.stats.total} fresh items · ${JSON.stringify(out.stats)}${errors.length ? `\n[ai-signal] warnings: ${errors.join(' | ')}` : ''}`);
 }
 
-console.error('[ai-signal] Fetching feed data...');
-main().catch(err => {
-  console.error(JSON.stringify({ status: 'error', message: err.message }));
+main().catch((e) => {
+  console.error(JSON.stringify({ status: 'error', message: e.message }));
   process.exit(1);
 });

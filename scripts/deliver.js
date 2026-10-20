@@ -41,6 +41,12 @@ async function logDelivery(status, message) {
 
 // -- Email (QQ SMTP) ----------------------------------------------------------
 
+function subjectFor(html) {
+  const date = new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Shanghai', month: 'numeric', day: 'numeric' }).format(new Date());
+  const headline = (html.match(/<title>([\s\S]*?) · AI Signal/)?.[1] || '').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim();
+  return headline ? `AI Signal ${date}｜${headline}` : `AI Signal ${date}`;
+}
+
 async function sendEmail(text, toEmail) {
   const isHtml = text.trim().match(/^<(!DOCTYPE|html)/i);
   const fromEmail = process.env.QQ_EMAIL || '2575244383@qq.com';
@@ -55,9 +61,8 @@ async function sendEmail(text, toEmail) {
   const mailOptions = {
     from: `"AI Signal · 信号" <${fromEmail}>`,
     to: toEmail,
-    subject: `📡 AI Signal | ${new Date().toLocaleDateString('zh-CN', {
-      year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
-    })}`
+    // The subject carries the day's headline, so the inbox list alone is worth reading.
+    subject: subjectFor(text)
   };
 
   if (isHtml) {
@@ -119,7 +124,7 @@ async function main() {
 
   try {
     if (delivery.method === 'email') {
-      const toEmail = delivery.email;
+      const toEmail = delivery.email || process.env.QQ_EMAIL;
       if (!toEmail) throw new Error('delivery.email not found in config.json');
       if (dryRun) {
         console.log(JSON.stringify({ status: 'dry-run', message: `Would send to ${toEmail}` }));
