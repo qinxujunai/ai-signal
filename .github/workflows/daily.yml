@@ -1,12 +1,18 @@
 name: AI Signal daily issue
 
-# Every day at 10:00 Beijing time: collect sources, let DeepSeek edit the issue, email it,
+# Every morning around 10:00 Beijing time: collect sources, let DeepSeek edit the issue, email it,
 # then publish the web edition (docs/) and the sent-items list (data/seen.json).
 # The daily commit also keeps this scheduled workflow from being paused for inactivity.
+#
+# Timing: GitHub queues schedules on the hour heavily. With '0 2 * * *' the issue went out at
+# 15:23 Beijing (2026-10-20 and 10-21). So the schedule sits off the hour, with two backups.
+# Whichever run starts first sends the issue; the later ones see today's archive page and stop.
 
 on:
   schedule:
-    - cron: '0 2 * * *' # 02:00 UTC = 10:00 Beijing
+    - cron: '41 1 * * *' # 09:41 Beijing
+    - cron: '17 2 * * *' # 10:17 Beijing, backup
+    - cron: '17 4 * * *' # 12:17 Beijing, last backup
   workflow_dispatch:
 
 permissions:
@@ -24,14 +30,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # A scheduled run stops here if today's issue is already out. A manual run always sends.
+      - name: Already sent today?
+        id: today
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ] && [ -f "docs/archive/$(TZ=Asia/Shanghai date +%F).html" ]; then
+            echo "Today's issue is already out."
+            echo "sent=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/setup-node@v4
+        if: steps.today.outputs.sent != 'true'
         with:
           node-version: '22'
 
       - name: Install
+        if: steps.today.outputs.sent != 'true'
         run: cd scripts && npm ci --no-audit --no-fund
 
       - name: Configure
+        if: steps.today.outputs.sent != 'true'
         run: |
           mkdir -p ~/.ai-signal/drafts
           {
@@ -43,17 +61,21 @@ jobs:
           echo '${{ secrets.AI_SIGNAL_CONFIG }}' > ~/.ai-signal/config.json
 
       - name: Collect sources
+        if: steps.today.outputs.sent != 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: cd scripts && node prepare-digest.js --seen ../data/seen.json --out ~/.ai-signal/drafts/feed.json
 
       - name: Edit the issue
+        if: steps.today.outputs.sent != 'true'
         run: cd scripts && node remix-digest.js --file ~/.ai-signal/drafts/feed.json --out ~/.ai-signal/drafts/email.html --json-out ~/.ai-signal/drafts/issue.json --web-dir ../docs --seen ../data/seen.json
 
       - name: Send
+        if: steps.today.outputs.sent != 'true'
         run: cd scripts && node deliver.js --file ~/.ai-signal/drafts/email.html --force
 
       - name: Publish the web edition
+        if: steps.today.outputs.sent != 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -67,7 +89,7 @@ jobs:
             "https://api.github.com/repos/${{ github.repository }}/pages/builds" || true
 
       - name: Keep the drafts for debugging
-        if: always()
+        if: always() && steps.today.outputs.sent != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: issue-${{ github.run_id }}

@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-AI Signal：每天北京时间 10:00 自动生成的 AI 简报。发到邮箱，同时发布网页版（GitHub Pages，`docs/`）。读者是中国的 AI 从业者，目标是 3 分钟读完、信息密度最高。
+AI Signal：每天北京时间 10:00 前后自动生成的 AI 简报。发到邮箱，同时发布网页版（GitHub Pages，`docs/`）。读者是中国的 AI 从业者，目标是 3 分钟读完、信息密度最高。
 
 ## 架构
 ```
@@ -8,7 +8,7 @@ scripts/prepare-digest.js  收集素材 → feed.json（36 小时内、去掉 da
 scripts/remix-digest.js    给素材编号 → DeepSeek 写 JSON（只能引用编号）→ 回填链接和数字 → 渲染
 scripts/render.js          邮件与网页共用的排版（表格 + 内联样式，640px 单栏）
 scripts/deliver.js         QQ SMTP；主题 =「AI Signal 月/日｜当天标题」
-.github/workflows/daily.yml  每天 02:00 UTC 运行，发信后提交 docs/ 和 data/seen.json
+.github/workflows/daily.yml  北京时间 09:41 运行（10:17、12:17 两次补发，当天已发就跳过），发信后提交 docs/ 和 data/seen.json
 ```
 
 ## 规则
@@ -16,6 +16,7 @@ scripts/deliver.js         QQ SMTP；主题 =「AI Signal 月/日｜当天标题
 - **排版**只用表格和内联样式，不用 `<style>`、图片、追踪像素。QQ 邮箱、Gmail、Outlook 都要能正常显示。
 - 邮件和网页都不出现收件人邮箱。
 - **信源挂掉不能让任务失败。** 在 `prepare-digest.js` 里用 `settle()` 或 try/catch 兜住，写进 `errors`，页脚会显示。
+- **定时不要放在整点。** `0 2 * * *` 曾被 GitHub 排队推迟 5 个多小时（10-20、10-21 都是 15:23 才发）。现在 09:41 发，10:17、12:17 补发；补发时看到当天的 `docs/archive/<日期>.html` 就跳过，手动运行总是发。
 - **保留「Publish the web edition」这一步。**
   - 原因：仓库曾 60 天没有提交，GitHub 暂停了定时任务，2026-07-22 之后就停发了。
   - 现在每天的提交让任务保持活跃。

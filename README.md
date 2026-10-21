@@ -4,7 +4,7 @@
 
 **每天几百条 AI 资讯，3 分钟读完真正重要的那 20 条。**
 
-每天北京时间 10:00，AI Signal 读一遍这些来源：X 上的 AI builder、Hacker News、Hugging Face 论文热榜、GitHub 趋势、各家实验室的官方博客、中文媒体。DeepSeek 按一套写死的编辑标准挑选、合并、改写，结果发到你的邮箱，同时发布网页版。
+每天上午 10 点前后（北京时间），AI Signal 读一遍这些来源：X 上的 AI builder、Hacker News、Hugging Face 论文热榜、GitHub 趋势、各家实验室的官方博客、中文媒体。DeepSeek 按一套写死的编辑标准挑选、合并、改写，结果发到你的邮箱，同时发布网页版。
 
 👉 [最新一期](https://qinxujunai.github.io/ai-signal/) · [往期](https://qinxujunai.github.io/ai-signal/archive/)
 
@@ -45,7 +45,7 @@ remix-digest.js     编号 → DeepSeek 编辑（JSON 输出）→ 编号回填�
         │  email.html · docs/（网页版 + 往期）· data/seen.json
 deliver.js          QQ SMTP 发送，主题是当天的标题
 ```
-GitHub Actions（`.github/workflows/daily.yml`）每天 02:00 UTC 运行，发完把网页版和 `seen.json` 提交回仓库。
+GitHub Actions（`.github/workflows/daily.yml`）北京时间 09:41 运行，10:17 和 12:17 各补一次（当天已发过就跳过，避开 GitHub 整点排队），发完把网页版和 `seen.json` 提交回仓库。
 
 这次提交还有一个作用：仓库 60 天没有活动时，GitHub 会暂停定时任务，每天提交能避免这一点。
 
