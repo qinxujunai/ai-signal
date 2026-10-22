@@ -1,26 +1,49 @@
 name: Release
 
-# Pushing a tag vX.Y.Z publishes a GitHub Release whose notes are that version's CHANGELOG section.
+# Raising "version" in scripts/package.json on master publishes GitHub Release vX.Y.Z
+# (and its tag) with that version's CHANGELOG.md section as the notes. Already released: no-op.
 on:
   push:
-    tags: ["v*"]
+    branches: [master]
+    paths: ["scripts/package.json", "CHANGELOG.md"]
+  workflow_dispatch:
 
 permissions:
   contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Notes from CHANGELOG.md
+      - name: Version
+        id: v
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          awk -v tag="${GITHUB_REF_NAME}" '
+          tag="v$(node -p "require('./scripts/package.json').version")"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "$tag is already released"
+          fi
+      - name: Notes from CHANGELOG.md
+        if: steps.v.outputs.exists != 'true'
+        env:
+          TAG: ${{ steps.v.outputs.tag }}
+        run: |
+          awk -v tag="$TAG" '
             /^## / { if (found) exit; if (index($0, "## " tag " ") == 1) { found = 1; next } }
             found { print }
           ' CHANGELOG.md > notes.md
-          test -s notes.md || { echo "CHANGELOG.md has no section for ${GITHUB_REF_NAME}"; exit 1; }
+          test -s notes.md || { echo "CHANGELOG.md has no section for $TAG"; exit 1; }
       - name: Publish
+        if: steps.v.outputs.exists != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "${GITHUB_REF_NAME}" --title "AI Signal ${GITHUB_REF_NAME}" --notes-file notes.md --verify-tag
+          TAG: ${{ steps.v.outputs.tag }}
+        run: gh release create "$TAG" --target "$GITHUB_SHA" --title "AI Signal $TAG" --notes-file notes.md
