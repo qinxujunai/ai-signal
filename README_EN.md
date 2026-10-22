@@ -7,7 +7,7 @@
 > Hundreds of AI updates arrive every day. The hard part isn't seeing them; it's telling which are credible and which are worth reading. I also want to know about good GitHub projects early, and what problem each one solves. So it reads everything for me each morning.
 > — Qin Xujun
 
-[Latest issue](https://qinxujunai.github.io/ai-signal/) · [Archive](https://qinxujunai.github.io/ai-signal/archive/)
+🌐 **[qinxujunai.github.io/ai-signal](https://qinxujunai.github.io/ai-signal/)** · [Today](https://qinxujunai.github.io/ai-signal/latest/) · [Archive](https://qinxujunai.github.io/ai-signal/archive/) · [RSS](https://qinxujunai.github.io/ai-signal/feed.xml) · [Changelog](CHANGELOG.md)
 
 ## What it reads
 AI builders on X, Hacker News, Techmeme, Reddit (via [AINews](https://www.latent.space/s/ainews)), Hugging Face papers and trending models, GitHub Trending, Product Hunt, lab blogs (OpenAI, Anthropic, Google DeepMind, Qwen and more), and Chinese tech media. About 100 fresh items a day; 15–25 make the issue.
@@ -39,4 +39,4 @@ node remix-digest.js --file /tmp/feed.json --out /tmp/email.html --web-dir /tmp/
 node deliver.js --file /tmp/email.html --dry-run
 ```
 
-MIT
+[MIT](LICENSE)

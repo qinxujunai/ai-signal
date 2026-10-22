@@ -26,7 +26,8 @@ const ICON = `<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const k = (n) => (n >= 1000 ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k` : String(n ?? ''));
-const a = (url, text, style = '') => `<a href="${esc(url)}" target="_blank" style="color:${C.link};text-decoration:none;${style}">${text}</a>`;
+// Outside links open a new tab (the email and web editions point at sources); links inside the site do not.
+const a = (url, text, style = '') => `<a href="${esc(url)}"${/^https?:/.test(url) ? ' target="_blank"' : ''} style="color:${C.link};text-decoration:none;${style}">${text}</a>`;
 const sep = `<span style="color:${C.line};">&nbsp;&nbsp;|&nbsp;&nbsp;</span>`;
 const rule = (top = 0) => `<tr><td colspan="2" style="padding:${top}px 0 0 0;"><div style="height:1px;line-height:1px;font-size:0;background:${C.line};">&nbsp;</div></td></tr>`;
 
@@ -89,15 +90,16 @@ function ranked(num, title, url, insight, sub, first) {
 }
 
 // Web only: the translucent bar of apple.com (backdrop blur over the page), with the wordmark and one link.
-const glassBar = (right) => `<div style="position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.72);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);">
+const glassBar = (right, home = WEB) => `<div style="position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.72);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);">
 <div style="max-width:640px;margin:0 auto;padding:0 24px;height:48px;display:flex;align-items:center;justify-content:space-between;font-family:${FONT};">
-<a href="${WEB}" style="font-size:15px;font-weight:600;color:${C.ink};text-decoration:none;letter-spacing:-0.1px;">AI Signal</a>
+<a href="${home}" style="font-size:15px;font-weight:600;color:${C.ink};text-decoration:none;letter-spacing:-0.1px;">AI Signal</a>
 <span style="font-size:13px;">${right}</span>
 </div></div>`;
 const wordmark = `<span style="font-family:${DISPLAY};font-size:15px;font-weight:700;color:${C.ink};letter-spacing:-0.1px;">AI Signal</span><span style="font-size:15px;color:${C.muted};">&nbsp;信号</span>`;
 
-export function renderIssue(issue, meta, { mode = 'email' } = {}) {
+export function renderIssue(issue, meta, { mode = 'email', base = '' } = {}) {
   const web = mode === 'web';
+  // Web editions live in latest/ and archive/; `base` leads back to the site root.
   const minutes = Math.max(2, Math.round(meta.picked * 0.18));
   const s = meta.stats || {};
   const sourceLine = [
@@ -165,7 +167,7 @@ export function renderIssue(issue, meta, { mode = 'email' } = {}) {
   const voices = issue.voices?.length ? section('观点', '来自 X', issue.voices.map((v, i) => `
     <tr><td colspan="2" style="padding:${i ? 20 : 14}px 0 20px 0;${i ? `border-top:1px solid ${C.line};` : ''}">
       <div style="font-family:${DISPLAY};font-size:19px;line-height:1.55;font-weight:500;color:${C.ink};letter-spacing:-0.1px;">「${esc(v.point)}」</div>
-      <div style="font-size:13px;color:${C.muted};margin-top:8px;">${esc(v.who)}&nbsp;&nbsp; ${a(v.url, '原帖 ›')}</div>
+      <div style="font-size:13px;color:${C.muted};margin-top:8px;">${esc(v.who)}&nbsp;&nbsp; ${a(v.url, '原帖 ›', 'text-decoration:underline;text-underline-offset:2px;')}</div>
     </td></tr>`).join('')) : '';
 
   const models = issue.models?.length ? section('新模型', 'Hugging Face 热门', issue.models.map((m, i) =>
@@ -219,7 +221,7 @@ export function renderIssue(issue, meta, { mode = 'email' } = {}) {
         信号强度 ${dots(3)}：几个独立来源报道了同一件事，或这条在社区里有多热。<br>
         AI Signal 每天北京时间 10:00 送达。今天的来源：${esc(sourceLine)}。由 DeepSeek 按编辑标准挑选，每一条都链接原文；没有链接的内容不会出现，发过的内容不会重复。${missing}
       </div>
-      <div style="font-size:12px;margin-top:12px;">${web ? a('archive/', '往期 ›') : a(WEB, '网页版 ›')}&nbsp;&nbsp; ${a(`${WEB}archive/`, '全部往期 ›')}&nbsp;&nbsp; ${a(REPO, '源码 ›')}</div>
+      <div style="font-size:12px;margin-top:12px;">${web ? a(`${base}archive/`, '往期 ›') : a(`${WEB}archive/${meta.ymd}.html`, '网页版 ›')}&nbsp;&nbsp; ${a(`${WEB}archive/`, '全部往期 ›')}&nbsp;&nbsp; ${a(REPO, '源码 ›')}</div>
     </td></tr>
   </table>
 </td></tr>
@@ -239,7 +241,7 @@ ${web ? `<meta name="description" content="${preheader}">\n<meta name="theme-col
 </head>
 <body style="margin:0;padding:0;background:${C.page};font-family:${FONT};color:${C.ink};-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0;font-size:1px;line-height:1px;color:${C.page};">${preheader}</div>
-${web ? `${glassBar(a('archive/', '往期 ›'))}\n<main>${body}</main>` : body}
+${web ? `${glassBar(a(`${base}archive/`, '往期 ›'), base || './')}\n<main>${body}</main>` : body}
 </body>
 </html>
 `;
@@ -256,12 +258,12 @@ export function renderArchive(dates) {
 ${ICON}
 </head>
 <body style="margin:0;padding:0;background:${C.page};font-family:${FONT};color:${C.ink};-webkit-font-smoothing:antialiased;">
-${glassBar(a('../', '最新一期 ›'))}
+${glassBar(a('../latest/', '最新一期 ›'), '../')}
 <main style="display:block;max-width:640px;margin:0 auto;padding:40px 24px 56px 24px;">
 <h1 style="font-family:${DISPLAY};font-size:32px;line-height:1.2;font-weight:700;letter-spacing:-0.6px;color:${C.ink};margin:0 0 6px 0;">往期</h1>
 <div style="font-size:15px;color:${C.muted};margin-bottom:24px;${NUM}">共 ${dates.length} 期 · 每天北京时间 10:00 一期</div>
 ${dates.map((d, i) => `<div style="padding:14px 0;border-top:1px solid ${C.line};display:flex;justify-content:space-between;${NUM}">${a(`${d}.html`, `第 ${dates.length - i} 期 · ${d}`, 'font-size:16px;')}</div>`).join('\n')}
-<div style="border-top:1px solid ${C.line};padding-top:16px;font-size:13px;">${a('../', '最新一期 ›')}&nbsp;&nbsp; ${a(REPO, '源码 ›')}</div>
+<div style="border-top:1px solid ${C.line};padding-top:16px;font-size:13px;">${a('../latest/', '最新一期 ›')}&nbsp;&nbsp; ${a('../', '首页 ›')}&nbsp;&nbsp; ${a(REPO, '源码 ›')}</div>
 </main>
 </body>
 </html>

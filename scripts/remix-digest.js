@@ -18,7 +18,8 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 import { config as loadEnv } from 'dotenv';
-import { renderIssue, renderArchive } from './render.js';
+import { renderIssue } from './render.js';
+import { publishWeb } from './publish.js';
 import { heat } from './sources.js';
 
 const args = process.argv.slice(2);
@@ -267,14 +268,7 @@ async function main() {
 
   if (arg('--json-out')) await writeFile(arg('--json-out'), JSON.stringify({ meta, issue }, null, 2), 'utf-8');
 
-  if (webDir) {
-    await mkdir(join(webDir, 'archive'), { recursive: true });
-    const web = renderIssue(issue, meta, { mode: 'web' });
-    await writeFile(join(webDir, 'index.html'), web, 'utf-8');
-    await writeFile(join(webDir, 'archive', `${ymd}.html`), web.replaceAll('href="archive/"', 'href="./"'), 'utf-8');
-    const dates = (await readdir(join(webDir, 'archive'))).filter((f) => /^\d{4}-\d{2}-\d{2}\.html$/.test(f)).map((f) => f.slice(0, 10)).sort().reverse();
-    await writeFile(join(webDir, 'archive', 'index.html'), renderArchive(dates), 'utf-8');
-  }
+  if (webDir) await publishWeb(webDir, issue, meta);
 
   const seenPath = arg('--seen');
   if (seenPath && !issue.degraded) {

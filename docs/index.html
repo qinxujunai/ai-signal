@@ -3,255 +3,106 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="light">
-<meta name="supported-color-schemes" content="light">
-<meta name="x-apple-disable-message-reformatting">
-<title>Mistral Large 4 发布，OpenAI 模型同时上架 Google Cloud · AI Signal 2026-10-22</title>
-<meta name="description" content="Mistral Large 4 登上 HN 317 分，官方博客同步发布">
-<meta name="theme-color" content="#ffffff">
+<title>AI Signal · 每天 10:00，一页读完当天的 AI</title>
+<meta name="description" content="AI 的消息每天成百上千。AI Signal 每天北京时间 10:00 替你读一遍，只留下值得看的，一页读完。每一条都附原文。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="AI Signal">
+<meta property="og:description" content="AI 的消息每天成百上千。AI Signal 每天北京时间 10:00 替你读一遍，只留下值得看的，一页读完。每一条都附原文。">
+<meta property="og:url" content="https://qinxujunai.github.io/ai-signal/">
+<link rel="canonical" href="https://qinxujunai.github.io/ai-signal/">
+<link rel="alternate" type="application/atom+xml" title="AI Signal" href="feed.xml">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%231d1d1f'/%3E%3Ccircle cx='4.5' cy='8' r='1.6' fill='%23fff'/%3E%3Ccircle cx='8' cy='8' r='1.6' fill='%23fff'/%3E%3Ccircle cx='11.5' cy='8' r='1.6' fill='%23fff' fill-opacity='.4'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#fff;--ink:#1d1d1f;--text:#424245;--muted:#6e6e73;--line:#d2d2d7;--tile:#f5f5f7;--link:#0066cc;--bar:rgba(255,255,255,.72);--bar-line:rgba(0,0,0,.08);--button:#0071e3;--button-ink:#fff;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#000;--ink:#f5f5f7;--text:#d2d2d7;--muted:#a1a1a6;--line:#38383a;--tile:#1c1c1e;--link:#2997ff;--bar:rgba(22,22,23,.72);--bar-line:rgba(255,255,255,.12);--button:#0071e3}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Helvetica Neue","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:var(--link);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--link);outline-offset:3px;border-radius:4px}
+.bar{position:sticky;top:0;z-index:10;background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--bar-line)}
+.bar-in{max-width:980px;margin:0 auto;padding:0 22px;height:48px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-weight:600;font-size:15px;color:var(--ink);letter-spacing:-.01em}
+.bar nav{display:flex;gap:20px;font-size:13px}
+.bar nav a{color:var(--ink);opacity:.8}
+.wrap{max-width:980px;margin:0 auto;padding:0 22px}
+.hero{text-align:center;padding:88px 0 56px}
+.eyebrow{font-size:17px;font-weight:600;color:var(--muted);margin:0 0 10px}
+h1{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Helvetica Neue",sans-serif;font-size:clamp(48px,9vw,80px);line-height:1.05;letter-spacing:-.015em;font-weight:700;margin:0}
+.lede{font-size:clamp(21px,3vw,28px);line-height:1.35;font-weight:600;letter-spacing:-.01em;margin:18px auto 0;max-width:680px;text-wrap:balance;word-break:keep-all;overflow-wrap:anywhere}
+.cta{margin-top:30px;display:flex;gap:26px;justify-content:center;align-items:center;flex-wrap:wrap;font-size:17px}
+.button{display:inline-block;background:var(--button);color:var(--button-ink);padding:11px 22px;border-radius:980px;font-weight:500}
+.button:hover{text-decoration:none;filter:brightness(1.08)}
+.today{background:var(--tile);border-radius:28px;padding:40px clamp(22px,5vw,56px);margin:8px 0 0}
+.today .when{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.today h2{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC",sans-serif;font-size:clamp(26px,4vw,36px);line-height:1.2;letter-spacing:-.01em;margin:10px 0 0}
+.today .intro{font-size:19px;color:var(--text);margin:14px 0 0;max-width:760px}
+.today ol{list-style:none;margin:26px 0 0;padding:0;counter-reset:n;display:grid;gap:12px}
+.today li{counter-increment:n;display:grid;grid-template-columns:28px 1fr;font-size:17px;line-height:1.55}
+.today li::before{content:counter(n);font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.today .more{margin-top:26px;font-size:17px}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding-block:72px}
+.facts h3{font-size:24px;line-height:1.25;letter-spacing:-.01em;margin:0}
+.facts p{font-size:17px;color:var(--text);margin:10px 0 0}
+.how{border-top:1px solid var(--line);padding-block:56px}
+.how h2,.open h2{font-size:clamp(28px,4vw,40px);letter-spacing:-.015em;line-height:1.15;margin:0;text-align:center}
+.steps{list-style:none;margin:36px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.steps li{border-top:2px solid var(--ink);padding-top:14px}
+.steps strong{display:block;font-size:17px}
+.steps span{display:block;font-size:15px;color:var(--text);margin-top:6px}
+.open{border-top:1px solid var(--line);padding-block:56px 72px;text-align:center}
+.open p{font-size:19px;color:var(--text);margin:14px auto 0;max-width:640px}
+.open .cta{margin-top:22px}
+footer{border-top:1px solid var(--line);padding:22px 0 40px;font-size:12px;color:var(--muted)}
+footer a{text-decoration:underline;text-underline-offset:2px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media (max-width:734px){.hero{padding:56px 0 40px}.facts{grid-template-columns:1fr;padding-block:48px;gap:28px}.steps{grid-template-columns:1fr 1fr}.bar nav{gap:14px}.bar nav .hide-s{display:none}}
+</style>
 </head>
-<body style="margin:0;padding:0;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;color:#1d1d1f;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0;font-size:1px;line-height:1px;color:#ffffff;">Mistral Large 4 登上 HN 317 分，官方博客同步发布</div>
-<div style="position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.72);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);">
-<div style="max-width:640px;margin:0 auto;padding:0 24px;height:48px;display:flex;align-items:center;justify-content:space-between;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;">
-<a href="https://qinxujunai.github.io/ai-signal/" style="font-size:15px;font-weight:600;color:#1d1d1f;text-decoration:none;letter-spacing:-0.1px;">AI Signal</a>
-<span style="font-size:13px;"><a href="archive/" target="_blank" style="color:#0066cc;text-decoration:none;">往期 ›</a></span>
-</div></div>
+<body>
+<header class="bar"><div class="bar-in"><a class="brand" href="./">AI Signal</a><nav aria-label="主导航"><a href="latest/">今天</a><a href="archive/">往期</a><a href="feed.xml">RSS</a><a class="hide-s" href="https://github.com/qinxujunai/ai-signal">GitHub</a></nav></div></header>
 <main>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;" bgcolor="#ffffff">
-<tr><td align="center" style="padding:0 24px;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:640px;">
-    
-<tr><td style="padding:40px 0 0 0;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-    <tr>
+  <section class="hero wrap">
+    <p class="eyebrow">每天北京时间 10:00</p>
+    <h1>AI Signal</h1>
+    <p class="lede">AI 的消息每天成百上千。它替你读一遍，只留下值得看的，一页读完。</p>
+    <div class="cta"><a class="button" href="latest/">阅读今天这期</a><a href="archive/">往期 ›</a></div>
+  </section>
+
+  <section class="wrap" aria-labelledby="today">
+    <article class="today">
+      <div class="when">第 3 期 · 10月22日周四 · 从 54 条新内容里选了 26 条</div>
+      <h2 id="today"><a href="latest/" style="color:inherit">Mistral Large 4 发布，OpenAI 模型同时上架 Google Cloud</a></h2>
       
-      <td align="left" style="font-size:13px;color:#6e6e73;font-variant-numeric:tabular-nums;">第 3 期 · 10月22日周四</td>
-    </tr>
-  </table>
-  <div style="font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:32px;line-height:1.22;font-weight:700;color:#1d1d1f;letter-spacing:-0.6px;margin-top:12px;"><h1 style="margin:0;font:inherit;color:inherit;letter-spacing:inherit;">Mistral Large 4 发布，OpenAI 模型同时上架 Google Cloud</h1></div>
-  
-  <div style="font-size:13px;color:#6e6e73;margin-top:18px;font-variant-numeric:tabular-nums;">从 54 条新内容里选了 26 条 · 约 5 分钟读完</div>
-</td></tr>
-    
-    
-<tr><td style="padding:28px 0 0 0;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5f5f7;border-radius:18px;" bgcolor="#f5f5f7">
-    <tr><td style="padding:20px 24px 16px 24px;">
-      <div style="font-size:13px;font-weight:600;color:#6e6e73;margin-bottom:6px;">30 秒读完</div>
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td width="24" valign="top" style="width:24px;padding:6px 0;font-size:16px;line-height:1.6;font-weight:600;color:#1d1d1f;font-variant-numeric:tabular-nums;">1</td><td valign="top" style="padding:6px 0;font-size:16px;line-height:1.6;color:#1d1d1f;">Mistral Large 4 登上 HN 317 分，官方博客同步发布</td></tr></table><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td width="24" valign="top" style="width:24px;padding:6px 0;font-size:16px;line-height:1.6;font-weight:600;color:#1d1d1f;font-variant-numeric:tabular-nums;">2</td><td valign="top" style="padding:6px 0;font-size:16px;line-height:1.6;color:#1d1d1f;">OpenAI 前沿模型与 Codex 工作流进入 Gemini Model Garden，经 Google Cloud Marketplace 售卖</td></tr></table><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td width="24" valign="top" style="width:24px;padding:6px 0;font-size:16px;line-height:1.6;font-weight:600;color:#1d1d1f;font-variant-numeric:tabular-nums;">3</td><td valign="top" style="padding:6px 0;font-size:16px;line-height:1.6;color:#1d1d1f;">PHP 8.x 全系紧急更新，修复两个 RCE 漏洞，漏洞细节已泄露、攻击已在流通</td></tr></table>
-    </td></tr>
-  </table>
-</td></tr>
-    
-<tr><td style="padding:44px 0 0 0;">
-  <div style="font-size:13px;font-weight:600;color:#6e6e73;"><h2 style="margin:0;font:inherit;color:inherit;letter-spacing:inherit;">头条</h2></div>
-  <a href="https://mistral.ai/news/mistral-large-4/" target="_blank" style="display:block;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:26px;line-height:1.3;font-weight:700;letter-spacing:-0.4px;color:#1d1d1f;text-decoration:none;margin-top:8px;">Mistral 发布 Mistral Large 4</a>
-  <div style="font-size:17px;line-height:1.7;color:#424245;margin-top:12px;">Mistral 官方博客上线 Mistral Large 4，HN 讨论 317 分、94 条评论。材料未披露参数、价格与基准分数。</div>
-  <div style="font-size:17px;line-height:1.7;color:#424245;margin-top:12px;"><span style="font-weight:600;color:#1d1d1f;">为什么重要。</span>欧洲开源派主力旗舰换代，做模型选型和多供应商备份的团队需要重新跑一遍评测。</div>
-  <div style="font-size:13px;line-height:20px;color:#6e6e73;margin-top:8px;font-variant-numeric:tabular-nums;"><a href="https://mistral.ai/news/mistral-large-4/" target="_blank" style="color:#0066cc;text-decoration:none;">Hacker News · 317 分 ›</a>&nbsp;&nbsp; <a href="https://news.ycombinator.com/item?id=50186129" target="_blank" style="color:#0066cc;text-decoration:none;">讨论 ›</a></div>
-</td></tr>
-    
-<tr><td style="padding:48px 0 0 0;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-    <tr><td colspan="2" style="padding:0px 0 0 0;"><div style="height:1px;line-height:1px;font-size:0;background:#d2d2d7;">&nbsp;</div></td></tr>
-    <tr>
-      <td style="padding:18px 0 4px 0;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:22px;line-height:1.25;font-weight:700;letter-spacing:-0.2px;color:#1d1d1f;"><h2 style="margin:0;font:inherit;color:inherit;letter-spacing:inherit;">要闻</h2></td>
-      <td align="right" valign="bottom" style="padding:18px 0 6px 0;font-size:13px;color:#6e6e73;white-space:nowrap;">9 条</td>
-    </tr>
-    
-    <tr><td colspan="2" style="padding:12px 0 20px 0;">
-      <a href="https://openai.com/index/openai-models-google-cloud" target="_blank" style="font-size:17px;line-height:1.45;font-weight:600;color:#1d1d1f;text-decoration:none;">OpenAI 模型与 Codex 工作流上架 Google Cloud 的 Gemini Model Garden</a>
-      <div style="font-size:15px;line-height:1.7;color:#424245;margin-top:6px;">OpenAI 与 Google Cloud 合作，把前沿模型和 Codex 工作流放进 Gemini 的 Model Garden，通过 Google Cloud Marketplace 购买。HN 讨论 258 分。</div>
-      <div style="font-size:13px;line-height:20px;color:#6e6e73;margin-top:8px;font-variant-numeric:tabular-nums;"><span style="color:#6e6e73;">商业</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><a href="https://openai.com/index/openai-models-google-cloud" target="_blank" style="color:#0066cc;text-decoration:none;">OpenAI ›</a>&nbsp;&nbsp; <a href="https://openai.com/index/openai-models-google-cloud/" target="_blank" style="color:#0066cc;text-decoration:none;">Hacker News · 258 分 ›</a></div>
-    </td></tr>
-    <tr><td colspan="2" style="padding:20px 0 20px 0;border-top:1px solid #d2d2d7;">
-      <a href="https://www.wiz.io/blog/php2shell-php-rce" target="_blank" style="font-size:17px;line-height:1.45;font-weight:600;color:#1d1d1f;text-decoration:none;">AI 发现 PHP 全系 RCE 漏洞，PHP 8.x 紧急发版</a>
-      <div style="font-size:15px;line-height:1.7;color:#424245;margin-top:6px;">wiz.io 披露的 PHP2Shell 漏洞影响整个 PHP 8.x 系列，涉及两个远程代码执行漏洞；Simon Willison 称漏洞细节昨夜起已泄露、利用已在流通，运行 PHP 的必须当天升级。</div>
-      <div style="font-size:13px;line-height:20px;color:#6e6e73;margin-top:8px;font-variant-numeric:tabular-nums;"><span style="color:#6e6e73;">安全与政策</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><a href="https://www.wiz.io/blog/php2shell-php-rce" target="_blank" style="color:#0066cc;text-decoration:none;">Hacker News · 439 分 ›</a>&nbsp;&nbsp; <a href="https://news.ycombinator.com/item?id=50180836" target="_blank" style="color:#0066cc;text-decoration:none;">讨论 ›</a>&nbsp;&nbsp; <a href="https://simonwillison.net/2026/Oct/21/php-security-release/" target="_blank" style="color:#0066cc;text-decoration:none;">Simon Willison ›</a></div>
-    </td></tr>
-    <tr><td colspan="2" style="padding:20px 0 20px 0;border-top:1px solid #d2d2d7;">
-      <a href="https://claude.com/product/claude-duet" target="_blank" style="font-size:17px;line-height:1.45;font-weight:600;color:#1d1d1f;text-decoration:none;">Anthropic 上线 Claude Duet</a>
-      <div style="font-size:15px;line-height:1.7;color:#424245;margin-top:6px;">claude.com 发布 Claude Duet，HN 两条帖子分别 334 分/296 评论与 65 分/7 评论。材料未给出功能细节。</div>
-      <div style="font-size:13px;line-height:20px;color:#6e6e73;margin-top:8px;font-variant-numeric:tabular-nums;"><span style="color:#6e6e73;">产品</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><a href="https://claude.com/product/claude-duet" target="_blank" style="color:#0066cc;text-decoration:none;">Hacker News · 334 分 ›</a>&nbsp;&nbsp; <a href="https://news.ycombinator.com/item?id=50186037" target="_blank" style="color:#0066cc;text-decoration:none;">讨论 ›</a>&nbsp;&nbsp; <a href="https://claude.com/resources/articles/claude-duet" target="_blank" style="color:#0066cc;text-decoration:none;">Hacker News · 65 分 ›</a></div>
-    </td></tr>
-    <tr><td colspan="2" style="padding:20px 0 20px 0;border-top:1px solid #d2d2d7;">
-      <a href="https://huggingface.co/blog/Dharma-AI/vocabx-vocabulary-specialization" target="_blank" style="font-size:17px;line-height:1.45;font-weight:600;color:#1d1d1f;text-decoration:none;">Hugging Face：专门化小模型词表可在真实应用中把推理成本降 77%</a>
-      <div style="font-size:15px;line-height:1.7;color:#424245;margin-top:6px;">Hugging Face 博客给出实测结果：针对应用场景特化 SLM 的词表，推理成本下降 77%。</div>
-      <div style="font-size:13px;line-height:20px;color:#6e6e73;margin-top:8px;font-variant-numeric:tabular-nums;"><span style="color:#6e6e73;">工程</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><a href="https://huggingface.co/blog/Dharma-AI/vocabx-vocabulary-specialization" target="_blank" style="color:#0066cc;text-decoration:none;">Hugging Face ›</a></div>
-    </td></tr>
-    <tr><td colspan="2" style="padding:20px 0 20px 0;border-top:1px solid #d2d2d7;">
-      <a href="https://huggingface.co/blog/nvidia/kumo-relational" target="_blank" style="font-size:17px;line-height:1.45;font-weight:600;color:#1d1d1f;text-decoration:none;">NVIDIA Kumo 关系型模型无需训练即超过监督学习基线</a>
-      <div style="font-size:15px;line-height:1.7;color:#424245;margin-top:6px;">Hugging Face 发布 NVIDIA Kumo Relational，在关系型数据上无需训练即优于监督式机器学习方法。</div>
-      <div style="font-size:13px;line-height:20px;color:#6e6e73;margin-top:8px;font-variant-numeric:tabular-nums;"><span style="color:#6e6e73;">研究</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><a href="https://huggingface.co/blog/nvidia/kumo-relational" target="_blank" style="color:#0066cc;text-decoration:none;">Hugging Face ›</a></div>
-    </td></tr>
-    <tr><td colspan="2" style="padding:20px 0 20px 0;border-top:1px solid #d2d2d7;">
-      <a href="https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities" target="_blank" style="font-size:17px;line-height:1.45;font-weight:600;color:#1d1d1f;text-decoration:none;">OpenAI 推出 Patch the Planet，用 agent 挖开源关键漏洞</a>
-      <div style="font-size:15px;line-height:1.7;color:#424245;margin-top:6px;">Patch the Planet 连接安全研究员、维护者与应急响应者，处理开源软件中的关键漏洞；同期 OpenAI 另发用数千个 AI agent 在生物数据中找新线索（HN 137 分）。</div>
-      <div style="font-size:13px;line-height:20px;color:#6e6e73;margin-top:8px;font-variant-numeric:tabular-nums;"><span style="color:#6e6e73;">安全与政策</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><a href="https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities" target="_blank" style="color:#0066cc;text-decoration:none;">OpenAI ›</a>&nbsp;&nbsp; <a href="https://openai.com/index/scaling-ai-research-for-complex-biological-data/" target="_blank" style="color:#0066cc;text-decoration:none;">Hacker News · 137 分 ›</a></div>
-    </td></tr>
-    <tr><td colspan="2" style="padding:20px 0 20px 0;border-top:1px solid #d2d2d7;">
-      <a href="https://www.anthropic.com/research/attack-surface-reduction" target="_blank" style="font-size:17px;line-height:1.45;font-weight:600;color:#1d1d1f;text-decoration:none;">Anthropic 展示用 Claude 缩小代码攻击面</a>
-      <div style="font-size:15px;line-height:1.7;color:#424245;margin-top:6px;">Anthropic 发文介绍用 Claude 减少代码攻击面的做法，HN 131 分、86 条评论。</div>
-      <div style="font-size:13px;line-height:20px;color:#6e6e73;margin-top:8px;font-variant-numeric:tabular-nums;"><span style="color:#6e6e73;">工程</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><a href="https://www.anthropic.com/research/attack-surface-reduction" target="_blank" style="color:#0066cc;text-decoration:none;">Hacker News · 131 分 ›</a>&nbsp;&nbsp; <a href="https://news.ycombinator.com/item?id=50175779" target="_blank" style="color:#0066cc;text-decoration:none;">讨论 ›</a></div>
-    </td></tr>
-    <tr><td colspan="2" style="padding:20px 0 20px 0;border-top:1px solid #d2d2d7;">
-      <a href="https://www.bbc.com/news/articles/cmreyvepnv0po" target="_blank" style="font-size:17px;line-height:1.45;font-weight:600;color:#1d1d1f;text-decoration:none;">Google 员工因公司军事 AI 合同辞职抗议</a>
-      <div style="font-size:15px;line-height:1.7;color:#424245;margin-top:6px;">BBC 报道 Google 员工因公司 AI 军事合同出现辞职潮，HN 117 分、23 条评论。</div>
-      <div style="font-size:13px;line-height:20px;color:#6e6e73;margin-top:8px;font-variant-numeric:tabular-nums;"><span style="color:#6e6e73;">商业</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><a href="https://www.bbc.com/news/articles/cmreyvepnv0po" target="_blank" style="color:#0066cc;text-decoration:none;">Hacker News · 117 分 ›</a>&nbsp;&nbsp; <a href="https://news.ycombinator.com/item?id=50186043" target="_blank" style="color:#0066cc;text-decoration:none;">讨论 ›</a></div>
-    </td></tr>
-    <tr><td colspan="2" style="padding:20px 0 20px 0;border-top:1px solid #d2d2d7;">
-      <a href="https://huggingface.co/blog/ibm-granite/granite-speech-5" target="_blank" style="font-size:17px;line-height:1.45;font-weight:600;color:#1d1d1f;text-decoration:none;">IBM 发布 Granite Speech 5.0</a>
-      <div style="font-size:15px;line-height:1.7;color:#424245;margin-top:6px;">Granite Speech 5.0 主打更准更快的转写、翻译与说话人归属（attribution）。</div>
-      <div style="font-size:13px;line-height:20px;color:#6e6e73;margin-top:8px;font-variant-numeric:tabular-nums;"><span style="color:#6e6e73;">模型</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><a href="https://huggingface.co/blog/ibm-granite/granite-speech-5" target="_blank" style="color:#0066cc;text-decoration:none;">Hugging Face ›</a></div>
-    </td></tr>
-  </table>
-</td></tr>
-    
-    
-<tr><td style="padding:48px 0 0 0;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-    <tr><td colspan="2" style="padding:0px 0 0 0;"><div style="height:1px;line-height:1px;font-size:0;background:#d2d2d7;">&nbsp;</div></td></tr>
-    <tr>
-      <td style="padding:18px 0 4px 0;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:22px;line-height:1.25;font-weight:700;letter-spacing:-0.2px;color:#1d1d1f;"><h2 style="margin:0;font:inherit;color:inherit;letter-spacing:inherit;">观点</h2></td>
-      <td align="right" valign="bottom" style="padding:18px 0 6px 0;font-size:13px;color:#6e6e73;white-space:nowrap;">来自 X</td>
-    </tr>
-    
-    <tr><td colspan="2" style="padding:14px 0 20px 0;">
-      <div style="font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:19px;line-height:1.55;font-weight:500;color:#1d1d1f;letter-spacing:-0.1px;">「感谢 Aleksander 接受请求接手工作，称面对超级智能的安全与安保挑战巨大。」</div>
-      <div style="font-size:13px;color:#6e6e73;margin-top:8px;">OpenAI CEO Sam Altman&nbsp;&nbsp; <a href="https://x.com/sama/status/2112652656602923366" target="_blank" style="color:#0066cc;text-decoration:none;">原帖 ›</a></div>
-    </td></tr>
-    <tr><td colspan="2" style="padding:20px 0 20px 0;border-top:1px solid #d2d2d7;">
-      <div style="font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:19px;line-height:1.55;font-weight:500;color:#1d1d1f;letter-spacing:-0.1px;">「引 Sundar 的话：我们决心站在前沿，这是我们的 DNA，不会用别的方式做。」</div>
-      <div style="font-size:13px;color:#6e6e73;margin-top:8px;">Google VP Josh Woodward&nbsp;&nbsp; <a href="https://x.com/joshwoodward/status/2112679011839344651" target="_blank" style="color:#0066cc;text-decoration:none;">原帖 ›</a></div>
-    </td></tr>
-    <tr><td colspan="2" style="padding:20px 0 20px 0;border-top:1px solid #d2d2d7;">
-      <div style="font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:19px;line-height:1.55;font-weight:500;color:#1d1d1f;letter-spacing:-0.1px;">「同一天：daytonaio 宣布 B 轮、BabaHQ 宣布 A 轮、GradiumAI 发布新的 SOTA 开源端侧语音模型。」</div>
-      <div style="font-size:13px;color:#6e6e73;margin-top:8px;">FirstMark Capital 投资人 Matt Turck&nbsp;&nbsp; <a href="https://x.com/mattturck/status/2112696155519775041" target="_blank" style="color:#0066cc;text-decoration:none;">原帖 ›</a></div>
-    </td></tr>
-  </table>
-</td></tr>
-    
-    
-    
-<tr><td style="padding:48px 0 0 0;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-    <tr><td colspan="2" style="padding:0px 0 0 0;"><div style="height:1px;line-height:1px;font-size:0;background:#d2d2d7;">&nbsp;</div></td></tr>
-    <tr>
-      <td style="padding:18px 0 4px 0;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:22px;line-height:1.25;font-weight:700;letter-spacing:-0.2px;color:#1d1d1f;"><h2 style="margin:0;font:inherit;color:inherit;letter-spacing:inherit;">论文</h2></td>
-      <td align="right" valign="bottom" style="padding:18px 0 6px 0;font-size:13px;color:#6e6e73;white-space:nowrap;">Hugging Face 今日热榜</td>
-    </tr>
-    
-    <tr>
-      <td width="60" valign="top" style="width:60px;padding:12px 0 16px 0;font-size:14px;line-height:22px;font-weight:600;color:#6e6e73;white-space:nowrap;font-variant-numeric:tabular-nums;">▲ 43</td>
-      <td valign="top" style="padding:12px 0 16px 0;">
-        <a href="https://huggingface.co/papers/2610.26828" target="_blank" style="font-size:16px;line-height:22px;font-weight:600;color:#1d1d1f;text-decoration:none;">WildAWM：合成可控的电脑使用 agent 环境</a>
-        <div style="font-size:14px;line-height:1.65;color:#424245;margin-top:4px;">自动合成可控的 computer-use 环境与任务，通过交互训练通用 agent，在 web、CLI、GUI 基准上提升分布外表现。</div>
-        <div style="font-size:13px;line-height:1.5;color:#6e6e73;margin-top:4px;">Agent World Model in the Wild: Computer-Use Agent Environment Synthesis</div>
-      </td>
-    </tr>
-    <tr>
-      <td width="60" valign="top" style="width:60px;padding:16px 0;border-top:1px solid #d2d2d7;font-size:14px;line-height:22px;font-weight:600;color:#6e6e73;white-space:nowrap;font-variant-numeric:tabular-nums;">▲ 32</td>
-      <td valign="top" style="padding:16px 0;border-top:1px solid #d2d2d7;">
-        <a href="https://huggingface.co/papers/2610.28577" target="_blank" style="font-size:16px;line-height:22px;font-weight:600;color:#1d1d1f;text-decoration:none;">面向 agent 的 KV 缓存工程</a>
-        <div style="font-size:14px;line-height:1.65;color:#424245;margin-top:4px;">AKV 在不改变轨迹的前提下用 drop 与 repos 操作管理 agent 的 KV 缓存，配合协同设计的服务引擎同时提升效率与准确率。</div>
-        <div style="font-size:13px;line-height:1.5;color:#6e6e73;margin-top:4px;">Cache Engineering for Agents</div>
-      </td>
-    </tr>
-    <tr>
-      <td width="60" valign="top" style="width:60px;padding:16px 0;border-top:1px solid #d2d2d7;font-size:14px;line-height:22px;font-weight:600;color:#6e6e73;white-space:nowrap;font-variant-numeric:tabular-nums;">▲ 16</td>
-      <td valign="top" style="padding:16px 0;border-top:1px solid #d2d2d7;">
-        <a href="https://huggingface.co/papers/2609.34565" target="_blank" style="font-size:16px;line-height:22px;font-weight:600;color:#1d1d1f;text-decoration:none;">FlowState：把执行状态当作长程 agent 的记忆</a>
-        <div style="font-size:14px;line-height:1.65;color:#424245;margin-top:4px;">维护结构化、可重访的执行记忆并增量更新，减少 token 用量的同时提高长程任务成功率。</div>
-        <div style="font-size:13px;line-height:1.5;color:#6e6e73;margin-top:4px;">FlowState: Execution State as Memory for Long-Horizon LLM Agents</div>
-      </td>
-    </tr>
-    <tr>
-      <td width="60" valign="top" style="width:60px;padding:16px 0;border-top:1px solid #d2d2d7;font-size:14px;line-height:22px;font-weight:600;color:#6e6e73;white-space:nowrap;font-variant-numeric:tabular-nums;">▲ 14</td>
-      <td valign="top" style="padding:16px 0;border-top:1px solid #d2d2d7;">
-        <a href="https://huggingface.co/papers/2610.28589" target="_blank" style="font-size:16px;line-height:22px;font-weight:600;color:#1d1d1f;text-decoration:none;">AgenticRoboRL：把编码 agent 的后训练搬到机器人</a>
-        <div style="font-size:14px;line-height:1.65;color:#424245;margin-top:4px;">用监督微调加多轮强化学习训练机器人规划器，无需外部记忆即显著提升成功率。</div>
-        <div style="font-size:13px;line-height:1.5;color:#6e6e73;margin-top:4px;">AgenticRoboRL: Bringing Coding-Agent Post-Training to Agentic Robotics</div>
-      </td>
-    </tr>
-  </table>
-</td></tr>
-    
-<tr><td style="padding:48px 0 0 0;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-    <tr><td colspan="2" style="padding:0px 0 0 0;"><div style="height:1px;line-height:1px;font-size:0;background:#d2d2d7;">&nbsp;</div></td></tr>
-    <tr>
-      <td style="padding:18px 0 4px 0;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:22px;line-height:1.25;font-weight:700;letter-spacing:-0.2px;color:#1d1d1f;"><h2 style="margin:0;font:inherit;color:inherit;letter-spacing:inherit;">开源</h2></td>
-      <td align="right" valign="bottom" style="padding:18px 0 6px 0;font-size:13px;color:#6e6e73;white-space:nowrap;">GitHub 今日趋势</td>
-    </tr>
-    
-    <tr>
-      <td width="60" valign="top" style="width:60px;padding:12px 0 16px 0;font-size:14px;line-height:22px;font-weight:600;color:#6e6e73;white-space:nowrap;font-variant-numeric:tabular-nums;">+504</td>
-      <td valign="top" style="padding:12px 0 16px 0;">
-        <a href="https://github.com/supabase/supabase" target="_blank" style="font-size:16px;line-height:22px;font-weight:600;color:#1d1d1f;text-decoration:none;">supabase/supabase</a>
-        <div style="font-size:14px;line-height:1.65;color:#424245;margin-top:4px;">基于 Postgres 的开发平台，给 web、移动与 AI 应用提供专用数据库，今日 +504★。</div>
-        <div style="font-size:13px;line-height:1.5;color:#6e6e73;margin-top:4px;">TypeScript · ★ 113k</div>
-      </td>
-    </tr>
-    <tr>
-      <td width="60" valign="top" style="width:60px;padding:16px 0;border-top:1px solid #d2d2d7;font-size:14px;line-height:22px;font-weight:600;color:#6e6e73;white-space:nowrap;font-variant-numeric:tabular-nums;">+441</td>
-      <td valign="top" style="padding:16px 0;border-top:1px solid #d2d2d7;">
-        <a href="https://github.com/vllm-project/vllm" target="_blank" style="font-size:16px;line-height:22px;font-weight:600;color:#1d1d1f;text-decoration:none;">vllm-project/vllm</a>
-        <div style="font-size:14px;line-height:1.65;color:#424245;margin-top:4px;">高吞吐、省显存的 LLM 推理与服务引擎，今日 +441★，自建推理服务的默认起点。</div>
-        <div style="font-size:13px;line-height:1.5;color:#6e6e73;margin-top:4px;">Python · ★ 95k</div>
-      </td>
-    </tr>
-    <tr>
-      <td width="60" valign="top" style="width:60px;padding:16px 0;border-top:1px solid #d2d2d7;font-size:14px;line-height:22px;font-weight:600;color:#6e6e73;white-space:nowrap;font-variant-numeric:tabular-nums;">+112</td>
-      <td valign="top" style="padding:16px 0;border-top:1px solid #d2d2d7;">
-        <a href="https://github.com/twentyhq/twenty" target="_blank" style="font-size:16px;line-height:22px;font-weight:600;color:#1d1d1f;text-decoration:none;">twentyhq/twenty</a>
-        <div style="font-size:14px;line-height:1.65;color:#424245;margin-top:4px;">面向 AI 设计的开源 Salesforce 替代品，适合要自建 CRM 的团队，今日 +112★。</div>
-        <div style="font-size:13px;line-height:1.5;color:#6e6e73;margin-top:4px;">TypeScript · ★ 59k</div>
-      </td>
-    </tr>
-  </table>
-</td></tr>
-    
-<tr><td style="padding:48px 0 0 0;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-    <tr><td colspan="2" style="padding:0px 0 0 0;"><div style="height:1px;line-height:1px;font-size:0;background:#d2d2d7;">&nbsp;</div></td></tr>
-    <tr>
-      <td style="padding:18px 0 4px 0;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:22px;line-height:1.25;font-weight:700;letter-spacing:-0.2px;color:#1d1d1f;"><h2 style="margin:0;font:inherit;color:inherit;letter-spacing:inherit;">快讯</h2></td>
-      <td align="right" valign="bottom" style="padding:18px 0 6px 0;font-size:13px;color:#6e6e73;white-space:nowrap;"></td>
-    </tr>
-    
-    <tr><td colspan="2" style="padding:10px 0 14px 0;font-size:15px;line-height:1.6;color:#1d1d1f;">
-      LayerFS 发布面向 AI 编码 agent 的文件系统，HN 70 分&nbsp;&nbsp;<a href="https://layerfs.ai/" target="_blank" style="color:#0066cc;text-decoration:none;font-size:13px;">Hacker News · 70 分 ›</a>
-    </td></tr>
-    <tr><td colspan="2" style="padding:14px 0 14px 0;border-top:1px solid #d2d2d7;font-size:15px;line-height:1.6;color:#1d1d1f;">
-      Rust off Rails 提出面向 AI 时代的 Rust Web 技术栈&nbsp;&nbsp;<a href="https://rustoffrails.org/" target="_blank" style="color:#0066cc;text-decoration:none;font-size:13px;">Hacker News · 70 分 ›</a>
-    </td></tr>
-    <tr><td colspan="2" style="padding:14px 0 14px 0;border-top:1px solid #d2d2d7;font-size:15px;line-height:1.6;color:#1d1d1f;">
-      Hugging Face 发布 TorchNeuron 系统级 profiling 教程（AWS Trainium）&nbsp;&nbsp;<a href="https://huggingface.co/blog/amazon/profiling-torchneuron-part-1" target="_blank" style="color:#0066cc;text-decoration:none;font-size:13px;">Hugging Face ›</a>
-    </td></tr>
-    <tr><td colspan="2" style="padding:14px 0 14px 0;border-top:1px solid #d2d2d7;font-size:15px;line-height:1.6;color:#1d1d1f;">
-      OpenAI 发文说明与分发伙伴的统一安全标准与 Usage Policies 预期&nbsp;&nbsp;<a href="https://openai.com/index/broad-access-through-consistent-standards" target="_blank" style="color:#0066cc;text-decoration:none;font-size:13px;">OpenAI ›</a>
-    </td></tr>
-    <tr><td colspan="2" style="padding:14px 0 14px 0;border-top:1px solid #d2d2d7;font-size:15px;line-height:1.6;color:#1d1d1f;">
-      量子位称 MiniMax 改造 Flash，称其为国模 Agent 第一&nbsp;&nbsp;<a href="https://www.qbitai.com/2026/10/504517.html" target="_blank" style="color:#0066cc;text-decoration:none;font-size:13px;">量子位 ›</a>
-    </td></tr>
-    <tr><td colspan="2" style="padding:14px 0 14px 0;border-top:1px solid #d2d2d7;font-size:15px;line-height:1.6;color:#1d1d1f;">
-      MemT 1.0 称把记忆原生焊进 Transformer，补齐 RSI 三块拼图之一&nbsp;&nbsp;<a href="https://www.qbitai.com/2026/10/504456.html" target="_blank" style="color:#0066cc;text-decoration:none;font-size:13px;">量子位 ›</a>
-    </td></tr>
-  </table>
-</td></tr>
-    
-    <tr><td style="padding:56px 0 48px 0;">
-      <div style="height:1px;line-height:1px;font-size:0;background:#d2d2d7;">&nbsp;</div>
-      <div style="font-size:12px;line-height:1.8;color:#6e6e73;margin-top:16px;">
-        信号强度 <span style="color:#1d1d1f;letter-spacing:1px;" title="信号强度 3/3">●●●</span><span style="color:#d2d2d7;letter-spacing:1px;"></span>：几个独立来源报道了同一件事，或这条在社区里有多热。<br>
-        AI Signal 每天北京时间 10:00 送达。今天的来源：X 上 10 位 builder · Hacker News 11 · 论文 8 · GitHub 3 · 官方博客 11 · 中文媒体 4。由 DeepSeek 按编辑标准挑选，每一条都链接原文；没有链接的内容不会出现，发过的内容不会重复。
-      </div>
-      <div style="font-size:12px;margin-top:12px;"><a href="archive/" target="_blank" style="color:#0066cc;text-decoration:none;">往期 ›</a>&nbsp;&nbsp; <a href="https://qinxujunai.github.io/ai-signal/archive/" target="_blank" style="color:#0066cc;text-decoration:none;">全部往期 ›</a>&nbsp;&nbsp; <a href="https://github.com/qinxujunai/ai-signal" target="_blank" style="color:#0066cc;text-decoration:none;">源码 ›</a></div>
-    </td></tr>
-  </table>
-</td></tr>
-</table></main>
+      <ol aria-label="30 秒读完"><li>Mistral Large 4 登上 HN 317 分，官方博客同步发布</li><li>OpenAI 前沿模型与 Codex 工作流进入 Gemini Model Garden，经 Google Cloud Marketplace 售卖</li><li>PHP 8.x 全系紧急更新，修复两个 RCE 漏洞，漏洞细节已泄露、攻击已在流通</li></ol>
+      <p class="more"><a href="latest/">阅读全文 ›</a></p>
+    </article>
+  </section>
+
+  <section class="wrap facts" aria-label="特点">
+    <div><h3>11 类信源</h3><p>X 上的 AI builder、Hacker News、Techmeme、Reddit、论文热榜、新模型、GitHub 趋势、Product Hunt、各家实验室博客和中文媒体。</p></div>
+    <div><h3>每条都有出处</h3><p>模型只能引用素材编号，链接、分数和 star 数由程序从原始数据填回，编不出假链接。</p></div>
+    <div><h3>不重复，不断供</h3><p>发过的内容 60 天内不再出现。某个信源挂了，页脚会写明；模型没响应，也照样按热度排出一期。</p></div>
+  </section>
+
+  <section class="wrap how" aria-labelledby="how">
+    <h2 id="how">每天早上发生的事</h2>
+    <ol class="steps">
+      <li><strong>收集</strong><span>凌晨开始排队，09:35 读完 36 小时内的新内容。</span></li>
+      <li><strong>编号</strong><span>每条素材一个编号，去掉发过的。</span></li>
+      <li><strong>编辑</strong><span>按三个问题挑选：会改变判断吗？是新事实吗？有数字或名字吗？</span></li>
+      <li><strong>送达</strong><span>10:00 整发出邮件，同时发布这个网页和往期。</span></li>
+    </ol>
+  </section>
+
+  <section class="wrap open" aria-labelledby="open">
+    <h2 id="open">开源，可以自己部署</h2>
+    <p>一个 GitHub 仓库、一个 DeepSeek API key、一个发信邮箱。不追踪读者，没有像素，没有点击统计。</p>
+    <div class="cta"><a href="https://github.com/qinxujunai/ai-signal">在 GitHub 上查看 ›</a><a href="feed.xml">RSS 订阅 ›</a></div>
+  </section>
+</main>
+<footer><div class="wrap"><span>AI Signal · MIT 许可</span><span>由 <a href="https://qinxujunai.github.io/">秦徐俊</a> 制作</span></div></footer>
 </body>
 </html>
