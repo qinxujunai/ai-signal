@@ -35,7 +35,7 @@ scripts/test/              node --test（npm test）
 | 调 DeepSeek 用原生 `fetch`，不引 SDK | 只调一个 OpenAI 兼容接口（JSON 模式、超时、重试都已写好），加 SDK 只多一层依赖 | — |
 | 网址根目录是产品主页，当天全文在 `latest/`，并提供 RSS | 成熟项目都有一个能展示的主页；他要「有个网址去展示」。邮件里的「网页版」链接到当天的 `archive/<日期>.html`（永久地址） | v4.1.0 |
 | 仓库只保留 AGENTS.md / CLAUDE.md 两份智能体说明，不放各编辑器的规则文件 | 旧的 Cline/Windsurf/Cursor 规则引用不存在的脚本，还让助手去读本机 Claude 设置里的密钥 | v4.1.0 |
-| 版本号写在 `scripts/package.json`，打 `vX.Y.Z` 标签自动发 Release，说明取自 CHANGELOG.md | 和其他成熟项目一样有版本和发布记录 | v4.1.0 |
+| 版本号写在 `scripts/package.json`；master 上版本号变了，Release 工作流自动发 `vX.Y.Z`（连同标签），说明取自 CHANGELOG.md 同名一节；已发过就跳过 | 和其他成熟项目一样有版本和发布记录。不靠手动推标签：云端会话推不了标签 | v4.1.0 |
 | nodemailer 10，Node 20+ | 修掉 8.x 的高危头注入漏洞（npm audit 0） | `e150ccb`、`89f2038` |
 
 ## 已知问题
