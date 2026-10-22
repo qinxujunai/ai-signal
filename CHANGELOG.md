@@ -2,6 +2,10 @@
 
 网站：<https://qinxujunai.github.io/ai-signal/> · 往期：<https://qinxujunai.github.io/ai-signal/archive/>
 
+## v4.2.1 · 2026-10-23
+
+- **订阅只用 RSS**：撤掉邮件订阅（Buttondown），不需要注册、不需要任何 API。网站的订阅区给出 RSS 地址，任意阅读器都能订。
+
 ## v4.2.0 · 2026-10-23
 
 - **订阅**：网站加了「每天 10:00，送到你的邮箱」。邮件订阅交给 Buttondown（订阅确认、退订、名单都在它那里，邮箱地址不进仓库）；没有配置时只显示 RSS。每期邮件和网页的页脚都有「订阅 ›」。

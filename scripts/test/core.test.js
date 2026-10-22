@@ -129,20 +129,11 @@ test('website: product page, latest, archive and an Atom feed', async () => {
   assert.ok((await readFile(join(dir, 'archive', 'index.html'), 'utf-8')).includes('第 2 期 · 2026-10-22'));
 });
 
-test('subscribe: Buttondown form only with a username; email body for subscribers', async () => {
+test('subscribe: RSS, and the subject line', async () => {
   const { subscribeSection } = await import('../site.js');
-  const { buttondownEmail, subjectFor } = await import('../email.js');
-  const off = subscribeSection({});
-  assert.ok(!off.includes('<form') && off.includes('feed.xml'));
-  const on = subscribeSection({ buttondown: 'ai signal' });
-  assert.match(on, /action="https:\/\/buttondown\.com\/api\/emails\/embed-subscribe\/ai%20signal" method="post"/);
-  assert.match(on, /type="email" name="email" required/);
-
-  const html = '<!DOCTYPE html><html><head><title>Mistral 发布 · AI Signal 2026-10-22</title></head><body><table><tr><td>正文</td></tr></table></body></html>';
-  const now = new Date('2026-10-22T02:00:00Z');
-  assert.equal(subjectFor(html, now), 'AI Signal 10/22｜Mistral 发布');
-  const mail = buttondownEmail(html, now);
-  assert.equal(mail.status, 'about_to_send');
-  assert.ok(mail.body.startsWith('<!-- buttondown-editor-mode: fancy -->\n<table>'));
-  assert.ok(!mail.body.includes('<title>'));
+  const { subjectFor } = await import('../email.js');
+  const sub = subscribeSection();
+  assert.ok(sub.includes('feed.xml') && !sub.includes('<form'));
+  const html = '<!DOCTYPE html><html><head><title>Mistral 发布 · AI Signal 2026-10-22</title></head><body></body></html>';
+  assert.equal(subjectFor(html, new Date('2026-10-22T02:00:00Z')), 'AI Signal 10/22｜Mistral 发布');
 });
