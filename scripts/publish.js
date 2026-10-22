@@ -16,7 +16,9 @@ export async function publishWeb(webDir, issue, meta) {
   const page = renderIssue(issue, meta, { mode: 'web', base: '../' });
   await writeFile(join(webDir, 'latest', 'index.html'), page, 'utf-8');
   await writeFile(join(webDir, 'archive', `${meta.ymd}.html`), page, 'utf-8');
-  await writeFile(join(webDir, 'index.html'), renderLanding(issue, meta), 'utf-8');
+  // BUTTONDOWN_USERNAME (a repository variable) turns on the email sign-up form.
+  const subscribe = { buttondown: process.env.BUTTONDOWN_USERNAME || '' };
+  await writeFile(join(webDir, 'index.html'), renderLanding(issue, meta, { subscribe }), 'utf-8');
 
   const dates = (await readdir(join(webDir, 'archive')))
     .filter((f) => /^\d{4}-\d{2}-\d{2}\.html$/.test(f)).map((f) => f.slice(0, 10)).sort().reverse();

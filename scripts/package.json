@@ -1,6 +1,6 @@
 {
   "name": "ai-signal",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "description": "AI Signal — LLM-curated AI industry daily digest.",
   "type": "module",
   "scripts": {

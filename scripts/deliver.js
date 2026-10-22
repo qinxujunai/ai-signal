@@ -7,6 +7,7 @@ import { join } from 'path';
 import { homedir } from 'os';
 import { config as loadEnv } from 'dotenv';
 import { createTransport } from 'nodemailer';
+import { subjectFor } from './email.js';
 
 const USER_DIR = join(homedir(), '.ai-signal');
 const CONFIG_PATH = join(USER_DIR, 'config.json');
@@ -40,12 +41,6 @@ async function logDelivery(status, message) {
 }
 
 // -- Email (QQ SMTP) ----------------------------------------------------------
-
-function subjectFor(html) {
-  const date = new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Shanghai', month: 'numeric', day: 'numeric' }).format(new Date());
-  const headline = (html.match(/<title>([\s\S]*?) · AI Signal/)?.[1] || '').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim();
-  return headline ? `AI Signal ${date}｜${headline}` : `AI Signal ${date}`;
-}
 
 async function sendEmail(text, toEmail) {
   const isHtml = text.trim().match(/^<(!DOCTYPE|html)/i);
