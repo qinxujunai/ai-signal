@@ -11,8 +11,7 @@ scripts/render.js          邮件与网页共用的排版（表格 + 内联样�
 scripts/publish.js         网站（docs/，GitHub Pages）：index.html 产品主页（site.js）、latest/ 当天全文、archive/<日期>.html、archive/ 列表、feed.xml（Atom，30 期）
 scripts/site.js            产品主页与 RSS（网页专用，可用 <style>，跟随深色模式，零外部请求）
 scripts/deliver.js         QQ SMTP，发给作者自己（地址只在 Secret）
-scripts/email.js           主题 =「AI Signal 月/日｜当天标题」；给 Buttondown 的正文
-scripts/broadcast.js       经 Buttondown 发给订阅者（BUTTONDOWN_API_KEY；没有就跳过，失败只记警告）
+scripts/email.js           主题 =「AI Signal 月/日｜当天标题」
 scripts/clock.js           北京时间：今天的日期、等到 09:35 / 10:00
 scripts/test/              node --test（npm test）
 .github/workflows/daily.yml
@@ -39,8 +38,8 @@ scripts/test/              node --test（npm test）
 | 网址根目录是产品主页，当天全文在 `latest/`，并提供 RSS | 成熟项目都有一个能展示的主页；他要「有个网址去展示」。邮件里的「网页版」链接到当天的 `archive/<日期>.html`（永久地址） | v4.1.0 |
 | 仓库只保留 AGENTS.md / CLAUDE.md 两份智能体说明，不放各编辑器的规则文件 | 旧的 Cline/Windsurf/Cursor 规则引用不存在的脚本，还让助手去读本机 Claude 设置里的密钥 | v4.1.0 |
 | 版本号写在 `scripts/package.json`；master 上版本号变了，Release 工作流自动发 `vX.Y.Z`（连同标签），说明取自 CHANGELOG.md 同名一节；已发过就跳过 | 和其他成熟项目一样有版本和发布记录。不靠手动推标签：云端会话推不了标签 | v4.1.0 |
-| 订阅交给 Buttondown：网站表单直接提交到 Buttondown（双重确认、退订、名单都在它那里），每天用 API 发同一期；表单在仓库变量 `BUTTONDOWN_USERNAME` 设置后才出现 | 静态网站没有后端，订阅者邮箱不能进公开仓库；自己用 QQ 邮箱群发会被限流、也没有退订。Buttondown 免费 100 人 | v4.2.0 |
-| 只有发出当天这期的那次运行（`steps.send.outputs.sent`）才发给订阅者和发布网页 | 排队的多个任务里，等到 10:00 才发现别人已发的那个不能再发一遍 | v4.2.0 |
+| 订阅只用 RSS（网站订阅区 + `feed.xml`），不接邮件订阅服务 | 他说「别搞什么注册，也别搞什么 API，删繁就简」（2026-10-23）。v4.2.0 接过 Buttondown，同日撤掉；邮件仍只发给他自己 | v4.2.1 |
+| 只有发出当天这期的那次运行（`steps.send.outputs.sent`）才发布网页 | 排队的多个任务里，等到 10:00 才发现别人已发的那个不能再发一遍 | v4.2.0 |
 | nodemailer 10，Node 20+ | 修掉 8.x 的高危头注入漏洞（npm audit 0） | `e150ccb`、`89f2038` |
 
 ## 已知问题
@@ -49,6 +48,7 @@ scripts/test/              node --test（npm test）
 - 准点依赖 GitHub 在早上把十几次排队里的任意一次及时启动；都没轮上时由 10:17 以后的补发兜底，会晚。
 
 ## 交接日志
+- **2026-10-23**：v4.2.1 撤掉 Buttondown（`broadcast.js`、工作流里的发送步骤、邮件表单），订阅区改成 RSS。验证：`npm test` 9 组。
 - **2026-10-23**：订阅（v4.2.0）：`site.js` 的订阅区、`email.js`、`broadcast.js`，daily.yml 加「Send to subscribers」。验证：`npm test` 9 组；用假 key 请求 Buttondown 返回 401，脚本只记警告、退出码 0；订阅区 axe 0 违规、手机无横向溢出。待作者：注册 Buttondown、关掉打开/点击追踪、在仓库设置变量 `BUTTONDOWN_USERNAME` 和 Secret `BUTTONDOWN_API_KEY`。
 - **2026-10-22，Claude**：v4 准点、信源 11 类、版式（`4647f40`）；白底黑字版式（`d0eaf9c`）；解析换成成熟库、nodemailer 10（`e150ccb`）。验证：`npm test` 7 组通过；真实信源新旧解析输出一致；10-23 是第一次准点发送，以运行记录为准。
 

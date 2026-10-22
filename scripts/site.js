@@ -60,10 +60,6 @@ h1{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","
 .sub{padding-block:72px 8px;text-align:center}
 .sub h2{font-size:clamp(28px,4vw,40px);letter-spacing:-.015em;line-height:1.15;margin:0}
 .sub p{font-size:19px;color:var(--text);margin:14px auto 0;max-width:600px}
-.sub form{margin:28px auto 0;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;max-width:520px}
-.sub input{flex:1 1 240px;min-width:0;font:inherit;font-size:17px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:11px 14px}
-.sub input:focus{outline:2px solid var(--link);outline-offset:1px;border-color:transparent}
-.sub button{font:inherit;font-size:17px;font-weight:500;border:0;cursor:pointer}
 html{scroll-padding-top:60px}
 .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .sub .note{font-size:13px;color:var(--muted);margin-top:14px}
@@ -78,28 +74,18 @@ function bar() {
   return `<header class="bar"><div class="bar-in"><a class="brand" href="./">AI Signal</a><nav aria-label="主导航"><a href="latest/">今天</a><a href="archive/">往期</a><a href="#subscribe">订阅</a><a class="hide-s" href="${REPO}">GitHub</a></nav></div></header>`;
 }
 
-// Email sign-up goes to Buttondown (double opt-in, unsubscribe and the list are theirs; no address
-// ever reaches this repository). Without a Buttondown username the section offers RSS only.
-export function subscribeSection({ buttondown } = {}) {
-  const form = buttondown
-    ? `<form action="https://buttondown.com/api/emails/embed-subscribe/${encodeURIComponent(buttondown)}" method="post">
-      <label class="visually-hidden" for="email">邮箱地址</label>
-      <input id="email" type="email" name="email" required autocomplete="email" placeholder="你的邮箱">
-      <input type="hidden" name="tag" value="site">
-      <button class="button" type="submit">订阅</button>
-    </form>
-    <p class="note">提交后会收到一封确认邮件，点一下才算订阅。每封都能一键退订。也可以用 <a href="feed.xml">RSS</a> 订阅。</p>`
-    : `<div class="cta"><a class="button" href="feed.xml">RSS 订阅</a></div>
-    <p class="note">把这个地址加进任意阅读器：${esc(SITE)}feed.xml</p>`;
+// Subscribing is RSS: any reader app follows the feed. No sign-up, no list of addresses to keep.
+export function subscribeSection() {
   return `<section class="wrap sub" id="subscribe" aria-labelledby="subscribe-title">
-    <h2 id="subscribe-title">每天 10:00，送到你的邮箱</h2>
-    <p>免费。一天一封，三分钟读完。</p>
-    ${form}
+    <h2 id="subscribe-title">每天 10:00，自动送到你的阅读器</h2>
+    <p>用任意 RSS 阅读器订阅，每期一出就收到。免费，不用注册。</p>
+    <div class="cta"><a class="button" href="feed.xml">RSS 订阅</a></div>
+    <p class="note">订阅地址：${esc(SITE)}feed.xml</p>
   </section>`;
 }
 
 // The product page: what it is, today's issue, why it can be trusted, how it works, where the code is.
-export function renderLanding(issue, meta, { subscribe } = {}) {
+export function renderLanding(issue, meta) {
   const tldr = (issue.tldr || []).slice(0, 3).map((t) => `<li>${esc(t)}</li>`).join('');
   const description = 'AI 的消息每天成百上千。AI Signal 每天北京时间 10:00 替你读一遍，只留下值得看的，一页读完。每一条都附原文。';
   return `<!DOCTYPE html>
@@ -139,7 +125,7 @@ ${bar()}
     </article>
   </section>
 
-  ${subscribeSection(subscribe)}
+  ${subscribeSection()}
 
   <section class="wrap facts" aria-label="特点">
     <div><h3>11 类信源</h3><p>X 上的 AI builder、Hacker News、Techmeme、Reddit、论文热榜、新模型、GitHub 趋势、Product Hunt、各家实验室博客和中文媒体。</p></div>
