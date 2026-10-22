@@ -1,18 +1,21 @@
 name: AI Signal daily issue
 
-# Every morning around 10:00 Beijing time: collect sources, let DeepSeek edit the issue, email it,
-# then publish the web edition (docs/) and the sent-items list (data/seen.json).
-# The daily commit also keeps this scheduled workflow from being paused for inactivity.
+# The issue lands at 10:00:00 Beijing time.
 #
-# Timing: GitHub queues schedules on the hour heavily. With '0 2 * * *' the issue went out at
-# 15:23 Beijing (2026-10-20 and 10-21). So the schedule sits off the hour, with two backups.
-# Whichever run starts first sends the issue; the later ones see today's archive page and stop.
+# GitHub's scheduler is late by hours at busy times (on 2026-10-22 the 09:41 run started at 14:32) and
+# may drop runs, so one exact cron cannot be trusted. Instead a run is scheduled every 20 minutes from
+# 04:07 to 09:47 Beijing, plus late backups. The first run that starts claims the day (concurrency
+# group), waits until 09:35, collects and edits, then waits until 10:00:00 and sends. Runs that start
+# afterwards see today's issue on master and stop. A run that starts after 10:00 sends at once.
+# A manual run (workflow_dispatch) always sends immediately.
+#
+# The daily commit also keeps this scheduled workflow from being paused for inactivity.
 
 on:
   schedule:
-    - cron: '41 1 * * *' # 09:41 Beijing
-    - cron: '17 2 * * *' # 10:17 Beijing, backup
-    - cron: '17 4 * * *' # 12:17 Beijing, last backup
+    - cron: '7,27,47 20-23 * * *' # 04:07–07:47 Beijing
+    - cron: '7,27,47 0-1 * * *'   # 08:07–09:47 Beijing
+    - cron: '17 2,3,5,8 * * *'    # 10:17, 11:17, 13:17, 16:17 Beijing: late backups
   workflow_dispatch:
 
 permissions:
@@ -26,30 +29,43 @@ concurrency:
 jobs:
   issue:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # A run may claim the day up to 5 h before 09:35, then needs ~30 min more; GitHub's cap is 360.
+    timeout-minutes: 355
     steps:
+      # Always the newest master, not the commit the schedule was queued on: an earlier run may have sent today.
       - uses: actions/checkout@v4
-
-      # A scheduled run stops here if today's issue is already out. A manual run always sends.
-      - name: Already sent today?
-        id: today
-        run: |
-          if [ "${{ github.event_name }}" = "schedule" ] && [ -f "docs/archive/$(TZ=Asia/Shanghai date +%F).html" ]; then
-            echo "Today's issue is already out."
-            echo "sent=true" >> "$GITHUB_OUTPUT"
-          fi
+        with:
+          ref: ${{ github.event.repository.default_branch }}
 
       - uses: actions/setup-node@v4
-        if: steps.today.outputs.sent != 'true'
         with:
           node-version: '22'
 
+      - name: Claim today
+        id: today
+        run: |
+          DAY=$(node scripts/clock.js today)
+          echo "day=$DAY" >> "$GITHUB_OUTPUT"
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            if [ -f "docs/archive/$DAY.html" ]; then
+              echo "Today's issue ($DAY) is already out."; echo "skip=true" >> "$GITHUB_OUTPUT"
+            elif ! node scripts/clock.js reachable 09:35 300; then
+              echo "Too early to wait until 09:35; a later run will take today."; echo "skip=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "This run takes $DAY."
+            fi
+          fi
+
+      - name: Wait until 09:35 Beijing
+        if: steps.today.outputs.skip != 'true' && github.event_name == 'schedule'
+        run: node scripts/clock.js wait 09:35
+
       - name: Install
-        if: steps.today.outputs.sent != 'true'
+        if: steps.today.outputs.skip != 'true'
         run: cd scripts && npm ci --no-audit --no-fund
 
       - name: Configure
-        if: steps.today.outputs.sent != 'true'
+        if: steps.today.outputs.skip != 'true'
         run: |
           mkdir -p ~/.ai-signal/drafts
           {
@@ -61,21 +77,33 @@ jobs:
           echo '${{ secrets.AI_SIGNAL_CONFIG }}' > ~/.ai-signal/config.json
 
       - name: Collect sources
-        if: steps.today.outputs.sent != 'true'
+        if: steps.today.outputs.skip != 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: cd scripts && node prepare-digest.js --seen ../data/seen.json --out ~/.ai-signal/drafts/feed.json
 
       - name: Edit the issue
-        if: steps.today.outputs.sent != 'true'
+        if: steps.today.outputs.skip != 'true'
         run: cd scripts && node remix-digest.js --file ~/.ai-signal/drafts/feed.json --out ~/.ai-signal/drafts/email.html --json-out ~/.ai-signal/drafts/issue.json --web-dir ../docs --seen ../data/seen.json
 
+      - name: Wait until 10:00 Beijing
+        if: steps.today.outputs.skip != 'true' && github.event_name == 'schedule'
+        run: node scripts/clock.js wait 10:00
+
+      # Last check right before sending: a manual run may have sent today's issue while this one waited.
       - name: Send
-        if: steps.today.outputs.sent != 'true'
-        run: cd scripts && node deliver.js --file ~/.ai-signal/drafts/email.html --force
+        if: steps.today.outputs.skip != 'true'
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            git fetch --quiet origin "${{ github.event.repository.default_branch }}"
+            if git cat-file -e "origin/${{ github.event.repository.default_branch }}:docs/archive/${{ steps.today.outputs.day }}.html" 2>/dev/null; then
+              echo "Sent by another run while this one waited; stopping."; exit 0
+            fi
+          fi
+          cd scripts && node deliver.js --file ~/.ai-signal/drafts/email.html --force
 
       - name: Publish the web edition
-        if: steps.today.outputs.sent != 'true'
+        if: steps.today.outputs.skip != 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -83,13 +111,14 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs data
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "AI Signal $(TZ=Asia/Shanghai date +%F)"
+          git commit -m "AI Signal ${{ steps.today.outputs.day }}"
+          git pull --rebase --quiet origin "${{ github.event.repository.default_branch }}"
           git push
           curl -fsS -X POST -H "Authorization: Bearer $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${{ github.repository }}/pages/builds" || true
 
       - name: Keep the drafts for debugging
-        if: always() && steps.today.outputs.sent != 'true'
+        if: always() && steps.today.outputs.skip != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: issue-${{ github.run_id }}

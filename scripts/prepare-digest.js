@@ -1,13 +1,17 @@
 #!/usr/bin/env node
-// AI Signal — collect the raw material for one issue (v3).
+// AI Signal — collect the raw material for one issue (v4).
 //
-// Sources (every one is optional; a dead source is reported, never fatal):
-//   X posts, podcasts, lab blogs   follow-builders open feeds
-//   Lab blogs                      official RSS: OpenAI, Google DeepMind, Google AI, Hugging Face, Simon Willison
-//   Hacker News                    Algolia API: AI stories from the last 36 h with 60+ points
-//   Papers                         Hugging Face Daily Papers, ranked by community upvotes
-//   Open source                    GitHub Trending (today), AI repositories only
-//   Chinese media                  量子位 RSS
+// Sources (every one is optional; a dead source is reported in the footer, never fatal):
+//   X posts, podcasts, blogs     follow-builders open feeds
+//   Lab blogs                    official RSS: OpenAI, Anthropic, Google DeepMind, Google AI, Hugging Face, Qwen, Simon Willison
+//   Hacker News                  Algolia API: AI stories from the last 36 h with 60+ points
+//   Techmeme                     the tech industry's front page, AI headlines only
+//   Reddit                       via AINews (Latent Space): r/LocalLLaMA and other AI subreddits, ranked by activity
+//   Papers                       Hugging Face Daily Papers, ranked by community upvotes
+//   Models                       Hugging Face trending models (new open weights)
+//   Open source                  GitHub Trending (today), AI repositories only
+//   Products                     Product Hunt, AI category
+//   Chinese media                量子位, 36氪 (AI headlines only)
 //
 // Anything already sent in an earlier issue (data/seen.json) is dropped, so issues never repeat.
 //
@@ -17,70 +21,36 @@ import { readFile, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
+import {
+  HOURS, AI_RE, AI_RE_ZH, get, decode, parseFeed, fresh,
+  parseTechmeme, latestAINews, mapHFModels, parseTrending,
+} from './sources.js';
 
 const args = process.argv.slice(2);
 const arg = (name) => { const i = args.indexOf(name); return i !== -1 ? args[i + 1] : null; };
 const CONFIG_PATH = join(homedir(), '.ai-signal', 'config.json');
 const SEEN_PATH = arg('--seen');
 
-const HOURS = 3600 * 1000;
 const NOW = Date.now();
 const FRESH = 36 * HOURS; // news window
 const BLOG_FRESH = 72 * HOURS; // labs post less often
-const UA = 'Mozilla/5.0 (compatible; AI-Signal/3.0; +https://github.com/qinxujunai/ai-signal)';
 
 const FEED_BASE = process.env.FEED_BASE_URL || 'https://raw.githubusercontent.com/zarazhangrui/follow-builders/main';
 
-const RSS = [
+const LAB_RSS = [
   ['OpenAI', 'https://openai.com/news/rss.xml'],
+  // Anthropic publishes no feed; this community mirror rebuilds one from anthropic.com/news every few hours.
+  ['Anthropic', 'https://raw.githubusercontent.com/Olshansk/rss-feeds/main/feeds/feed_anthropic_news.xml'],
   ['Google DeepMind', 'https://deepmind.google/blog/rss.xml'],
   ['Google AI', 'https://blog.google/innovation-and-ai/technology/ai/rss/'],
   ['Hugging Face', 'https://huggingface.co/blog/feed.xml'],
+  ['Qwen', 'https://qwenlm.github.io/blog/index.xml'],
   ['Simon Willison', 'https://simonwillison.net/atom/everything/'],
 ];
-const CN_RSS = [['量子位', 'https://www.qbitai.com/feed']];
-
-// Word-boundary match, so "said" or "maintain" never count as "ai".
-const AI_RE = /\b(ai|a\.i\.|llms?|gpt[-\w.]*|claude|gemini|llama|mistral|qwen|deepseek|openai|anthropic|agentic|transformers?|diffusion|neural|machine learning|ml|rag|inference|fine-?tun\w*|embeddings?|copilot|cursor|chatgpt|reasoning model|foundation model|multimodal|vlm|mcp)\b/i;
-
-// ── fetch helpers ────────────────────────────────────────────────────────────
-async function get(url, { timeout = 15000, json = false, headers = {} } = {}) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeout);
-  try {
-    const res = await fetch(url, { signal: controller.signal, redirect: 'follow', headers: { 'User-Agent': UA, ...headers } });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return json ? await res.json() : await res.text();
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
-const entities = (s) => s
-  .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;|&#039;|&apos;/g, "'")
-  .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16))).replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(+n))
-  .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&');
-// CDATA → entities → tags → entities again (feeds often escape their HTML twice).
-const decode = (s = '') => entities(entities(s.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1')).replace(/<[^>]+>/g, ' '))
-  .replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-
-// Minimal RSS 2.0 / Atom parser: title, link, date, summary.
-function parseFeed(xml) {
-  const blocks = xml.split(/<item[\s>]|<entry[\s>]/).slice(1);
-  return blocks.map((b) => {
-    const tag = (t) => b.match(new RegExp(`<${t}[^>]*>([\\s\\S]*?)</${t}>`))?.[1];
-    const link = tag('link')?.trim() || b.match(/<link[^>]*href="([^"]+)"/)?.[1] || '';
-    const date = tag('pubDate') || tag('published') || tag('updated') || tag('dc:date');
-    return {
-      title: decode(tag('title')),
-      url: decode(link),
-      publishedAt: date ? new Date(decode(date)).toISOString() : null,
-      summary: decode(tag('description') || tag('summary') || tag('content') || '').slice(0, 400),
-    };
-  }).filter((x) => x.title && x.url);
-}
-
-const fresh = (iso, window) => iso && NOW - new Date(iso).getTime() < window;
+const CN_RSS = [
+  ['量子位', 'https://www.qbitai.com/feed', null],
+  ['36氪', 'https://36kr.com/feed', AI_RE_ZH],
+];
 
 // ── sources ─────────────────────────────────────────────────────────────────
 async function followBuilders() {
@@ -88,31 +58,32 @@ async function followBuilders() {
     get(`${FEED_BASE}/${f}.json`, { json: true }).catch(() => null)));
   const builders = (x?.x || []).map((b) => ({
     name: b.name, handle: b.handle, role: (b.bio || '').split('\n')[0].trim(),
-    tweets: (b.tweets || []).filter((t) => !t.createdAt || fresh(t.createdAt, FRESH))
+    tweets: (b.tweets || []).filter((t) => !t.createdAt || fresh(t.createdAt, FRESH, NOW))
       .sort((a, b2) => ((b2.likes || 0) + (b2.retweets || 0) * 2) - ((a.likes || 0) + (a.retweets || 0) * 2))
       .slice(0, 3)
       .map((t) => ({ text: t.text, url: t.url, likes: t.likes || 0, retweets: t.retweets || 0, replies: t.replies || 0 })),
   })).filter((b) => b.tweets.length);
   return {
     x: builders,
-    podcasts: (podcasts?.podcasts || []).filter((p) => !p.publishedAt || fresh(p.publishedAt, 10 * 24 * HOURS)),
+    podcasts: (podcasts?.podcasts || []).filter((p) => !p.publishedAt || fresh(p.publishedAt, 10 * 24 * HOURS, NOW)),
     blogs: (blogs?.blogs || []).map((b) => ({ source: b.name, title: decode(b.title), url: b.url, publishedAt: b.publishedAt || null, summary: decode(b.content || b.summary || '').slice(0, 600) })),
-    ok: { x: Boolean(x), podcasts: Boolean(podcasts), blogs: Boolean(blogs) },
+    ok: { x: Boolean(x), podcasts: Boolean(podcasts) },
   };
 }
 
-async function labBlogs(list, window) {
+async function feeds(list, window, failed) {
   const out = [];
-  const failed = [];
-  await Promise.all(list.map(async ([source, url]) => {
+  await Promise.all(list.map(async ([source, url, filter]) => {
     try {
-      const items = parseFeed(await get(url)).filter((i) => fresh(i.publishedAt, window)).slice(0, 4);
-      for (const i of items) out.push({ source, ...i });
+      const items = parseFeed(await get(url))
+        .filter((i) => fresh(i.publishedAt, window, NOW) && (!filter || filter.test(i.title)))
+        .slice(0, 5);
+      for (const { raw, ...i } of items) out.push({ source, ...i });
     } catch (e) {
       failed.push(`${source}: ${e.message}`);
     }
   }));
-  return { items: out, failed };
+  return out.sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt)));
 }
 
 async function hackerNews() {
@@ -132,6 +103,14 @@ async function hackerNews() {
     }));
 }
 
+const techmeme = async () => parseTechmeme(await get('https://www.techmeme.com/feed.xml'), { now: NOW, window: FRESH }).slice(0, 10);
+
+async function reddit() {
+  const issue = latestAINews(await get('https://www.latent.space/feed', { timeout: 25000 }), { now: NOW, window: 48 * HOURS });
+  if (!issue) throw new Error('no AINews issue in the last 48 h');
+  return issue.reddit.slice(0, 10);
+}
+
 async function papers() {
   const data = await get('https://huggingface.co/api/daily_papers?limit=50', { json: true });
   return data
@@ -147,26 +126,26 @@ async function papers() {
     }));
 }
 
-// GitHub Trending has no API: read the server-rendered page; fall back to the search API.
+const models = async () => mapHFModels(await get('https://huggingface.co/api/models?sort=trendingScore&limit=30', { json: true }), { now: NOW }).slice(0, 8);
+
+// Trending page first; the search API when the page cannot be read.
 async function trending() {
   try {
-    const html = await get('https://github.com/trending?since=daily');
-    const rows = html.split('<article class="Box-row">').slice(1);
-    const repos = rows.map((r) => {
-      const name = r.match(/<h2[^>]*>[\s\S]*?href="\/([^"]+)"/)?.[1]?.trim();
-      const desc = decode(r.match(/<p class="col-9[^"]*">([\s\S]*?)<\/p>/)?.[1] || '');
-      const today = r.match(/([\d,]+) stars? today/)?.[1]?.replace(/,/g, '');
-      const total = r.match(/href="\/[^"]+\/stargazers"[^>]*>[\s\S]*?([\d,]+)\s*<\/a>/)?.[1]?.replace(/,/g, '');
-      const lang = decode(r.match(/itemprop="programmingLanguage">([^<]+)</)?.[1] || '');
-      return name && { name, description: desc, url: `https://github.com/${name}`, starsToday: Number(today) || 0, stars: Number(total) || 0, language: lang };
-    }).filter(Boolean);
-    return repos.filter((r) => AI_RE.test(`${r.name} ${r.description}`)).slice(0, 8);
-  } catch (e) {
+    return parseTrending(await get('https://github.com/trending?since=daily'))
+      .filter((r) => AI_RE.test(`${r.name} ${r.description}`)).slice(0, 8);
+  } catch {
     const week = new Date(NOW - 7 * 24 * HOURS).toISOString().slice(0, 10);
     const headers = process.env.GITHUB_TOKEN ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` } : {};
     const data = await get(`https://api.github.com/search/repositories?q=topic:llm+created:%3E${week}&sort=stars&order=desc&per_page=8`, { json: true, headers });
     return (data.items || []).map((r) => ({ name: r.full_name, description: r.description || '', url: r.html_url, stars: r.stargazers_count, starsToday: 0, language: r.language || '' }));
   }
+}
+
+async function products() {
+  return parseFeed(await get('https://www.producthunt.com/feed?category=artificial-intelligence'))
+    .filter((i) => fresh(i.publishedAt, FRESH, NOW))
+    .slice(0, 8)
+    .map(({ raw, ...i }) => ({ ...i, summary: decode(i.summary).replace(/\s*Discussion\s*\|\s*Link\s*$/, '') }));
 }
 
 // ── main ────────────────────────────────────────────────────────────────────
@@ -184,17 +163,22 @@ async function main() {
   const unseen = (items) => items.filter((i) => !seen.has(i.url));
 
   console.error('[ai-signal] fetching sources…');
-  const [fb, blogs, cn, hn, pp, gh] = await Promise.all([
+  const failed = [];
+  const [fb, blogs, cn, hn, tm, rd, pp, md, gh, ph] = await Promise.all([
     followBuilders(),
-    labBlogs(RSS, BLOG_FRESH),
-    labBlogs(CN_RSS, 48 * HOURS),
+    feeds(LAB_RSS, BLOG_FRESH, failed),
+    feeds(CN_RSS, 48 * HOURS, failed),
     settle('Hacker News', hackerNews(), errors),
+    settle('Techmeme', techmeme(), errors),
+    settle('Reddit (AINews)', reddit(), errors),
     settle('HF Daily Papers', papers(), errors),
+    settle('HF 热门模型', models(), errors),
     settle('GitHub Trending', trending(), errors),
+    settle('Product Hunt', products(), errors),
   ]);
   if (!fb.ok.x) errors.push('follow-builders X feed unavailable');
   if (!fb.ok.podcasts) errors.push('follow-builders podcast feed unavailable');
-  errors.push(...blogs.failed, ...cn.failed);
+  errors.push(...failed);
 
   const x = fb.x.map((b) => ({ ...b, tweets: unseen(b.tweets) })).filter((b) => b.tweets.length);
   const out = {
@@ -207,25 +191,21 @@ async function main() {
     },
     x,
     podcasts: unseen(fb.podcasts),
-    blogs: unseen([...fb.blogs, ...blogs.items.sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt)))]),
+    blogs: unseen([...fb.blogs, ...blogs].filter((b, i, all) => all.findIndex((o) => o.url === b.url) === i)),
     hackernews: unseen(hn),
+    techmeme: unseen(tm),
+    reddit: unseen(rd),
     papers: unseen(pp),
+    models: unseen(md),
     github: unseen(gh),
-    chinese: unseen(cn.items),
+    products: unseen(ph),
+    chinese: unseen(cn),
     errors: errors.length ? errors : undefined,
   };
-  out.stats = {
-    tweets: x.reduce((s, b) => s + b.tweets.length, 0),
-    builders: x.length,
-    podcasts: out.podcasts.length,
-    blogs: out.blogs.length,
-    hackernews: out.hackernews.length,
-    papers: out.papers.length,
-    github: out.github.length,
-    chinese: out.chinese.length,
-    skippedSeen: seen.size,
-  };
-  out.stats.total = ['tweets', 'podcasts', 'blogs', 'hackernews', 'papers', 'github', 'chinese'].reduce((s, k) => s + out.stats[k], 0);
+  const KEYS = ['blogs', 'hackernews', 'techmeme', 'reddit', 'papers', 'models', 'github', 'products', 'chinese', 'podcasts'];
+  out.stats = { tweets: x.reduce((s, b) => s + b.tweets.length, 0), builders: x.length, skippedSeen: seen.size };
+  for (const k of KEYS) out.stats[k] = out[k].length;
+  out.stats.total = out.stats.tweets + KEYS.reduce((s, k) => s + out.stats[k], 0);
 
   const json = JSON.stringify(out, null, 2);
   const file = arg('--out');

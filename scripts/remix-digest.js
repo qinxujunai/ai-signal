@@ -19,6 +19,7 @@ import { join } from 'path';
 import { homedir } from 'os';
 import { config as loadEnv } from 'dotenv';
 import { renderIssue, renderArchive } from './render.js';
+import { heat } from './sources.js';
 
 const args = process.argv.slice(2);
 const arg = (name) => { const i = args.indexOf(name); return i !== -1 ? args[i + 1] : null; };
@@ -51,10 +52,18 @@ lines.push('## 实验室与公司博客');
 add('B', (feed.blogs || []).map((b) => ({ ...b, kind: 'blog' })), (b) => `${b.source}：${b.title} —— ${clip(b.summary, 300)}`);
 lines.push('\n## Hacker News（分数 = 社区热度）');
 add('H', (feed.hackernews || []).map((h) => ({ ...h, kind: 'hn' })), (h) => `(${h.points} 分, ${h.comments} 评论) ${h.title} —— ${host(h.url)}`);
+lines.push('\n## Techmeme（科技行业头条，括号里是作者和媒体）');
+add('T', (feed.techmeme || []).map((t) => ({ ...t, kind: 'techmeme' })), (t) => `${t.title} (${t.by})`);
+lines.push('\n## Reddit（经 AINews 汇总，Activity = 讨论热度）');
+add('R', (feed.reddit || []).map((r) => ({ ...r, kind: 'reddit' })), (r) => `(${r.subreddit}, Activity ${r.activity}) ${r.title} —— ${clip(r.summary, 320)}`);
 lines.push('\n## 论文（Hugging Face 每日热榜，▲ = 社区点赞）');
 add('P', (feed.papers || []).map((p) => ({ ...p, kind: 'paper' })), (p) => `(▲${p.upvotes}) ${p.title} —— ${clip(p.summary, 380)}`);
 lines.push('\n## GitHub 今日趋势（AI 相关）');
 add('G', (feed.github || []).map((g) => ({ ...g, kind: 'repo', title: g.name })), (g) => `(今日 +${g.starsToday}★，总 ${g.stars}★，${g.language || '—'}) ${g.name} —— ${clip(g.description, 200)}`);
+lines.push('\n## Hugging Face 热门模型（新开放的权重）');
+add('M', (feed.models || []).map((m) => ({ ...m, kind: 'model', title: m.name })), (m) => `${m.name} (${m.task || '—'}, ${m.likes} 赞, ${m.downloads} 下载)`);
+lines.push('\n## Product Hunt 新产品（AI 类）');
+add('U', (feed.products || []).map((u) => ({ ...u, kind: 'product' })), (u) => `${u.title} —— ${clip(u.summary, 160)}`);
 lines.push('\n## X 上的 builder');
 add('X', tweets, (t) => `${t.who}（${clip(t.role, 60)}）：${clip(t.text, 420)} (${t.likes} 赞)`);
 lines.push('\n## 中文媒体');
@@ -92,10 +101,14 @@ ${interests.length ? `- 读者特别关注：${interests.join('、')}。同等�
 ## 只输出一个 JSON 对象，结构如下（ref 和 also 只能填材料里的 ID）
 {
   "headline": "今天最重要的一件事，一句话，不超过 30 个字",
+  "intro": "主编开场白：一句话（不超过 50 字）说清今天整体的走向，例如几件事共同指向什么。只用材料里的事实，不下空泛评语",
   "tldr": ["30 秒版要点，3 条，每条不超过 40 字，带数字"],
   "lead": { "ref": "H2", "also": ["B1"], "title": "头条标题", "what": "发生了什么，2–3 句", "why": "为什么重要，1–2 句" },
   "stories": [ { "ref": "B3", "also": [], "tag": "模型 | 产品 | 工程 | 开源 | 研究 | 安全与政策 | 商业", "title": "…", "body": "1–2 句" } ],
   "voices": [ { "ref": "X4", "who": "身份 + 名字", "point": "他的观点，浓缩成一句中文" } ],
+  "community": [ { "ref": "R2", "title": "中文标题", "point": "社区在争论或惊叹什么，一句话" } ],
+  "models": [ { "ref": "M1", "insight": "一句话：是什么模型、能做什么、谁发布的" } ],
+  "products": [ { "ref": "U3", "insight": "一句话：解决什么问题" } ],
   "papers": [ { "ref": "P1", "title": "中文标题", "insight": "一句话：做了什么、结果如何" } ],
   "repos": [ { "ref": "G2", "insight": "一句话：解决什么问题、适合谁" } ],
   "quick": [ { "ref": "H9", "text": "一行快讯，不超过 36 字" } ],
@@ -103,7 +116,8 @@ ${interests.length ? `- 读者特别关注：${interests.join('、')}。同等�
 }
 
 ## 数量
-- stories 6–9 条（不含头条），voices 2–4 条，papers 3–4 条，repos 3–4 条，quick 4–8 条。
+- stories 6–9 条（不含头条），voices 2–4 条，community 2–3 条，models 2–3 条，products 2–3 条，papers 3–4 条，repos 3–4 条，quick 4–8 条。
+- Techmeme、Reddit 的条目可以作为要闻的主来源或 also；Reddit 适合放进 community（社区在聊）。
 - 没有播客材料时 podcast 写 null。
 - 同一个 ID 只能出现一次（also 也算）。宁缺毋滥。`;
 
@@ -157,6 +171,10 @@ const sourceLabel = (it) => ({
   hn: `Hacker News · ${it.points} 分`,
   paper: `Hugging Face 热榜 · ▲${it.upvotes}`,
   repo: `GitHub · 今日 +${it.starsToday}★`,
+  techmeme: it.by ? `${it.by.split('/').pop()} · Techmeme` : 'Techmeme',
+  reddit: `${it.subreddit} · 热度 ${it.activity}`,
+  model: `Hugging Face · ${it.likes} 赞`,
+  product: 'Product Hunt',
   x: `${it.who} · X`,
   blog: it.source,
   cn: it.source,
@@ -169,16 +187,20 @@ function normalize(c) {
     const it = resolve(s?.ref);
     if (!it) return null;
     const also = (s.also || []).map(resolve).filter(Boolean).map(link);
-    return { title: s.title, body: s.body, what: s.what, why: s.why, tag: s.tag, source: link(it), also };
+    return { title: s.title, body: s.body, what: s.what, why: s.why, tag: s.tag, source: link(it), also, heat: heat(it, also.length) };
   };
   const out = {
     headline: c.headline,
+    intro: c.intro || '',
     tldr: (c.tldr || []).filter(Boolean).slice(0, 3),
     lead: c.lead ? story(c.lead) : null,
     stories: (c.stories || []).map(story).filter(Boolean).slice(0, 10),
     voices: (c.voices || []).map((v) => { const it = resolve(v.ref); return it && { who: v.who || it.who, point: v.point, url: it.url }; }).filter(Boolean).slice(0, 4),
     papers: (c.papers || []).map((p) => { const it = resolve(p.ref); return it && { title: p.title, original: it.title, insight: p.insight, url: it.url, upvotes: it.upvotes }; }).filter(Boolean).sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0)).slice(0, 5),
     repos: (c.repos || []).map((r) => { const it = resolve(r.ref); return it && { name: it.name, insight: r.insight, url: it.url, starsToday: it.starsToday, stars: it.stars, language: it.language }; }).filter(Boolean).sort((a, b) => (b.starsToday || 0) - (a.starsToday || 0)).slice(0, 5),
+    community: (c.community || []).map((r) => { const it = resolve(r.ref); return it && { title: r.title || it.title, point: r.point, url: it.url, label: sourceLabel(it) }; }).filter(Boolean).slice(0, 3),
+    models: (c.models || []).map((m) => { const it = resolve(m.ref); return it && { name: it.name, insight: m.insight, url: it.url, likes: it.likes, task: it.task }; }).filter(Boolean).slice(0, 3),
+    products: (c.products || []).map((u) => { const it = resolve(u.ref); return it && { name: it.title, insight: u.insight, url: it.url }; }).filter(Boolean).slice(0, 3),
     quick: (c.quick || []).map((q) => { const it = resolve(q.ref); return it && { text: q.text, url: it.url, label: sourceLabel(it) }; }).filter(Boolean).slice(0, 8),
     podcast: null,
   };
@@ -193,7 +215,7 @@ function normalize(c) {
 // Built from the ranked material alone, when the model is unavailable. Titles stay in their original language.
 function fallback() {
   const take = (prefix, n) => Object.keys(refs).filter((k) => k.startsWith(prefix)).slice(0, n);
-  const plain = (id, tag) => { const it = resolve(id); return it && { title: it.title, body: clip(it.summary || it.description || '', 160), tag, source: link(it), also: [] }; };
+  const plain = (id, tag) => { const it = resolve(id); return it && { title: it.title, body: clip(it.summary || it.description || '', 160), tag, source: link(it), also: [], heat: heat(it, 0) }; };
   const stories = [...take('B', 4).map((id) => plain(id, '博客')), ...take('H', 6).map((id) => plain(id, 'HN'))].filter(Boolean);
   return {
     degraded: true,
@@ -201,7 +223,11 @@ function fallback() {
     tldr: [],
     lead: stories.shift() || null,
     stories,
+    intro: '',
     voices: [],
+    community: take('R', 3).map((id) => { const it = resolve(id); return it && { title: it.title, point: clip(it.summary, 120), url: it.url, label: sourceLabel(it) }; }).filter(Boolean),
+    models: take('M', 3).map((id) => { const it = resolve(id); return it && { name: it.name, insight: it.task, url: it.url, likes: it.likes, task: it.task }; }).filter(Boolean),
+    products: [],
     papers: take('P', 4).map((id) => { const it = resolve(id); return { title: it.title, insight: clip(it.summary, 140), url: it.url, upvotes: it.upvotes }; }),
     repos: take('G', 4).map((id) => { const it = resolve(id); return { name: it.name, insight: it.description, url: it.url, starsToday: it.starsToday, stars: it.stars, language: it.language }; }),
     quick: [],
@@ -230,7 +256,9 @@ async function main() {
   if (webDir && existsSync(join(webDir, 'archive'))) {
     number = (await readdir(join(webDir, 'archive'))).filter((f) => /^\d{4}-\d{2}-\d{2}\.html$/.test(f) && f !== `${ymd}.html`).length + 1;
   }
-  const count = [issue.lead, ...issue.stories].filter(Boolean).length + issue.voices.length + issue.papers.length + issue.repos.length + issue.quick.length + (issue.podcast ? 1 : 0);
+  const count = [issue.lead, ...issue.stories].filter(Boolean).length
+    + ['voices', 'community', 'models', 'products', 'papers', 'repos', 'quick'].reduce((s, k) => s + (issue[k] || []).length, 0)
+    + (issue.podcast ? 1 : 0);
   const meta = { ymd, dateLabel, number, scanned: feed.stats?.total || Object.keys(refs).length, picked: count, stats: feed.stats || {}, missing: feed.errors || [] };
 
   const email = renderIssue(issue, meta, { mode: 'email' });

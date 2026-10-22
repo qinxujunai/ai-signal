@@ -49,7 +49,8 @@ function subjectFor(html) {
 
 async function sendEmail(text, toEmail) {
   const isHtml = text.trim().match(/^<(!DOCTYPE|html)/i);
-  const fromEmail = process.env.QQ_EMAIL || '2575244383@qq.com';
+  const fromEmail = process.env.QQ_EMAIL;
+  if (!fromEmail) throw new Error('QQ_EMAIL not found in .env');
   const authCode = process.env.QQ_SMTP_AUTH;
   if (!authCode) throw new Error('QQ_SMTP_AUTH not found in .env');
 
@@ -73,7 +74,7 @@ async function sendEmail(text, toEmail) {
   }
 
   const info = await transporter.sendMail(mailOptions);
-  await logDelivery('OK', `Email sent to ${toEmail} (id: ${info.messageId})`);
+  await logDelivery('OK', `Email sent (id: ${info.messageId})`);
 }
 
 // -- Cooldown -----------------------------------------------------------------
@@ -127,11 +128,11 @@ async function main() {
       const toEmail = delivery.email || process.env.QQ_EMAIL;
       if (!toEmail) throw new Error('delivery.email not found in config.json');
       if (dryRun) {
-        console.log(JSON.stringify({ status: 'dry-run', message: `Would send to ${toEmail}` }));
+        console.log(JSON.stringify({ status: 'dry-run', message: 'Would send to the configured address' }));
       } else {
         await sendEmail(digestText, toEmail);
         await recordSent();
-        console.log(JSON.stringify({ status: 'ok', message: `Digest sent to ${toEmail}` }));
+        console.log(JSON.stringify({ status: 'ok', message: 'Digest sent' }));
       }
     } else {
       // stdout fallback
