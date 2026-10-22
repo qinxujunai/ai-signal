@@ -78,7 +78,7 @@ async function feeds(list, window, failed) {
       const items = parseFeed(await get(url))
         .filter((i) => fresh(i.publishedAt, window, NOW) && (!filter || filter.test(i.title)))
         .slice(0, 5);
-      for (const { raw, ...i } of items) out.push({ source, ...i });
+      for (const { html, ...i } of items) out.push({ source, ...i });
     } catch (e) {
       failed.push(`${source}: ${e.message}`);
     }
@@ -145,7 +145,7 @@ async function products() {
   return parseFeed(await get('https://www.producthunt.com/feed?category=artificial-intelligence'))
     .filter((i) => fresh(i.publishedAt, FRESH, NOW))
     .slice(0, 8)
-    .map(({ raw, ...i }) => ({ ...i, summary: decode(i.summary).replace(/\s*Discussion\s*\|\s*Link\s*$/, '') }));
+    .map(({ html, ...i }) => ({ ...i, summary: decode(i.summary).replace(/\s*Discussion\s*\|\s*Link\s*$/, '') }));
 }
 
 // ── main ────────────────────────────────────────────────────────────────────

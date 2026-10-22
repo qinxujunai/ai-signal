@@ -4,7 +4,7 @@ AI Signal：每天北京时间 10:00:00 送达的 AI 简报，发到邮箱，同
 
 ## 架构
 ```
-scripts/sources.js         各信源的解析（纯函数，有测试）+ fetch
+scripts/sources.js         各信源的解析（RSS/Atom 用 fast-xml-parser，网页用 cheerio，不手写正则；纯函数，有测试）+ fetch
 scripts/prepare-digest.js  收集素材 → feed.json（36 小时内，去掉 data/seen.json 里发过的）
 scripts/remix-digest.js    素材编号 → DeepSeek 写 JSON（只能引用编号）→ 回填链接和数字 → 渲染
 scripts/render.js          邮件与网页共用的排版（表格 + 内联样式，640px 单栏；白底黑字，灰色分层，只有链接是蓝色，测试限定最多 7 种颜色）

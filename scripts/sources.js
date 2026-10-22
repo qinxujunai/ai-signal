@@ -1,6 +1,9 @@
 // AI Signal — sources. Pure parsers (tested in test/) plus the fetchers that use them.
 // Every fetcher may throw; prepare-digest.js wraps each one so a dead source never stops an issue.
 
+import { XMLParser } from 'fast-xml-parser';
+import * as cheerio from 'cheerio';
+
 export const HOURS = 3600 * 1000;
 const UA = 'Mozilla/5.0 (compatible; AI-Signal/4.0; +https://github.com/qinxujunai/ai-signal)';
 
@@ -21,29 +24,44 @@ export async function get(url, { timeout = 15000, json = false, headers = {} } =
   }
 }
 
-const entities = (s) => s
-  .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;|&#039;|&apos;/g, "'")
-  .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16))).replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(+n))
-  .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&');
-// CDATA → entities → tags → entities again (feeds often escape their HTML twice).
-export const decode = (s = '') => entities(entities(String(s).replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1')).replace(/<[^>]+>/g, ' '))
-  .replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+// Parsing is delegated to mature libraries: fast-xml-parser for RSS/Atom, cheerio for HTML.
+const xml = new XMLParser({
+  ignoreAttributes: false,
+  attributeNamePrefix: '',
+  textNodeName: 'text',
+  cdataPropName: false,
+  processEntities: true,
+  htmlEntities: true,
+  isArray: (name) => name === 'item' || name === 'entry' || name === 'link',
+});
+
+const textOf = (v) => (v == null ? '' : typeof v === 'object' ? String(v.text ?? '') : String(v));
+// Plain text from an HTML fragment (feeds often escape their HTML, so one more pass for leftovers).
+export const decode = (s = '') => {
+  let text = String(s);
+  for (let i = 0; i < 3 && (i === 0 || /<[a-z/!][^>]*>|&[a-z#0-9]+;/i.test(text)); i += 1) {
+    text = cheerio.load(`<body>${text}</body>`)('body').text();
+  }
+  return text.replace(/\s+/g, ' ').trim();
+};
 
 const toISO = (d) => { const t = new Date(d); return Number.isNaN(t.getTime()) ? null : t.toISOString(); };
 
-// Minimal RSS 2.0 / Atom parser: title, link, date, summary, and the raw item for source-specific parsing.
-export function parseFeed(xml) {
-  const blocks = String(xml).split(/<item[\s>]|<entry[\s>]/).slice(1);
-  return blocks.map((b) => {
-    const tag = (t) => b.match(new RegExp(`<${t}[^>]*>([\\s\\S]*?)</${t}>`))?.[1];
-    const link = tag('link')?.trim() || b.match(/<link[^>]*href="([^"]+)"/)?.[1] || '';
-    const date = tag('pubDate') || tag('published') || tag('updated') || tag('dc:date');
+// RSS 2.0 / Atom items: title, link, date, summary, and the item's HTML for source-specific parsing.
+export function parseFeed(source) {
+  const doc = xml.parse(String(source));
+  const items = doc?.rss?.channel?.item || doc?.rss?.item || doc?.feed?.entry || doc?.['rdf:RDF']?.item || [];
+  return items.map((it) => {
+    const links = it.link || [];
+    const link = links.map((l) => (typeof l === 'object' ? (l.rel && l.rel !== 'alternate' ? '' : l.href || l.text) : l)).find(Boolean) || '';
+    const date = textOf(it.pubDate || it.published || it.updated || it['dc:date']);
+    const html = textOf(it['content:encoded'] || it.content || it.description || it.summary);
     return {
-      title: decode(tag('title')),
-      url: decode(link),
-      publishedAt: date ? toISO(decode(date)) : null,
-      summary: decode(tag('description') || tag('summary') || tag('content') || '').slice(0, 400),
-      raw: b,
+      title: decode(textOf(it.title)),
+      url: String(link).trim(),
+      publishedAt: date ? toISO(date.trim()) : null,
+      summary: decode(textOf(it.description || it.summary || it.content)).slice(0, 400),
+      html,
     };
   }).filter((x) => x.title && x.url);
 }
@@ -57,8 +75,9 @@ export function parseTechmeme(xml, { now = Date.now(), window = 36 * HOURS } = {
     .map((i) => {
       const by = i.title.match(/\(([^()]+)\)\s*$/)?.[1] || '';
       const title = i.title.replace(/\s*\([^()]+\)\s*$/, '');
-      const original = i.raw.match(/<B><A HREF="([^"]+)"/i)?.[1] || i.url;
-      return { title, url: decode(original), discussion: i.url, by, publishedAt: i.publishedAt };
+      // The original article is the first bold link in the item's HTML.
+      const original = cheerio.load(i.html)('b a[href]').first().attr('href') || i.url;
+      return { title, url: original, discussion: i.url, by, publishedAt: i.publishedAt };
     })
     .filter((i) => AI_RE.test(i.title));
 }
@@ -66,17 +85,23 @@ export function parseTechmeme(xml, { now = Date.now(), window = 36 * HOURS } = {
 // AINews (Latent Space) publishes a daily recap of X, Reddit and Discord. Its Reddit section is a list of
 // threads: <li><p><strong><a href="reddit url">title</a></strong> (Activity: 441): <strong>summary</strong> …
 export function parseAINewsReddit(html) {
+  const $ = cheerio.load(String(html));
   const out = [];
-  const re = /<li><p><strong><a href="(https:\/\/www\.reddit\.com\/r\/([^/]+)\/comments\/[^"]+)">([\s\S]*?)<\/a><\/strong>\s*\(Activity:\s*([\d,]+)\):\s*([\s\S]*?)<\/p>/g;
-  for (const m of String(html).matchAll(re)) {
+  $('li > p').each((_, p) => {
+    const a = $(p).children('strong').first().children('a[href*="reddit.com/r/"]').first();
+    if (!a.length) return;
+    const url = a.attr('href');
+    const rest = $(p).text().slice($(p).children('strong').first().text().length);
+    const activity = rest.match(/\(Activity:\s*([\d,]+)\)/)?.[1];
+    if (!activity) return;
     out.push({
-      title: decode(m[3]).replace(/\s*[-–]\s*$/, ''),
-      url: m[1],
-      subreddit: `r/${m[2]}`,
-      activity: Number(m[4].replace(/,/g, '')) || 0,
-      summary: decode(m[5]).slice(0, 500),
+      title: decode(a.text()).replace(/\s*[-–]\s*$/, ''),
+      url,
+      subreddit: `r/${url.match(/reddit\.com\/r\/([^/]+)/)[1]}`,
+      activity: Number(activity.replace(/,/g, '')) || 0,
+      summary: decode(rest.replace(/^\s*\(Activity:[^)]*\):\s*/, '')).slice(0, 500),
     });
-  }
+  });
   return out.sort((a, b) => b.activity - a.activity);
 }
 
@@ -84,9 +109,7 @@ export function parseAINewsReddit(html) {
 export function latestAINews(xml, { now = Date.now(), window = 36 * HOURS } = {}) {
   const issue = parseFeed(xml).find((i) => /^\s*\[AINews\]/.test(i.title) && fresh(i.publishedAt, window, now));
   if (!issue) return null;
-  const content = issue.raw.match(/<content:encoded>([\s\S]*?)<\/content:encoded>/)?.[1] || '';
-  const html = content.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1');
-  return { title: issue.title.replace(/^\s*\[AINews\]\s*/, ''), url: issue.url, publishedAt: issue.publishedAt, reddit: parseAINewsReddit(html) };
+  return { title: issue.title.replace(/^\s*\[AINews\]\s*/, ''), url: issue.url, publishedAt: issue.publishedAt, reddit: parseAINewsReddit(issue.html) };
 }
 
 // Hugging Face trending models: new or newly popular open weights.
@@ -105,14 +128,21 @@ export function mapHFModels(list, { now = Date.now(), maxAgeDays = 45 } = {}) {
 
 // GitHub Trending has no API: read the server-rendered page.
 export function parseTrending(html) {
-  return String(html).split('<article class="Box-row">').slice(1).map((r) => {
-    const name = r.match(/<h2[^>]*>[\s\S]*?href="\/([^"]+)"/)?.[1]?.trim();
-    const description = decode(r.match(/<p class="col-9[^"]*">([\s\S]*?)<\/p>/)?.[1] || '');
-    const today = r.match(/([\d,]+) stars? today/)?.[1]?.replace(/,/g, '');
-    const total = r.match(/href="\/[^"]+\/stargazers"[^>]*>[\s\S]*?([\d,]+)\s*<\/a>/)?.[1]?.replace(/,/g, '');
-    const language = decode(r.match(/itemprop="programmingLanguage">([^<]+)</)?.[1] || '');
-    return name && { name, description, url: `https://github.com/${name}`, starsToday: Number(today) || 0, stars: Number(total) || 0, language };
-  }).filter(Boolean);
+  const $ = cheerio.load(String(html));
+  const num = (t) => Number(String(t || '').replace(/[^\d]/g, '')) || 0;
+  return $('article.Box-row').map((_, el) => {
+    const row = $(el);
+    const name = (row.find('h2 a').attr('href') || '').replace(/^\//, '').trim();
+    if (!name) return null;
+    return {
+      name,
+      description: decode(row.find('p').first().text()),
+      url: `https://github.com/${name}`,
+      starsToday: num(row.text().match(/([\d,]+) stars? today/)?.[1]),
+      stars: num(row.find(`a[href="/${name}/stargazers"]`).text()),
+      language: decode(row.find('[itemprop="programmingLanguage"]').text()),
+    };
+  }).get().filter(Boolean);
 }
 
 // Signal strength, 1–3: how many independent sources carried the story, and how hot the main one is.
