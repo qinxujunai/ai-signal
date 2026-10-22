@@ -90,6 +90,14 @@ test('render: masthead, sections, escaping, web-only bits', () => {
   assert.ok(web.includes('<main>') && web.includes('rel="icon"'));
   assert.equal((web.match(/<h1/g) || []).length, 1);
   assert.ok(!/<style|<img|<script/i.test(email), 'email: no style blocks, images or scripts');
+  // Restraint: greys plus one blue for links, nothing else (no section colours, no tinted pills).
+  const colours = new Set((email.match(/#[0-9a-f]{6}\b/gi) || []).map((c) => c.toLowerCase()));
+  assert.ok(colours.size <= 7, `palette has ${colours.size} colours: ${[...colours]}`);
+  for (const c of colours) {
+    const [r, g, b] = [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16));
+    assert.ok(c === '#0066cc' || Math.max(r, g, b) - Math.min(r, g, b) <= 12, `${c} is neither grey nor the link blue`);
+  }
+  assert.ok(web.includes('backdrop-filter'), 'web edition has the translucent bar');
   const arch = renderArchive(['2026-10-22', '2026-10-21']);
-  assert.ok(arch.includes('第 2 期 · 2026-10-22') && arch.includes('往期 · 2 期'));
+  assert.ok(arch.includes('第 2 期 · 2026-10-22') && arch.includes('共 2 期'));
 });
