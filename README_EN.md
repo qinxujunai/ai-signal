@@ -2,52 +2,41 @@
 
 # AI Signal
 
-**Hundreds of AI headlines a day. The twenty that matter, in three minutes.**
+**A three-minute AI briefing, in your inbox at 10:00 Beijing time every day.**
 
-Every day at 10:00 Beijing time, AI Signal reads:
-- AI builders on X
-- Hacker News
-- the Hugging Face Daily Papers ranking
-- GitHub Trending
-- official lab blogs
-- Chinese media
-
-DeepSeek selects, merges and rewrites the day's items against a fixed editorial brief. The issue goes to your inbox and to the web.
+> Hundreds of AI updates arrive every day. The hard part isn't seeing them; it's telling which are credible and which are worth reading. I also want to know about good GitHub projects early, and what problem each one solves. So it reads everything for me each morning.
+> — Qin Xujun
 
 [Latest issue](https://qinxujunai.github.io/ai-signal/) · [Archive](https://qinxujunai.github.io/ai-signal/archive/)
 
-## What an issue contains
-- A one-line headline, which is also the email subject.
-- A 30-second summary.
-- One lead story with "why it matters".
-- 6–9 stories, each with a source line.
-- Opinions from X.
-- Top papers.
-- Trending AI repositories.
-- Quick hits.
-- A podcast digest when there is a new episode.
+## What it reads
+AI builders on X, Hacker News, Techmeme, Reddit (via [AINews](https://www.latent.space/s/ainews)), Hugging Face papers and trending models, GitHub Trending, Product Hunt, lab blogs (OpenAI, Anthropic, Google DeepMind, Qwen and more), and Chinese tech media. About 100 fresh items a day; 15–25 make the issue.
 
-The layout follows TLDR, The Rundown, smol.ai AINews and Axios: one column, no images, no tracking.
+## What an issue contains
+- **Masthead:** issue number, the day's headline (also the email subject), and one editor's line on where the day points.
+- **30 seconds:** three takeaways with numbers.
+- **Lead story:** what happened and why it matters.
+- **Stories:** 6–9 items, each with a tag, a signal-strength mark (●●○), the source and the discussion.
+- **Community:** the hottest Reddit threads. **Voices:** sharp takes from X.
+- **New models / new products:** Hugging Face trending weights and Product Hunt launches.
+- **Papers / open source / quick hits.**
 
 ## Why you can trust it
-- **The model never writes links.** Every source item gets an ID, and the model may only cite IDs. Code fills in the real links, scores and star counts. An unknown ID drops the item.
-- **No repeats.** Sent links are kept in `data/seen.json` for 60 days.
-- **Always delivered.** If the model fails, the issue is built from ranked sources and says so. Missing sources are named in the footer.
+- **The model never writes links or numbers.** Every item has an ID; the model may only cite IDs, and code fills in links, scores and star counts from the raw data. An unknown ID drops the item.
+- **No repeats:** sent links are remembered for 60 days.
+- **Never silent:** without the model, the issue is built from ranked sources and says so; a dead source is named in the footer.
 
-## How it works
-1. `prepare-digest.js` collects the last 36 hours.
-2. `remix-digest.js` numbers the items, asks DeepSeek for a JSON issue, resolves the IDs, and renders the email and web editions (`render.js`).
-3. `deliver.js` sends it over QQ SMTP.
-
-GitHub Actions (`.github/workflows/daily.yml`) runs this daily and commits the web edition. That commit also keeps GitHub from pausing the schedule for inactivity.
+## How it arrives on time
+GitHub's scheduler can start a job hours late (a 09:41 run started at 14:32 on 2026-10-22) and may drop runs. So a run is queued every 20 minutes from 04:07 to 09:47 Beijing time; the first one to start claims the day, collects and edits at 09:35, and sends at exactly 10:00:00. Later runs see the issue and stop; a run that only starts after 10:00 sends at once.
 
 ## Setup
-Add these secrets:
-- `DEEPSEEK_API_KEY`
-- `QQ_EMAIL`
-- `QQ_SMTP_AUTH`
-- `AI_SIGNAL_CONFIG` (the contents of `config.example.json`)
+Secrets: `DEEPSEEK_API_KEY`, `QQ_EMAIL`, `QQ_SMTP_AUTH`, `AI_SIGNAL_CONFIG` (contents of `config.example.json`). Addresses live only in secrets; neither the code nor the logs print them.
 
-Cost: about $0.003 a day with deepseek-chat.
+```bash
+cd scripts && npm ci && npm test
+node prepare-digest.js --out /tmp/feed.json --seen ../data/seen.json
+node remix-digest.js --file /tmp/feed.json --out /tmp/email.html --web-dir /tmp/web
+node deliver.js --file /tmp/email.html --dry-run
+```
 
 MIT
