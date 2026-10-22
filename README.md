@@ -69,7 +69,7 @@ node deliver.js --file /tmp/email.html --dry-run
 没有 `DEEPSEEK_API_KEY` 时生成降级版，方便调排版。
 
 ## 成本
-deepseek-chat 每期约 2 万 token 输入、3 千 token 输出，一年约 $1–2。GitHub Actions 对公开仓库免费。
+deepseek-chat 每期约 2 万 token 输入、3 千 token 输出，一年约 $2–3。GitHub Actions 对公开仓库免费。
 
 ## 致谢
 [follow-builders](https://github.com/zarazhangrui/follow-builders) · [AINews / Latent Space](https://www.latent.space/s/ainews) · [Techmeme](https://www.techmeme.com/) · [Hacker News Algolia API](https://hn.algolia.com/api) · [Hugging Face](https://huggingface.co/papers) · [DeepSeek](https://platform.deepseek.com/)
