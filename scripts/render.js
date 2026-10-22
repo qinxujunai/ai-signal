@@ -1,102 +1,100 @@
 // AI Signal — issue layout, shared by the email and the web edition.
 //
 // Built for an inbox: one 640px column, tables and inline styles only (QQ Mail, Gmail, Apple Mail,
-// Outlook), system fonts, no images, no tracking. The issue opens on a dark masthead (brand, issue
-// number, the day's headline and one editor's line), then a 30-second summary, the lead story, and
-// colour-coded sections. Every item carries one meta line: tag, signal strength, source, discussion.
+// Outlook), system fonts, no images, no tracking.
+//
+// The look follows the restraint of Apple's own newsletters and of Stratechery / The Information:
+// white page, black type, greys for everything secondary, one blue for links. Hierarchy comes from
+// size, weight and space, not colour: no section colours, no tinted pills, no stripes. The only
+// "material" is web-only: a translucent bar (backdrop blur) at the top of the page, as on apple.com.
 
+// Seven colours in all; scripts/test checks that nothing else creeps in.
 const C = {
-  bg: '#f2f2f5', card: '#ffffff', ink: '#1d1d1f', text: '#333336', muted: '#6e6e73',
-  line: '#e8e8ed', link: '#0066cc', signal: '#e5332a', soft: '#f5f5f7',
-  night: '#0b0b0f', nightText: '#d2d2d7', nightMuted: '#a1a1a6',
+  page: '#ffffff', ink: '#1d1d1f', text: '#424245', muted: '#6e6e73',
+  line: '#d2d2d7', tile: '#f5f5f7', link: '#0066cc',
 };
-// One colour per section; the darker shade is for text on white (4.5:1), the light one for tints.
-const SECTION = {
-  lead: ['#c4271f', '#fdecea'],
-  stories: ['#c4271f', '#fdecea'],
-  community: ['#b45309', '#fff4e5'],
-  voices: ['#b45309', '#fff4e5'],
-  models: ['#4b45c6', '#eeedfc'],
-  products: ['#0060c7', '#e8f1fc'],
-  papers: ['#8a3fbf', '#f4ebfa'],
-  repos: ['#1f7a4a', '#e7f5ec'],
-  quick: ['#1d1d1f', '#f5f5f7'],
-  podcast: ['#8a3fbf', '#f4ebfa'],
-};
-const TAG = {
-  模型: SECTION.models, 产品: SECTION.products, 工程: SECTION.repos, 开源: SECTION.repos,
-  研究: SECTION.papers, 安全与政策: SECTION.lead, 商业: SECTION.community,
-};
-const FONT = "-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif";
+const FONT = "-apple-system,BlinkMacSystemFont,'SF Pro Text','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif";
+const DISPLAY = "-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif";
 const REPO = 'https://github.com/qinxujunai/ai-signal';
 const WEB = 'https://qinxujunai.github.io/ai-signal/';
+const NUM = 'font-variant-numeric:tabular-nums;';
 
 // Headings keep the table layout's look; they only give the web page (and screen readers) an outline.
 const H = (level, html) => `<h${level} style="margin:0;font:inherit;color:inherit;letter-spacing:inherit;">${html}</h${level}>`;
-// The red signal dot as the browser-tab icon, inline so the page makes no extra request.
-const ICON = `<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6' fill='%23e5332a'/%3E%3C/svg%3E">`;
+// Three dots as the browser-tab icon, inline so the page makes no extra request.
+const ICON = `<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%231d1d1f'/%3E%3Ccircle cx='4.5' cy='8' r='1.6' fill='%23fff'/%3E%3Ccircle cx='8' cy='8' r='1.6' fill='%23fff'/%3E%3Ccircle cx='11.5' cy='8' r='1.6' fill='%23fff' fill-opacity='.4'/%3E%3C/svg%3E">`;
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const k = (n) => (n >= 1000 ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k` : String(n ?? ''));
 const a = (url, text, style = '') => `<a href="${esc(url)}" target="_blank" style="color:${C.link};text-decoration:none;${style}">${text}</a>`;
-const sep = `<span style="color:#aeaeb2;">&nbsp;·&nbsp;</span>`;
+const sep = `<span style="color:${C.line};">&nbsp;&nbsp;|&nbsp;&nbsp;</span>`;
+const rule = (top = 0) => `<tr><td colspan="2" style="padding:${top}px 0 0 0;"><div style="height:1px;line-height:1px;font-size:0;background:${C.line};">&nbsp;</div></td></tr>`;
 
 // Signal strength as three dots: ●●○ = carried by two sources, or one very hot one.
-const dots = (n) => (n ? `<span style="color:${C.signal};letter-spacing:1px;" title="信号强度 ${n}/3">${'●'.repeat(n)}</span><span style="color:#d2d2d7;letter-spacing:1px;">${'●'.repeat(3 - n)}</span>` : '');
+const dots = (n) => (n ? `<span style="color:${C.ink};letter-spacing:1px;" title="信号强度 ${n}/3">${'●'.repeat(n)}</span><span style="color:${C.line};letter-spacing:1px;">${'●'.repeat(3 - n)}</span>` : '');
 
-const pill = (text, [fg, tint]) => `<span style="display:inline-block;padding:1px 7px;border-radius:9px;background:${tint};color:${fg};font-size:11px;font-weight:700;line-height:18px;">${esc(text)}</span>`;
-
-function section(key, label, note, rows) {
+// A section: a hairline, then a large title with a quiet note on the right.
+function section(label, note, rows) {
   if (!rows) return '';
-  const [fg] = SECTION[key];
   return `
-<tr><td style="padding:34px 0 0 0;">
+<tr><td style="padding:48px 0 0 0;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    ${rule()}
     <tr>
-      <td style="font-size:14px;font-weight:800;color:${C.ink};padding-bottom:9px;border-bottom:2px solid ${C.ink};"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:${fg};vertical-align:middle;"></span>&nbsp;&nbsp;<span style="display:inline-block;vertical-align:middle;">${H(2, esc(label))}</span></td>
-      <td align="right" style="font-size:12px;color:${C.muted};padding-bottom:9px;border-bottom:2px solid ${C.ink};">${esc(note || '')}</td>
+      <td style="padding:18px 0 4px 0;font-family:${DISPLAY};font-size:22px;line-height:1.25;font-weight:700;letter-spacing:-0.2px;color:${C.ink};">${H(2, esc(label))}</td>
+      <td align="right" valign="bottom" style="padding:18px 0 6px 0;font-size:13px;color:${C.muted};white-space:nowrap;">${esc(note || '')}</td>
     </tr>
     ${rows}
   </table>
 </td></tr>`;
 }
 
-// Meta line under an item: tag · signal · source · discussion · other sources.
+// Meta line under an item: tag  |  signal  |  source › discussion ›
 function metaLine(s) {
   const bits = [];
-  if (s.tag) bits.push(pill(s.tag, TAG[s.tag] || SECTION.quick));
+  if (s.tag) bits.push(`<span style="color:${C.muted};">${esc(s.tag)}</span>`);
   if (s.heat) bits.push(dots(s.heat));
+  const links = [];
   if (s.source) {
-    bits.push(a(s.source.url, `${esc(s.source.label)} ›`));
-    if (s.source.discussion && s.source.discussion !== s.source.url) bits.push(a(s.source.discussion, '讨论 ›'));
+    links.push(a(s.source.url, `${esc(s.source.label)} ›`));
+    if (s.source.discussion && s.source.discussion !== s.source.url) links.push(a(s.source.discussion, '讨论 ›'));
   }
-  for (const x of s.also || []) bits.push(a(x.url, `${esc(x.label)} ›`));
-  return `<div style="font-size:12px;line-height:20px;color:${C.muted};margin-top:7px;">${bits.join(sep)}</div>`;
+  for (const x of s.also || []) links.push(a(x.url, `${esc(x.label)} ›`));
+  if (links.length) bits.push(links.join('&nbsp;&nbsp; '));
+  return `<div style="font-size:13px;line-height:20px;color:${C.muted};margin-top:8px;${NUM}">${bits.join(sep)}</div>`;
 }
 
 function story(s, first) {
   return `
-    <tr><td colspan="2" style="padding:16px 0;${first ? '' : `border-top:1px solid ${C.line};`}">
-      <a href="${esc(s.source.url)}" target="_blank" style="font-size:16px;line-height:1.45;font-weight:700;color:${C.ink};text-decoration:none;">${esc(s.title)}</a>
-      ${s.body ? `<div style="font-size:14px;line-height:1.72;color:${C.text};margin-top:5px;">${esc(s.body)}</div>` : ''}
+    <tr><td colspan="2" style="padding:${first ? 12 : 20}px 0 20px 0;${first ? '' : `border-top:1px solid ${C.line};`}">
+      <a href="${esc(s.source.url)}" target="_blank" style="font-size:17px;line-height:1.45;font-weight:600;color:${C.ink};text-decoration:none;">${esc(s.title)}</a>
+      ${s.body ? `<div style="font-size:15px;line-height:1.7;color:${C.text};margin-top:6px;">${esc(s.body)}</div>` : ''}
       ${metaLine(s)}
     </td></tr>`;
 }
 
-// Two-column row for ranked lists: a coloured number on the left, the item on the right.
-function ranked(key, num, title, url, insight, sub, first) {
-  const [fg] = SECTION[key];
+// Two-column row for ranked lists: a quiet figure on the left, the item on the right.
+function ranked(num, title, url, insight, sub, first) {
   const border = first ? '' : `border-top:1px solid ${C.line};`;
+  const pad = first ? '12px 0 16px 0' : '16px 0';
   return `
     <tr>
-      <td width="68" valign="top" style="width:68px;padding:13px 0;${border}font-size:15px;font-weight:800;color:${fg};white-space:nowrap;">${num}</td>
-      <td valign="top" style="padding:13px 0;${border}">
-        <a href="${esc(url)}" target="_blank" style="font-size:15px;line-height:1.45;font-weight:700;color:${C.ink};text-decoration:none;">${esc(title)}</a>
-        ${insight ? `<div style="font-size:13px;line-height:1.68;color:${C.text};margin-top:3px;">${esc(insight)}</div>` : ''}
-        ${sub ? `<div style="font-size:12px;line-height:1.5;color:${C.muted};margin-top:3px;">${sub}</div>` : ''}
+      <td width="60" valign="top" style="width:60px;padding:${pad};${border}font-size:14px;line-height:22px;font-weight:600;color:${C.muted};white-space:nowrap;${NUM}">${num}</td>
+      <td valign="top" style="padding:${pad};${border}">
+        <a href="${esc(url)}" target="_blank" style="font-size:16px;line-height:22px;font-weight:600;color:${C.ink};text-decoration:none;">${esc(title)}</a>
+        ${insight ? `<div style="font-size:14px;line-height:1.65;color:${C.text};margin-top:4px;">${esc(insight)}</div>` : ''}
+        ${sub ? `<div style="font-size:13px;line-height:1.5;color:${C.muted};margin-top:4px;">${sub}</div>` : ''}
       </td>
     </tr>`;
 }
+
+// Web only: the translucent bar of apple.com (backdrop blur over the page), with the wordmark and one link.
+const glassBar = (right) => `<div style="position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.72);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);">
+<div style="max-width:640px;margin:0 auto;padding:0 24px;height:48px;display:flex;align-items:center;justify-content:space-between;font-family:${FONT};">
+<a href="${WEB}" style="font-size:15px;font-weight:600;color:${C.ink};text-decoration:none;letter-spacing:-0.1px;">AI Signal</a>
+<span style="font-size:13px;">${right}</span>
+</div></div>`;
+const wordmark = `<span style="font-family:${DISPLAY};font-size:15px;font-weight:700;color:${C.ink};letter-spacing:-0.1px;">AI Signal</span><span style="font-size:15px;color:${C.muted};">&nbsp;信号</span>`;
 
 export function renderIssue(issue, meta, { mode = 'email' } = {}) {
   const web = mode === 'web';
@@ -116,120 +114,113 @@ export function renderIssue(issue, meta, { mode = 'email' } = {}) {
     s.podcasts && `播客 ${s.podcasts}`,
   ].filter(Boolean).join(' · ');
 
-  // ── masthead: brand, issue number, headline, the editor's line, a thin signal stripe ──
+  // ── masthead: wordmark and issue, the day's headline, the editor's line, then the facts ──
   const issueNo = meta.number ? `第 ${meta.number} 期` : '';
-  const stripe = (w, color) => `<td width="${w}" height="3" bgcolor="${color}" style="width:${w}px;height:3px;background:${color};font-size:0;line-height:0;">&nbsp;</td>`;
   const masthead = `
-<tr><td style="background:${C.night};border-radius:18px 18px 0 0;padding:24px 24px 26px 24px;" bgcolor="${C.night}">
+<tr><td style="padding:${web ? 40 : 32}px 0 0 0;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
     <tr>
-      <td style="font-size:13px;font-weight:800;color:#ffffff;letter-spacing:0.4px;"><span style="color:${C.signal};">●</span>&nbsp;AI Signal&nbsp;<span style="color:${C.nightMuted};font-weight:600;">信号</span></td>
-      <td align="right" style="font-size:12px;color:${C.nightMuted};">${esc(issueNo)}</td>
+      ${web ? '' : `<td>${wordmark}</td>`}
+      <td align="${web ? 'left' : 'right'}" style="font-size:13px;color:${C.muted};${NUM}">${esc([issueNo, meta.dateLabel].filter(Boolean).join(' · '))}</td>
     </tr>
   </table>
-  <div style="font-size:12px;color:${C.nightMuted};margin-top:20px;">${esc(meta.dateLabel)} · 从 ${meta.scanned} 条里选了 ${meta.picked} 条 · 约 ${minutes} 分钟</div>
-  <div style="font-size:25px;line-height:1.32;font-weight:800;color:#ffffff;letter-spacing:-0.3px;margin-top:8px;">${H(1, esc(issue.headline))}</div>
-  ${issue.intro ? `<div style="font-size:15px;line-height:1.7;color:${C.nightText};margin-top:12px;">${esc(issue.intro)}</div>` : ''}
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:20px;"><tr>${stripe(36, C.signal)}${stripe(18, '#ff9f0a')}${stripe(10, '#5e5ce6')}</tr></table>
+  <div style="font-family:${DISPLAY};font-size:32px;line-height:1.22;font-weight:700;color:${C.ink};letter-spacing:-0.6px;margin-top:${web ? 12 : 36}px;">${H(1, esc(issue.headline))}</div>
+  ${issue.intro ? `<div style="font-size:19px;line-height:1.55;color:${C.text};margin-top:14px;letter-spacing:-0.1px;">${esc(issue.intro)}</div>` : ''}
+  <div style="font-size:13px;color:${C.muted};margin-top:18px;${NUM}">从 ${meta.scanned} 条新内容里选了 ${meta.picked} 条 · 约 ${minutes} 分钟读完</div>
 </td></tr>`;
 
   const degraded = issue.degraded ? `
-<tr><td style="padding:18px 0 0 0;font-size:13px;line-height:1.6;color:${C.text};">今天的模型服务没有响应，本期按来源热度直接排序，标题保留原文。明天会恢复编辑版。</td></tr>` : '';
+<tr><td style="padding:20px 0 0 0;font-size:14px;line-height:1.6;color:${C.text};">今天的模型服务没有响应，本期按来源热度直接排序，标题保留原文。明天会恢复编辑版。</td></tr>` : '';
 
   const tldr = issue.tldr?.length ? `
-<tr><td style="padding:24px 0 0 0;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.soft};border-radius:14px;" bgcolor="${C.soft}">
-    <tr><td style="padding:16px 20px 12px 20px;">
-      <div style="font-size:12px;font-weight:800;color:${C.muted};margin-bottom:6px;">30 秒读完</div>
-      ${issue.tldr.map((t, i) => `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td width="26" valign="top" style="width:26px;padding:5px 0;font-size:15px;font-weight:800;color:${C.signal};">${i + 1}</td><td valign="top" style="padding:5px 0;font-size:14px;line-height:1.65;color:${C.ink};">${esc(t)}</td></tr></table>`).join('')}
+<tr><td style="padding:28px 0 0 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.tile};border-radius:18px;" bgcolor="${C.tile}">
+    <tr><td style="padding:20px 24px 16px 24px;">
+      <div style="font-size:13px;font-weight:600;color:${C.muted};margin-bottom:6px;">30 秒读完</div>
+      ${issue.tldr.map((t, i) => `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td width="24" valign="top" style="width:24px;padding:6px 0;font-size:16px;line-height:1.6;font-weight:600;color:${C.ink};${NUM}">${i + 1}</td><td valign="top" style="padding:6px 0;font-size:16px;line-height:1.6;color:${C.ink};">${esc(t)}</td></tr></table>`).join('')}
     </td></tr>
   </table>
 </td></tr>` : '';
 
   const L = issue.lead;
   const lead = L ? `
-<tr><td style="padding:30px 0 0 0;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
-    <td width="4" bgcolor="${C.signal}" style="width:4px;background:${C.signal};border-radius:2px;font-size:0;">&nbsp;</td>
-    <td style="padding:2px 0 2px 16px;">
-      <div style="font-size:12px;font-weight:800;color:${SECTION.lead[0]};">${H(2, '头条')}</div>
-      <a href="${esc(L.source.url)}" target="_blank" style="display:block;font-size:21px;line-height:1.4;font-weight:800;color:${C.ink};text-decoration:none;margin-top:6px;">${esc(L.title)}</a>
-      ${L.what || L.body ? `<div style="font-size:15px;line-height:1.78;color:${C.text};margin-top:8px;">${esc(L.what || L.body)}</div>` : ''}
-      ${L.why ? `<div style="font-size:14px;line-height:1.72;color:${C.ink};margin-top:12px;padding:12px 14px;background:${SECTION.lead[1]};border-radius:10px;"><span style="font-weight:800;color:${SECTION.lead[0]};">为什么重要&nbsp;&nbsp;</span>${esc(L.why)}</div>` : ''}
-      ${metaLine({ ...L, tag: '' })}
-    </td>
-  </tr></table>
+<tr><td style="padding:44px 0 0 0;">
+  <div style="font-size:13px;font-weight:600;color:${C.muted};">${H(2, '头条')}</div>
+  <a href="${esc(L.source.url)}" target="_blank" style="display:block;font-family:${DISPLAY};font-size:26px;line-height:1.3;font-weight:700;letter-spacing:-0.4px;color:${C.ink};text-decoration:none;margin-top:8px;">${esc(L.title)}</a>
+  ${L.what || L.body ? `<div style="font-size:17px;line-height:1.7;color:${C.text};margin-top:12px;">${esc(L.what || L.body)}</div>` : ''}
+  ${L.why ? `<div style="font-size:17px;line-height:1.7;color:${C.text};margin-top:12px;"><span style="font-weight:600;color:${C.ink};">为什么重要。</span>${esc(L.why)}</div>` : ''}
+  ${metaLine({ ...L, tag: '' })}
 </td></tr>` : '';
 
-  const stories = issue.stories?.length ? section('stories', '要闻', `${issue.stories.length} 条`, issue.stories.map((x, i) => story(x, i === 0)).join('')) : '';
+  const stories = issue.stories?.length ? section('要闻', `${issue.stories.length} 条`, issue.stories.map((x, i) => story(x, i === 0)).join('')) : '';
 
-  const community = issue.community?.length ? section('community', '社区在聊', 'Reddit · 经 AINews', issue.community.map((c, i) => `
-    <tr><td colspan="2" style="padding:14px 0;${i ? `border-top:1px solid ${C.line};` : ''}">
-      <a href="${esc(c.url)}" target="_blank" style="font-size:15px;line-height:1.5;font-weight:700;color:${C.ink};text-decoration:none;">${esc(c.title)}</a>
-      ${c.point ? `<div style="font-size:14px;line-height:1.7;color:${C.text};margin-top:4px;">${esc(c.point)}</div>` : ''}
-      <div style="font-size:12px;margin-top:6px;">${a(c.url, `${esc(c.label)} ›`)}</div>
+  const community = issue.community?.length ? section('社区在聊', 'Reddit · 经 AINews', issue.community.map((c, i) => `
+    <tr><td colspan="2" style="padding:${i ? 18 : 12}px 0 18px 0;${i ? `border-top:1px solid ${C.line};` : ''}">
+      <a href="${esc(c.url)}" target="_blank" style="font-size:16px;line-height:1.5;font-weight:600;color:${C.ink};text-decoration:none;">${esc(c.title)}</a>
+      ${c.point ? `<div style="font-size:15px;line-height:1.7;color:${C.text};margin-top:5px;">${esc(c.point)}</div>` : ''}
+      <div style="font-size:13px;margin-top:8px;${NUM}">${a(c.url, `${esc(c.label)} ›`)}</div>
     </td></tr>`).join('')) : '';
 
-  const voices = issue.voices?.length ? section('voices', '观点', '来自 X', issue.voices.map((v, i) => `
-    <tr><td colspan="2" style="padding:14px 0;${i ? `border-top:1px solid ${C.line};` : ''}">
-      <div style="font-size:15px;line-height:1.72;color:${C.ink};">「${esc(v.point)}」</div>
-      <div style="font-size:12px;color:${C.muted};margin-top:5px;">—— ${esc(v.who)}&nbsp; ${a(v.url, '原帖 ›')}</div>
+  // Voices read as pull quotes: larger type, the speaker underneath.
+  const voices = issue.voices?.length ? section('观点', '来自 X', issue.voices.map((v, i) => `
+    <tr><td colspan="2" style="padding:${i ? 20 : 14}px 0 20px 0;${i ? `border-top:1px solid ${C.line};` : ''}">
+      <div style="font-family:${DISPLAY};font-size:19px;line-height:1.55;font-weight:500;color:${C.ink};letter-spacing:-0.1px;">「${esc(v.point)}」</div>
+      <div style="font-size:13px;color:${C.muted};margin-top:8px;">${esc(v.who)}&nbsp;&nbsp; ${a(v.url, '原帖 ›')}</div>
     </td></tr>`).join('')) : '';
 
-  const models = issue.models?.length ? section('models', '新模型', 'Hugging Face 热门', issue.models.map((m, i) =>
-    ranked('models', `♥ ${k(m.likes)}`, m.name, m.url, m.insight, esc(m.task || ''), i === 0)).join('')) : '';
+  const models = issue.models?.length ? section('新模型', 'Hugging Face 热门', issue.models.map((m, i) =>
+    ranked(`♥ ${k(m.likes)}`, m.name, m.url, m.insight, esc(m.task || ''), i === 0)).join('')) : '';
 
-  const products = issue.products?.length ? section('products', '新产品', 'Product Hunt', issue.products.map((p, i) =>
-    ranked('products', '→', p.name, p.url, p.insight, '', i === 0)).join('')) : '';
+  const products = issue.products?.length ? section('新产品', 'Product Hunt', issue.products.map((p, i) =>
+    ranked(String(i + 1).padStart(2, '0'), p.name, p.url, p.insight, '', i === 0)).join('')) : '';
 
-  const papers = issue.papers?.length ? section('papers', '论文', 'Hugging Face 今日热榜', issue.papers.map((p, i) =>
-    ranked('papers', `▲${p.upvotes ?? ''}`, p.title, p.url, p.insight, p.original && p.original !== p.title ? esc(p.original) : '', i === 0)).join('')) : '';
+  const papers = issue.papers?.length ? section('论文', 'Hugging Face 今日热榜', issue.papers.map((p, i) =>
+    ranked(`▲ ${p.upvotes ?? ''}`, p.title, p.url, p.insight, p.original && p.original !== p.title ? esc(p.original) : '', i === 0)).join('')) : '';
 
-  const repos = issue.repos?.length ? section('repos', '开源', 'GitHub 今日趋势', issue.repos.map((r, i) =>
-    ranked('repos', r.starsToday ? `+${k(r.starsToday)}` : `${k(r.stars)}★`, r.name, r.url, r.insight, [r.language, r.stars && `${k(r.stars)}★`].filter(Boolean).map(esc).join(' · '), i === 0)).join('')) : '';
+  const repos = issue.repos?.length ? section('开源', 'GitHub 今日趋势', issue.repos.map((r, i) =>
+    ranked(r.starsToday ? `+${k(r.starsToday)}` : `★ ${k(r.stars)}`, r.name, r.url, r.insight, [r.language, r.stars && `★ ${k(r.stars)}`].filter(Boolean).map(esc).join(' · '), i === 0)).join('')) : '';
 
-  const quick = issue.quick?.length ? section('quick', '快讯', '', issue.quick.map((q, i) => `
-    <tr><td colspan="2" style="padding:10px 0;${i ? `border-top:1px solid ${C.line};` : ''}font-size:14px;line-height:1.6;color:${C.ink};">
-      ${esc(q.text)}&nbsp; ${a(q.url, `${esc(q.label)} ›`, 'font-size:12px;')}
+  const quick = issue.quick?.length ? section('快讯', '', issue.quick.map((q, i) => `
+    <tr><td colspan="2" style="padding:${i ? 14 : 10}px 0 14px 0;${i ? `border-top:1px solid ${C.line};` : ''}font-size:15px;line-height:1.6;color:${C.ink};">
+      ${esc(q.text)}&nbsp;&nbsp;${a(q.url, `${esc(q.label)} ›`, 'font-size:13px;')}
     </td></tr>`).join('')) : '';
 
   const P = issue.podcast;
-  const podcast = P ? section('podcast', '播客', P.name, `
-    <tr><td colspan="2" style="padding:14px 0 4px 0;">
-      <a href="${esc(P.url)}" target="_blank" style="font-size:16px;line-height:1.45;font-weight:700;color:${C.ink};text-decoration:none;">${esc(P.title)}</a>
-      ${P.takeaway ? `<div style="font-size:14px;line-height:1.7;color:${C.ink};margin-top:6px;"><span style="font-weight:800;">一句话：</span>${esc(P.takeaway)}</div>` : ''}
-      ${(P.points || []).map((x) => `<div style="font-size:14px;line-height:1.7;color:${C.text};margin-top:4px;">· ${esc(x)}</div>`).join('')}
-      <div style="font-size:12px;margin-top:8px;">${a(P.url, '收听 ›')}</div>
+  const podcast = P ? section('播客', P.name, `
+    <tr><td colspan="2" style="padding:12px 0 4px 0;">
+      <a href="${esc(P.url)}" target="_blank" style="font-size:17px;line-height:1.45;font-weight:600;color:${C.ink};text-decoration:none;">${esc(P.title)}</a>
+      ${P.takeaway ? `<div style="font-size:15px;line-height:1.7;color:${C.ink};margin-top:8px;"><span style="font-weight:600;">一句话。</span>${esc(P.takeaway)}</div>` : ''}
+      ${(P.points || []).map((x) => `<div style="font-size:15px;line-height:1.7;color:${C.text};margin-top:4px;">· ${esc(x)}</div>`).join('')}
+      <div style="font-size:13px;margin-top:10px;">${a(P.url, '收听 ›')}</div>
     </td></tr>`) : '';
 
   const missing = (meta.missing || []).length ? `<br>今天没取到：${esc(meta.missing.map((m) => m.split(':')[0]).join('、'))}。` : '';
 
   const body = `
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.bg};" bgcolor="${C.bg}">
-<tr><td align="center" style="padding:${web ? '24px 8px' : '12px 6px'};">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:640px;background:${C.card};border-radius:18px;" bgcolor="${C.card}">
-  ${masthead}
-  <tr><td style="padding:2px 24px 30px 24px;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-      ${degraded}
-      ${tldr}
-      ${lead}
-      ${stories}
-      ${community}
-      ${voices}
-      ${models}
-      ${products}
-      ${papers}
-      ${repos}
-      ${quick}
-      ${podcast}
-      <tr><td style="padding:36px 0 0 0;font-size:12px;line-height:1.75;color:${C.muted};">
-        <span style="color:${C.signal};">●●●</span> 信号强度：几个独立来源报道了同一件事，或这条在社区里有多热。<br>
-        AI Signal 每天北京时间 10:00 送达。今天的来源：${esc(sourceLine)}。由 DeepSeek 按编辑标准挑选，每一条都链接原文；没有链接的内容不会出现，发过的内容不会重复。${missing}<br>
-        ${web ? a('archive/', '往期 ›') : a(WEB, '网页版 ›')}&nbsp;&nbsp; ${a(`${WEB}archive/`, '全部往期 ›')}&nbsp;&nbsp; ${a(REPO, '源码 ›')}
-      </td></tr>
-    </table>
-  </td></tr>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.page};" bgcolor="${C.page}">
+<tr><td align="center" style="padding:0 24px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:640px;">
+    ${masthead}
+    ${degraded}
+    ${tldr}
+    ${lead}
+    ${stories}
+    ${community}
+    ${voices}
+    ${models}
+    ${products}
+    ${papers}
+    ${repos}
+    ${quick}
+    ${podcast}
+    <tr><td style="padding:56px 0 48px 0;">
+      <div style="height:1px;line-height:1px;font-size:0;background:${C.line};">&nbsp;</div>
+      <div style="font-size:12px;line-height:1.8;color:${C.muted};margin-top:16px;">
+        信号强度 ${dots(3)}：几个独立来源报道了同一件事，或这条在社区里有多热。<br>
+        AI Signal 每天北京时间 10:00 送达。今天的来源：${esc(sourceLine)}。由 DeepSeek 按编辑标准挑选，每一条都链接原文；没有链接的内容不会出现，发过的内容不会重复。${missing}
+      </div>
+      <div style="font-size:12px;margin-top:12px;">${web ? a('archive/', '往期 ›') : a(WEB, '网页版 ›')}&nbsp;&nbsp; ${a(`${WEB}archive/`, '全部往期 ›')}&nbsp;&nbsp; ${a(REPO, '源码 ›')}</div>
+    </td></tr>
   </table>
 </td></tr>
 </table>`;
@@ -244,11 +235,11 @@ export function renderIssue(issue, meta, { mode = 'email' } = {}) {
 <meta name="supported-color-schemes" content="light">
 <meta name="x-apple-disable-message-reformatting">
 <title>${esc(issue.headline)} · AI Signal ${esc(meta.ymd)}</title>
-${web ? `<meta name="description" content="${preheader}">\n${ICON}` : ''}
+${web ? `<meta name="description" content="${preheader}">\n<meta name="theme-color" content="${C.page}">\n${ICON}` : ''}
 </head>
-<body style="margin:0;padding:0;background:${C.bg};font-family:${FONT};-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0;font-size:1px;line-height:1px;color:${C.bg};">${preheader}</div>
-${web ? `<main>${body}</main>` : body}
+<body style="margin:0;padding:0;background:${C.page};font-family:${FONT};color:${C.ink};-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;font-size:1px;line-height:1px;color:${C.page};">${preheader}</div>
+${web ? `${glassBar(a('archive/', '往期 ›'))}\n<main>${body}</main>` : body}
 </body>
 </html>
 `;
@@ -260,15 +251,17 @@ export function renderArchive(dates) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="${C.page}">
 <title>往期 · AI Signal</title>
 ${ICON}
 </head>
-<body style="margin:0;padding:32px 16px;background:${C.bg};font-family:${FONT};">
-<main style="display:block;max-width:640px;margin:0 auto;background:${C.card};border-radius:18px;padding:28px;">
-<div style="font-size:13px;font-weight:800;color:${C.ink};"><span style="color:${C.signal};">●</span>&nbsp;AI Signal&nbsp;<span style="color:${C.muted};font-weight:600;">信号</span></div>
-<h1 style="font-size:26px;color:${C.ink};margin:18px 0 12px 0;">往期 · ${dates.length} 期</h1>
-${dates.map((d, i) => `<div style="padding:12px 0;${i ? `border-top:1px solid ${C.line};` : ''}">${a(`${d}.html`, `第 ${dates.length - i} 期 · ${d}`, 'font-size:15px;')}</div>`).join('\n')}
-<div style="margin-top:20px;font-size:12px;">${a('../', '最新一期 ›')}&nbsp;&nbsp; ${a(REPO, '源码 ›')}</div>
+<body style="margin:0;padding:0;background:${C.page};font-family:${FONT};color:${C.ink};-webkit-font-smoothing:antialiased;">
+${glassBar(a('../', '最新一期 ›'))}
+<main style="display:block;max-width:640px;margin:0 auto;padding:40px 24px 56px 24px;">
+<h1 style="font-family:${DISPLAY};font-size:32px;line-height:1.2;font-weight:700;letter-spacing:-0.6px;color:${C.ink};margin:0 0 6px 0;">往期</h1>
+<div style="font-size:15px;color:${C.muted};margin-bottom:24px;${NUM}">共 ${dates.length} 期 · 每天北京时间 10:00 一期</div>
+${dates.map((d, i) => `<div style="padding:14px 0;border-top:1px solid ${C.line};display:flex;justify-content:space-between;${NUM}">${a(`${d}.html`, `第 ${dates.length - i} 期 · ${d}`, 'font-size:16px;')}</div>`).join('\n')}
+<div style="border-top:1px solid ${C.line};padding-top:16px;font-size:13px;">${a('../', '最新一期 ›')}&nbsp;&nbsp; ${a(REPO, '源码 ›')}</div>
 </main>
 </body>
 </html>
