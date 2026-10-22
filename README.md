@@ -7,7 +7,7 @@
 > AI 的消息每天成百上千。难的不是看到，是分清哪些可信、哪些值得看；GitHub 上的好项目，我也想第一时间知道它能解决什么问题。所以我让它每天替我读一遍。
 > —— 秦徐俊
 
-👉 [最新一期](https://qinxujunai.github.io/ai-signal/) · [往期](https://qinxujunai.github.io/ai-signal/archive/)
+🌐 **[qinxujunai.github.io/ai-signal](https://qinxujunai.github.io/ai-signal/)** · [今天这期](https://qinxujunai.github.io/ai-signal/latest/) · [往期](https://qinxujunai.github.io/ai-signal/archive/) · [RSS](https://qinxujunai.github.io/ai-signal/feed.xml) · [更新日志](CHANGELOG.md)
 
 ## 每天读什么
 X 上的 AI builder、Hacker News、Techmeme、Reddit（经 [AINews](https://www.latent.space/s/ainews) 汇总）、Hugging Face 论文热榜和热门模型、GitHub 趋势、Product Hunt、OpenAI / Anthropic / Google DeepMind / Qwen 等官方博客、量子位和 36氪。每天大约 100 条新内容，挑出 15–25 条。
@@ -42,6 +42,7 @@ GitHub 的定时任务在高峰期会晚好几个小时（2026-10-22 定在 09:4
 ```
 prepare-digest.js   收集素材（36 小时内，去掉已发过的）            sources.js 里是各信源的解析
 remix-digest.js     编号 → DeepSeek 编辑（JSON）→ 回填链接与数字 → render.js 排版
+publish.js          网站：主页（site.js）、latest/、archive/、feed.xml，GitHub Pages 从 docs/ 发布
 deliver.js          QQ SMTP 发送，主题是当天的标题
 clock.js            北京时间：等到 09:35、等到 10:00
 ```
@@ -74,4 +75,4 @@ deepseek-chat 每期约 2 万 token 输入、3 千 token 输出，一年约 $2�
 ## 致谢
 [follow-builders](https://github.com/zarazhangrui/follow-builders) · [AINews / Latent Space](https://www.latent.space/s/ainews) · [Techmeme](https://www.techmeme.com/) · [Hacker News Algolia API](https://hn.algolia.com/api) · [Hugging Face](https://huggingface.co/papers) · [DeepSeek](https://platform.deepseek.com/)
 
-MIT
+[MIT](LICENSE)

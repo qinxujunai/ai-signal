@@ -1,6 +1,6 @@
 # AI Signal — Agent Instructions
 
-先读 `CLAUDE.md`（架构、规则、不许回退的决定、已知问题、交接日志、调试命令）和 `README.md`（栏目、信源、配置）。改完在 `CLAUDE.md` 的交接日志追加一条。
+各编辑器的智能体（Codex、Cursor、Cline、Windsurf、Claude）都读这份文件。先读 `CLAUDE.md`（架构、规则、不许回退的决定、已知问题、交接日志、调试命令）和 `README.md`（栏目、信源、配置）。改完在 `CLAUDE.md` 的交接日志追加一条。
 
 最重要的四条：
 1. **模型只能引用素材编号。** 链接和数字由代码回填，不要改回让模型直接写 URL。

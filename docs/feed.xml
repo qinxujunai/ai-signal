@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>AI Signal</title>
+  <subtitle>每天北京时间 10:00，一页读完当天的 AI</subtitle>
+  <link href="https://qinxujunai.github.io/ai-signal/"/>
+  <link rel="self" href="https://qinxujunai.github.io/ai-signal/feed.xml"/>
+  <id>https://qinxujunai.github.io/ai-signal/</id>
+  <updated>2026-10-22T02:00:00Z</updated>
+  <author><name>秦徐俊</name><uri>https://qinxujunai.github.io/</uri></author>
+  <entry>
+    <title>Mistral Large 4 发布，OpenAI 模型同时上架 Google Cloud</title>
+    <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-22.html"/>
+    <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-22.html</id>
+    <updated>2026-10-22T02:00:00Z</updated>
+    <summary>Mistral Large 4 登上 HN 317 分，官方博客同步发布</summary>
+  </entry>
+  <entry>
+    <title>Anthropic 上半年净亏损超 800 亿美元，OpenAI 收购 Orchestra Bio</title>
+    <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-21.html"/>
+    <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-21.html</id>
+    <updated>2026-10-21T02:00:00Z</updated>
+    <summary>Anthropic 2026 上半年净亏损超 800 亿美元，收入与支出严重失衡</summary>
+  </entry>
+  <entry>
+    <title>DHS 下令禁止 DeepSeek 进入美国联邦民事机构</title>
+    <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-20.html"/>
+    <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-20.html</id>
+    <updated>2026-10-20T02:00:00Z</updated>
+    <summary>美国国土安全部发布命令，禁止联邦民事机构使用 DeepSeek</summary>
+  </entry>
+</feed>

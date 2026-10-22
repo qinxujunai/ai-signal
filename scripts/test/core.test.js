@@ -101,3 +101,30 @@ test('render: masthead, sections, escaping, web-only bits', () => {
   const arch = renderArchive(['2026-10-22', '2026-10-21']);
   assert.ok(arch.includes('第 2 期 · 2026-10-22') && arch.includes('共 2 期'));
 });
+
+test('website: product page, latest, archive and an Atom feed', async () => {
+  const { mkdtemp, readFile, writeFile, mkdir } = await import('node:fs/promises');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  const { XMLParser } = await import('fast-xml-parser');
+  const { publishWeb } = await import('../publish.js');
+  const dir = await mkdtemp(join(tmpdir(), 'ai-signal-web-'));
+  await mkdir(join(dir, 'archive'), { recursive: true });
+  await writeFile(join(dir, 'archive', '2026-10-21.html'), '<html><head><meta name="description" content="昨天"></head><body><h1>昨天的头条</h1></body></html>');
+  await publishWeb(dir, issue, meta);
+
+  const landing = await readFile(join(dir, 'index.html'), 'utf-8');
+  assert.ok(landing.includes('测试头条 &lt;b&gt;') && landing.includes('阅读今天这期') && landing.includes('href="latest/"'));
+  assert.ok(landing.includes('prefers-color-scheme:dark'), 'follows the system dark mode');
+  assert.ok(!/<script|https?:\/\/(?!qinxujunai\.github\.io|github\.com)[^"']+\.(css|js)/.test(landing), 'no scripts or external assets');
+
+  const latest = await readFile(join(dir, 'latest', 'index.html'), 'utf-8');
+  assert.ok(latest.includes('href="../archive/"'), 'links lead back from latest/');
+  assert.equal(latest, await readFile(join(dir, 'archive', '2026-10-22.html'), 'utf-8'));
+
+  const feed = new XMLParser({ ignoreAttributes: false }).parse(await readFile(join(dir, 'feed.xml'), 'utf-8')).feed;
+  const entries = [].concat(feed.entry);
+  assert.deepEqual(entries.map((e) => e.title), ['测试头条 <b>', '昨天的头条'], 'newest first');
+  assert.equal(entries[1].summary, '昨天');
+  assert.ok((await readFile(join(dir, 'archive', 'index.html'), 'utf-8')).includes('第 2 期 · 2026-10-22'));
+});

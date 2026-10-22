@@ -8,6 +8,8 @@ scripts/sources.js         各信源的解析（RSS/Atom 用 fast-xml-parser，�
 scripts/prepare-digest.js  收集素材 → feed.json（36 小时内，去掉 data/seen.json 里发过的）
 scripts/remix-digest.js    素材编号 → DeepSeek 写 JSON（只能引用编号）→ 回填链接和数字 → 渲染
 scripts/render.js          邮件与网页共用的排版（表格 + 内联样式，640px 单栏；白底黑字，灰色分层，只有链接是蓝色，测试限定最多 7 种颜色）
+scripts/publish.js         网站（docs/，GitHub Pages）：index.html 产品主页（site.js）、latest/ 当天全文、archive/<日期>.html、archive/ 列表、feed.xml（Atom，30 期）
+scripts/site.js            产品主页与 RSS（网页专用，可用 <style>，跟随深色模式，零外部请求）
 scripts/deliver.js         QQ SMTP；主题 =「AI Signal 月/日｜当天标题」
 scripts/clock.js           北京时间：今天的日期、等到 09:35 / 10:00
 scripts/test/              node --test（npm test）
@@ -31,6 +33,9 @@ scripts/test/              node --test（npm test）
 | 版式白底黑字，只有链接一种蓝色，全期最多 7 种颜色（测试会拦） | 他说多色版「很小孩，没有高级感」；对标 Apple 新闻邮件、Stratechery。网页版顶部的毛玻璃栏只在网页版（邮件不支持模糊） | `d0eaf9c` |
 | Reddit 经 AINews（Latent Space RSS）取 | 直接请求 Reddit 会被 403 | `4647f40` |
 | 调 DeepSeek 用原生 `fetch`，不引 SDK | 只调一个 OpenAI 兼容接口（JSON 模式、超时、重试都已写好），加 SDK 只多一层依赖 | — |
+| 网址根目录是产品主页，当天全文在 `latest/`，并提供 RSS | 成熟项目都有一个能展示的主页；他要「有个网址去展示」。邮件里的「网页版」链接到当天的 `archive/<日期>.html`（永久地址） | v4.1.0 |
+| 仓库只保留 AGENTS.md / CLAUDE.md 两份智能体说明，不放各编辑器的规则文件 | 旧的 Cline/Windsurf/Cursor 规则引用不存在的脚本，还让助手去读本机 Claude 设置里的密钥 | v4.1.0 |
+| 版本号写在 `scripts/package.json`，打 `vX.Y.Z` 标签自动发 Release，说明取自 CHANGELOG.md | 和其他成熟项目一样有版本和发布记录 | v4.1.0 |
 | nodemailer 10，Node 20+ | 修掉 8.x 的高危头注入漏洞（npm audit 0） | `e150ccb`、`89f2038` |
 
 ## 已知问题
@@ -40,6 +45,8 @@ scripts/test/              node --test（npm test）
 
 ## 交接日志
 - **2026-10-22，Claude**：v4 准点、信源 11 类、版式（`4647f40`）；白底黑字版式（`d0eaf9c`）；解析换成成熟库、nodemailer 10（`e150ccb`）。验证：`npm test` 7 组通过；真实信源新旧解析输出一致；10-23 是第一次准点发送，以运行记录为准。
+
+- **2026-10-23，Claude**：产品主页、`latest/`、RSS（`publish.js`、`site.js`），站内链接不再开新标签页，「原帖」链接加下划线（axe 0 违规）；LICENSE、CHANGELOG、Release 工作流；删掉过时的编辑器规则文件和根目录 package.json。验证：`npm test` 8 组；本地预览手机/电脑、亮/暗无横向溢出、无报错。
 
 ## 调试
 ```bash

@@ -1,0 +1,168 @@
+// AI Signal — the website around the issues: the product page at the site root and the Atom feed.
+//
+// The issue itself (render.js) is built for an inbox: tables and inline styles. These pages are
+// web-only, so they use one small stylesheet, follow the system light/dark setting and make no
+// external requests. The look matches the issue: black type on white, greys for hierarchy, one
+// blue for links, an apple.com-style translucent bar.
+
+import * as cheerio from 'cheerio';
+
+export const SITE = 'https://qinxujunai.github.io/ai-signal/';
+const REPO = 'https://github.com/qinxujunai/ai-signal';
+const AUTHOR = 'https://qinxujunai.github.io/';
+
+const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+const ICON = `<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%231d1d1f'/%3E%3Ccircle cx='4.5' cy='8' r='1.6' fill='%23fff'/%3E%3Ccircle cx='8' cy='8' r='1.6' fill='%23fff'/%3E%3Ccircle cx='11.5' cy='8' r='1.6' fill='%23fff' fill-opacity='.4'/%3E%3C/svg%3E">`;
+
+const STYLE = `
+:root{--bg:#fff;--ink:#1d1d1f;--text:#424245;--muted:#6e6e73;--line:#d2d2d7;--tile:#f5f5f7;--link:#0066cc;--bar:rgba(255,255,255,.72);--bar-line:rgba(0,0,0,.08);--button:#0071e3;--button-ink:#fff;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#000;--ink:#f5f5f7;--text:#d2d2d7;--muted:#a1a1a6;--line:#38383a;--tile:#1c1c1e;--link:#2997ff;--bar:rgba(22,22,23,.72);--bar-line:rgba(255,255,255,.12);--button:#0071e3}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Helvetica Neue","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:var(--link);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--link);outline-offset:3px;border-radius:4px}
+.bar{position:sticky;top:0;z-index:10;background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--bar-line)}
+.bar-in{max-width:980px;margin:0 auto;padding:0 22px;height:48px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-weight:600;font-size:15px;color:var(--ink);letter-spacing:-.01em}
+.bar nav{display:flex;gap:20px;font-size:13px}
+.bar nav a{color:var(--ink);opacity:.8}
+.wrap{max-width:980px;margin:0 auto;padding:0 22px}
+.hero{text-align:center;padding:88px 0 56px}
+.eyebrow{font-size:17px;font-weight:600;color:var(--muted);margin:0 0 10px}
+h1{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Helvetica Neue",sans-serif;font-size:clamp(48px,9vw,80px);line-height:1.05;letter-spacing:-.015em;font-weight:700;margin:0}
+.lede{font-size:clamp(21px,3vw,28px);line-height:1.35;font-weight:600;letter-spacing:-.01em;margin:18px auto 0;max-width:680px;text-wrap:balance;word-break:keep-all;overflow-wrap:anywhere}
+.cta{margin-top:30px;display:flex;gap:26px;justify-content:center;align-items:center;flex-wrap:wrap;font-size:17px}
+.button{display:inline-block;background:var(--button);color:var(--button-ink);padding:11px 22px;border-radius:980px;font-weight:500}
+.button:hover{text-decoration:none;filter:brightness(1.08)}
+.today{background:var(--tile);border-radius:28px;padding:40px clamp(22px,5vw,56px);margin:8px 0 0}
+.today .when{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.today h2{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC",sans-serif;font-size:clamp(26px,4vw,36px);line-height:1.2;letter-spacing:-.01em;margin:10px 0 0}
+.today .intro{font-size:19px;color:var(--text);margin:14px 0 0;max-width:760px}
+.today ol{list-style:none;margin:26px 0 0;padding:0;counter-reset:n;display:grid;gap:12px}
+.today li{counter-increment:n;display:grid;grid-template-columns:28px 1fr;font-size:17px;line-height:1.55}
+.today li::before{content:counter(n);font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.today .more{margin-top:26px;font-size:17px}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding-block:72px}
+.facts h3{font-size:24px;line-height:1.25;letter-spacing:-.01em;margin:0}
+.facts p{font-size:17px;color:var(--text);margin:10px 0 0}
+.how{border-top:1px solid var(--line);padding-block:56px}
+.how h2,.open h2{font-size:clamp(28px,4vw,40px);letter-spacing:-.015em;line-height:1.15;margin:0;text-align:center}
+.steps{list-style:none;margin:36px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.steps li{border-top:2px solid var(--ink);padding-top:14px}
+.steps strong{display:block;font-size:17px}
+.steps span{display:block;font-size:15px;color:var(--text);margin-top:6px}
+.open{border-top:1px solid var(--line);padding-block:56px 72px;text-align:center}
+.open p{font-size:19px;color:var(--text);margin:14px auto 0;max-width:640px}
+.open .cta{margin-top:22px}
+footer{border-top:1px solid var(--line);padding:22px 0 40px;font-size:12px;color:var(--muted)}
+footer a{text-decoration:underline;text-underline-offset:2px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media (max-width:734px){.hero{padding:56px 0 40px}.facts{grid-template-columns:1fr;padding-block:48px;gap:28px}.steps{grid-template-columns:1fr 1fr}.bar nav{gap:14px}.bar nav .hide-s{display:none}}
+`;
+
+function bar() {
+  return `<header class="bar"><div class="bar-in"><a class="brand" href="./">AI Signal</a><nav aria-label="主导航"><a href="latest/">今天</a><a href="archive/">往期</a><a href="feed.xml">RSS</a><a class="hide-s" href="${REPO}">GitHub</a></nav></div></header>`;
+}
+
+// The product page: what it is, today's issue, why it can be trusted, how it works, where the code is.
+export function renderLanding(issue, meta) {
+  const tldr = (issue.tldr || []).slice(0, 3).map((t) => `<li>${esc(t)}</li>`).join('');
+  const description = 'AI 的消息每天成百上千。AI Signal 每天北京时间 10:00 替你读一遍，只留下值得看的，一页读完。每一条都附原文。';
+  return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Signal · 每天 10:00，一页读完当天的 AI</title>
+<meta name="description" content="${esc(description)}">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="AI Signal">
+<meta property="og:description" content="${esc(description)}">
+<meta property="og:url" content="${SITE}">
+<link rel="canonical" href="${SITE}">
+<link rel="alternate" type="application/atom+xml" title="AI Signal" href="feed.xml">
+${ICON}
+<style>${STYLE}</style>
+</head>
+<body>
+${bar()}
+<main>
+  <section class="hero wrap">
+    <p class="eyebrow">每天北京时间 10:00</p>
+    <h1>AI Signal</h1>
+    <p class="lede">AI 的消息每天成百上千。它替你读一遍，只留下值得看的，一页读完。</p>
+    <div class="cta"><a class="button" href="latest/">阅读今天这期</a><a href="archive/">往期 ›</a></div>
+  </section>
+
+  <section class="wrap" aria-labelledby="today">
+    <article class="today">
+      <div class="when">第 ${esc(meta.number)} 期 · ${esc(meta.dateLabel)} · 从 ${esc(meta.scanned)} 条新内容里选了 ${esc(meta.picked)} 条</div>
+      <h2 id="today"><a href="latest/" style="color:inherit">${esc(issue.headline)}</a></h2>
+      ${issue.intro ? `<p class="intro">${esc(issue.intro)}</p>` : ''}
+      ${tldr ? `<ol aria-label="30 秒读完">${tldr}</ol>` : ''}
+      <p class="more"><a href="latest/">阅读全文 ›</a></p>
+    </article>
+  </section>
+
+  <section class="wrap facts" aria-label="特点">
+    <div><h3>11 类信源</h3><p>X 上的 AI builder、Hacker News、Techmeme、Reddit、论文热榜、新模型、GitHub 趋势、Product Hunt、各家实验室博客和中文媒体。</p></div>
+    <div><h3>每条都有出处</h3><p>模型只能引用素材编号，链接、分数和 star 数由程序从原始数据填回，编不出假链接。</p></div>
+    <div><h3>不重复，不断供</h3><p>发过的内容 60 天内不再出现。某个信源挂了，页脚会写明；模型没响应，也照样按热度排出一期。</p></div>
+  </section>
+
+  <section class="wrap how" aria-labelledby="how">
+    <h2 id="how">每天早上发生的事</h2>
+    <ol class="steps">
+      <li><strong>收集</strong><span>凌晨开始排队，09:35 读完 36 小时内的新内容。</span></li>
+      <li><strong>编号</strong><span>每条素材一个编号，去掉发过的。</span></li>
+      <li><strong>编辑</strong><span>按三个问题挑选：会改变判断吗？是新事实吗？有数字或名字吗？</span></li>
+      <li><strong>送达</strong><span>10:00 整发出邮件，同时发布这个网页和往期。</span></li>
+    </ol>
+  </section>
+
+  <section class="wrap open" aria-labelledby="open">
+    <h2 id="open">开源，可以自己部署</h2>
+    <p>一个 GitHub 仓库、一个 DeepSeek API key、一个发信邮箱。不追踪读者，没有像素，没有点击统计。</p>
+    <div class="cta"><a href="${REPO}">在 GitHub 上查看 ›</a><a href="feed.xml">RSS 订阅 ›</a></div>
+  </section>
+</main>
+<footer><div class="wrap"><span>AI Signal · MIT 许可</span><span>由 <a href="${AUTHOR}">秦徐俊</a> 制作</span></div></footer>
+</body>
+</html>
+`;
+}
+
+// Atom feed: one entry per issue, newest first, built from the archived web editions.
+export function renderFeed(entries, { updated = new Date().toISOString() } = {}) {
+  const items = entries.map((e) => `  <entry>
+    <title>${esc(e.title)}</title>
+    <link href="${esc(e.url)}"/>
+    <id>${esc(e.url)}</id>
+    <updated>${esc(e.updated)}</updated>
+    <summary>${esc(e.summary || '')}</summary>
+  </entry>`).join('\n');
+  return `<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>AI Signal</title>
+  <subtitle>每天北京时间 10:00，一页读完当天的 AI</subtitle>
+  <link href="${SITE}"/>
+  <link rel="self" href="${SITE}feed.xml"/>
+  <id>${SITE}</id>
+  <updated>${esc(updated)}</updated>
+  <author><name>秦徐俊</name><uri>${AUTHOR}</uri></author>
+${items}
+</feed>
+`;
+}
+
+// Title and summary of an archived issue, read from its HTML.
+export function entryFromArchive(html, ymd) {
+  const $ = cheerio.load(String(html));
+  const title = ($('h1').first().text() || $('title').text().split(' · ')[0] || ymd).replace(/\s+/g, ' ').trim();
+  const summary = ($('meta[name="description"]').attr('content') || '').trim();
+  return { title, summary, url: `${SITE}archive/${ymd}.html`, updated: `${ymd}T02:00:00Z` };
+}

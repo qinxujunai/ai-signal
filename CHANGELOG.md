@@ -1,0 +1,27 @@
+# 更新日志
+
+网站：<https://qinxujunai.github.io/ai-signal/> · 往期：<https://qinxujunai.github.io/ai-signal/archive/>
+
+## v4.1.0 · 2026-10-23
+- **产品主页**：网址打开先看到 AI Signal 是什么、今天这期的标题和三条要点、怎么做的；当天全文在 `latest/`，往期在 `archive/`。跟随系统深色模式，不加载任何外部资源。
+- **RSS**：`feed.xml`（Atom），最近 30 期。
+- **版式**：白底黑字，只有链接一种蓝色，全期最多 7 种颜色；网页版顶部是半透明导航栏。
+- **解析换成成熟库**：RSS/Atom 用 fast-xml-parser，网页用 cheerio，替换手写正则；同一批真实信源输出逐条一致。
+- **安全**：nodemailer 升到 10，修掉头注入漏洞；Node 20 起。
+- **仓库**：补上 MIT LICENSE；删掉过时的编辑器规则文件（其中一条会去读本机 Claude 设置里的密钥）。
+
+## v4.0.0 · 2026-10-22
+- **10:00 准点**：北京时间 04:07–09:47 每 20 分钟排一次，第一个启动的任务认领当天，09:35 生成，10:00:00 发送；其余看到当天已发就退出。
+- **信源 7 类 → 11 类**：加入 Techmeme、Reddit（经 AINews）、Hugging Face 热门模型、Product Hunt、Anthropic、Qwen、36氪。
+- **编辑**：主编开场白、社区在聊、新模型、新产品；信号强度按来源数和热度算出。
+- **隐私**：代码不再写默认邮箱，日志不再打印收件人。
+- **测试**：`npm test`（node --test）和 CI。
+
+## v3 · 2026-10-20
+恢复每日发送（旧工作流因 60 天无提交被 GitHub 暂停，2026-07-22 后停发）；模型只引用素材编号，链接和数字由代码填回；Hacker News 改用 Algolia；发布网页版和往期。
+
+## v2 · 2026-05-22
+加入 Hacker News、ArXiv、GitHub、中文媒体。
+
+## v1 · 2026-05
+follow-builders 的推文和播客，LLM 策展，邮件送达。
