@@ -84,6 +84,8 @@ jobs:
 
       - name: Edit the issue
         if: steps.today.outputs.skip != 'true'
+        env:
+          BUTTONDOWN_USERNAME: ${{ vars.BUTTONDOWN_USERNAME }}
         run: cd scripts && node remix-digest.js --file ~/.ai-signal/drafts/feed.json --out ~/.ai-signal/drafts/email.html --json-out ~/.ai-signal/drafts/issue.json --web-dir ../docs --seen ../data/seen.json
 
       - name: Wait until 10:00 Beijing
@@ -92,6 +94,7 @@ jobs:
 
       # Last check right before sending: a manual run may have sent today's issue while this one waited.
       - name: Send
+        id: send
         if: steps.today.outputs.skip != 'true'
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
@@ -101,9 +104,18 @@ jobs:
             fi
           fi
           cd scripts && node deliver.js --file ~/.ai-signal/drafts/email.html --force
+          echo "sent=true" >> "$GITHUB_OUTPUT"
 
+      # The same issue to everyone who subscribed on the website. Never fails the run.
+      - name: Send to subscribers
+        if: steps.send.outputs.sent == 'true'
+        env:
+          BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
+        run: cd scripts && node broadcast.js --file ~/.ai-signal/drafts/email.html
+
+      # Only the run that sent today's issue publishes it.
       - name: Publish the web edition
-        if: steps.today.outputs.skip != 'true'
+        if: steps.send.outputs.sent == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

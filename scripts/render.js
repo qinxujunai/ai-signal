@@ -221,7 +221,7 @@ export function renderIssue(issue, meta, { mode = 'email', base = '' } = {}) {
         信号强度 ${dots(3)}：几个独立来源报道了同一件事，或这条在社区里有多热。<br>
         AI Signal 每天北京时间 10:00 送达。今天的来源：${esc(sourceLine)}。由 DeepSeek 按编辑标准挑选，每一条都链接原文；没有链接的内容不会出现，发过的内容不会重复。${missing}
       </div>
-      <div style="font-size:12px;margin-top:12px;">${web ? a(`${base}archive/`, '往期 ›') : a(`${WEB}archive/${meta.ymd}.html`, '网页版 ›')}&nbsp;&nbsp; ${a(`${WEB}archive/`, '全部往期 ›')}&nbsp;&nbsp; ${a(REPO, '源码 ›')}</div>
+      <div style="font-size:12px;margin-top:12px;">${web ? a(`${base}archive/`, '往期 ›') : a(`${WEB}archive/${meta.ymd}.html`, '网页版 ›')}&nbsp;&nbsp; ${a(`${WEB}archive/`, '全部往期 ›')}&nbsp;&nbsp; ${a(`${WEB}#subscribe`, '订阅 ›')}&nbsp;&nbsp; ${a(REPO, '源码 ›')}</div>
     </td></tr>
   </table>
 </td></tr>
