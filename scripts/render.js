@@ -6,12 +6,17 @@
 // two-column lists for papers and repositories.
 
 const C = {
-  bg: '#f5f5f7', card: '#ffffff', ink: '#1d1d1f', text: '#333336', muted: '#86868b',
+  bg: '#f5f5f7', card: '#ffffff', ink: '#1d1d1f', text: '#333336', muted: '#6e6e73',
   line: '#e8e8ed', link: '#0066cc', signal: '#e5332a', soft: '#f5f5f7',
 };
 const FONT = "-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif";
 const REPO = 'https://github.com/qinxujunai/ai-signal';
 const WEB = 'https://qinxujunai.github.io/ai-signal/';
+
+// Headings keep the table layout's look; they only give the web page (and screen readers) an outline.
+const H = (level, html) => `<h${level} style="margin:0;font:inherit;color:inherit;letter-spacing:inherit;">${html}</h${level}>`;
+// The red signal dot as the browser-tab icon, inline so the page makes no extra request.
+const ICON = `<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6' fill='%23e5332a'/%3E%3C/svg%3E">`;
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const k = (n) => (n >= 1000 ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k` : String(n ?? ''));
@@ -23,7 +28,7 @@ function section(label, note, rows) {
 <tr><td style="padding:30px 0 0 0;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
     <tr>
-      <td style="font-size:13px;font-weight:700;color:${C.ink};padding-bottom:8px;border-bottom:2px solid ${C.ink};">${esc(label)}</td>
+      <td style="font-size:13px;font-weight:700;color:${C.ink};padding-bottom:8px;border-bottom:2px solid ${C.ink};">${H(2, esc(label))}</td>
       <td align="right" style="font-size:12px;color:${C.muted};padding-bottom:8px;border-bottom:2px solid ${C.ink};">${esc(note || '')}</td>
     </tr>
     ${rows}
@@ -143,7 +148,7 @@ export function renderIssue(issue, meta, { mode = 'email' } = {}) {
           <td align="right" style="font-size:12px;color:${C.muted};">${esc(meta.dateLabel)}</td>
         </tr></table>
       </td></tr>
-      <tr><td style="padding-top:18px;font-size:24px;line-height:1.32;font-weight:700;color:${C.ink};letter-spacing:-0.3px;">${esc(issue.headline)}</td></tr>
+      <tr><td style="padding-top:18px;font-size:24px;line-height:1.32;font-weight:700;color:${C.ink};letter-spacing:-0.3px;">${H(1, esc(issue.headline))}</td></tr>
       <tr><td style="padding-top:8px;font-size:13px;line-height:1.6;color:${C.muted};">从 ${meta.scanned} 条新内容里选了 ${meta.picked} 条 · 约 ${minutes} 分钟读完</td></tr>
       ${degraded}
       ${tldr}
@@ -155,7 +160,7 @@ export function renderIssue(issue, meta, { mode = 'email' } = {}) {
       ${quick}
       ${podcast}
       <tr><td style="padding:32px 0 0 0;font-size:12px;line-height:1.7;color:${C.muted};border-bottom:0;">
-        AI Signal 每天北京时间 10:00 自动生成。今天的来源：${esc(sourceLine)}。由 DeepSeek 按编辑标准挑选，每一条都链接原文；没有链接的内容不会出现，发过的内容不会重复。${missing}<br>
+        AI Signal 每天上午自动生成。今天的来源：${esc(sourceLine)}。由 DeepSeek 按编辑标准挑选，每一条都链接原文；没有链接的内容不会出现，发过的内容不会重复。${missing}<br>
         ${web ? a('archive/', '往期 ›') : a(WEB, '网页版 ›')}&nbsp;&nbsp; ${a(`${WEB}archive/`, '全部往期 ›')}&nbsp;&nbsp; ${a(REPO, '源码 ›')}
       </td></tr>
     </table>
@@ -174,11 +179,11 @@ export function renderIssue(issue, meta, { mode = 'email' } = {}) {
 <meta name="supported-color-schemes" content="light">
 <meta name="x-apple-disable-message-reformatting">
 <title>${esc(issue.headline)} · AI Signal ${esc(meta.ymd)}</title>
-${web ? `<meta name="description" content="${preheader}">` : ''}
+${web ? `<meta name="description" content="${preheader}">\n${ICON}` : ''}
 </head>
 <body style="margin:0;padding:0;background:${C.bg};font-family:${FONT};-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0;font-size:1px;line-height:1px;color:${C.bg};">${preheader}</div>
-${body}
+${web ? `<main>${body}</main>` : body}
 </body>
 </html>
 `;
@@ -191,14 +196,15 @@ export function renderArchive(dates) {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>往期 · AI Signal</title>
+${ICON}
 </head>
 <body style="margin:0;padding:32px 16px;background:${C.bg};font-family:${FONT};">
-<div style="max-width:640px;margin:0 auto;background:${C.card};border-radius:16px;padding:28px;">
+<main style="display:block;max-width:640px;margin:0 auto;background:${C.card};border-radius:16px;padding:28px;">
 <div style="font-size:13px;font-weight:700;color:${C.ink};"><span style="color:${C.signal};">●</span>&nbsp;AI Signal · 信号</div>
 <h1 style="font-size:26px;color:${C.ink};margin:18px 0 12px 0;">往期</h1>
 ${dates.map((d, i) => `<div style="padding:10px 0;${i ? `border-top:1px solid ${C.line};` : ''}">${a(`${d}.html`, d, 'font-size:15px;')}</div>`).join('\n')}
 <div style="margin-top:20px;font-size:12px;">${a('../', '最新一期 ›')}&nbsp;&nbsp; ${a(REPO, '源码 ›')}</div>
-</div>
+</main>
 </body>
 </html>
 `;
