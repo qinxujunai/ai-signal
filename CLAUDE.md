@@ -48,7 +48,7 @@ scripts/test/              node --test（npm test）
 - 准点依赖 GitHub 在早上把十几次排队里的任意一次及时启动；都没轮上时由 10:17 以后的补发兜底，会晚。
 
 ## 交接日志
-- **2026-10-23，Claude**：发布时多写一份 `docs/latest.json`（期号、日期、标题、导语、30 秒读完三条、永久链接），作者个人主页的定时任务每天读它，首页卡片就永远是当天这期。字段改名要同步改个人主页的 `scripts/stats.mjs`。验证：`npm test` 通过（新增 latest.json 断言）；当天这份由已发布页面回填。
+- **2026-10-23，Claude**：发布时多写一份 `docs/latest.json`（期号、日期、标题、导语、30 秒读完三条、永久链接），作者个人主页的定时任务每天读它，首页卡片就永远是当天这期。字段改名要同步改个人主页的 `scripts/signal.mjs`。验证：`npm test` 通过（新增 latest.json 断言）；当天这份由已发布页面回填。
 - **2026-10-23**：v4.2.1 撤掉 Buttondown（`broadcast.js`、工作流里的发送步骤、邮件表单），订阅区改成 RSS。验证：`npm test` 9 组。
 - **2026-10-23**：订阅（v4.2.0）：`site.js` 的订阅区、`email.js`、`broadcast.js`，daily.yml 加「Send to subscribers」。验证：`npm test` 9 组；用假 key 请求 Buttondown 返回 401，脚本只记警告、退出码 0；订阅区 axe 0 违规、手机无横向溢出。待作者：注册 Buttondown、关掉打开/点击追踪、在仓库设置变量 `BUTTONDOWN_USERNAME` 和 Secret `BUTTONDOWN_API_KEY`。
 - **2026-10-22，Claude**：v4 准点、信源 11 类、版式（`4647f40`）；白底黑字版式（`d0eaf9c`）；解析换成成熟库、nodemailer 10（`e150ccb`）。验证：`npm test` 7 组通过；真实信源新旧解析输出一致；10-23 是第一次准点发送，以运行记录为准。
