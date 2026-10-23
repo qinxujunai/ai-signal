@@ -118,6 +118,11 @@ test('website: product page, latest, archive and an Atom feed', async () => {
   assert.ok(landing.includes('prefers-color-scheme:dark'), 'follows the system dark mode');
   assert.ok(!/<script|https?:\/\/(?!qinxujunai\.github\.io|github\.com)[^"']+\.(css|js)/.test(landing), 'no scripts or external assets');
 
+  const data = JSON.parse(await readFile(join(dir, 'latest.json'), 'utf-8'));
+  assert.equal(data.headline, '测试头条 <b>', 'latest.json carries plain text, not HTML');
+  assert.equal(data.date, '2026-10-22');
+  assert.ok(data.url.endsWith('/archive/2026-10-22.html'), 'links to the permanent page of that issue');
+  assert.ok(Array.isArray(data.tldr) && data.tldr.length <= 3);
   const latest = await readFile(join(dir, 'latest', 'index.html'), 'utf-8');
   assert.ok(latest.includes('href="../archive/"'), 'links lead back from latest/');
   assert.equal(latest, await readFile(join(dir, 'archive', '2026-10-22.html'), 'utf-8'));
