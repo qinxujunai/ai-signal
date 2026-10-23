@@ -1,0 +1,16 @@
+{
+  "number": 4,
+  "date": "2026-10-23",
+  "dateLabel": "10月23日周五",
+  "scanned": 109,
+  "picked": 38,
+  "minutes": 7,
+  "headline": "OpenAI 估值目标下调至 1.25 万亿美元，同时推进 300 亿美元融资",
+  "intro": "今天两件事最实：OpenAI 融资估值缩水，Anthropic 把 Agent Skills 交给 Linux 基金会下的 AAIF。",
+  "tldr": [
+    "OpenAI 估值目标从 1.4 万亿降至 1.25 万亿美元，UAE 与 Coatue 领投至多 300 亿",
+    "Anthropic 将 Agent Skills 标准捐给 AAIF，70+ 平台已集成",
+    "DeepSeek-V4.1-Flash-1017 开放权重，Vercel 已接入 Token Pass"
+  ],
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-10-23.html"
+}

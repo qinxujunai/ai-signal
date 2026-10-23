@@ -8,7 +8,7 @@ scripts/sources.js         各信源的解析（RSS/Atom 用 fast-xml-parser，�
 scripts/prepare-digest.js  收集素材 → feed.json（36 小时内，去掉 data/seen.json 里发过的）
 scripts/remix-digest.js    素材编号 → DeepSeek 写 JSON（只能引用编号）→ 回填链接和数字 → 渲染
 scripts/render.js          邮件与网页共用的排版（表格 + 内联样式，640px 单栏；白底黑字，灰色分层，只有链接是蓝色，测试限定最多 7 种颜色）
-scripts/publish.js         网站（docs/，GitHub Pages）：index.html 产品主页（site.js）、latest/ 当天全文、archive/<日期>.html、archive/ 列表、feed.xml（Atom，30 期）
+scripts/publish.js         网站（docs/，GitHub Pages）：index.html 产品主页（site.js）、latest/ 当天全文、archive/<日期>.html、archive/ 列表、feed.xml（Atom，30 期）、latest.json（当天这期的纯数据，作者个人主页每天读它渲染卡片）
 scripts/site.js            产品主页与 RSS（网页专用，可用 <style>，跟随深色模式，零外部请求）
 scripts/deliver.js         QQ SMTP，发给作者自己（地址只在 Secret）
 scripts/email.js           主题 =「AI Signal 月/日｜当天标题」
@@ -48,6 +48,7 @@ scripts/test/              node --test（npm test）
 - 准点依赖 GitHub 在早上把十几次排队里的任意一次及时启动；都没轮上时由 10:17 以后的补发兜底，会晚。
 
 ## 交接日志
+- **2026-10-23，Claude**：发布时多写一份 `docs/latest.json`（期号、日期、标题、导语、30 秒读完三条、永久链接），作者个人主页的定时任务每天读它，首页卡片就永远是当天这期。字段改名要同步改个人主页的 `scripts/stats.mjs`。验证：`npm test` 通过（新增 latest.json 断言）；当天这份由已发布页面回填。
 - **2026-10-23**：v4.2.1 撤掉 Buttondown（`broadcast.js`、工作流里的发送步骤、邮件表单），订阅区改成 RSS。验证：`npm test` 9 组。
 - **2026-10-23**：订阅（v4.2.0）：`site.js` 的订阅区、`email.js`、`broadcast.js`，daily.yml 加「Send to subscribers」。验证：`npm test` 9 组；用假 key 请求 Buttondown 返回 401，脚本只记警告、退出码 0；订阅区 axe 0 违规、手机无横向溢出。待作者：注册 Buttondown、关掉打开/点击追踪、在仓库设置变量 `BUTTONDOWN_USERNAME` 和 Secret `BUTTONDOWN_API_KEY`。
 - **2026-10-22，Claude**：v4 准点、信源 11 类、版式（`4647f40`）；白底黑字版式（`d0eaf9c`）；解析换成成熟库、nodemailer 10（`e150ccb`）。验证：`npm test` 7 组通过；真实信源新旧解析输出一致；10-23 是第一次准点发送，以运行记录为准。
