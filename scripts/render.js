@@ -8,6 +8,8 @@
 // size, weight and space, not colour: no section colours, no tinted pills, no stripes. The only
 // "material" is web-only: a translucent bar (backdrop blur) at the top of the page, as on apple.com.
 
+import { BACK_SCRIPT } from './back.js';
+
 // Seven colours in all; scripts/test checks that nothing else creeps in.
 const C = {
   page: '#ffffff', ink: '#1d1d1f', text: '#424245', muted: '#6e6e73',
@@ -92,9 +94,9 @@ function ranked(num, title, url, insight, sub, first) {
 // Web only: the translucent bar of apple.com (backdrop blur over the page), with the wordmark and one link.
 const glassBar = (right, home = WEB) => `<div style="position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.72);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);">
 <div style="max-width:640px;margin:0 auto;padding:0 24px;height:48px;display:flex;align-items:center;justify-content:space-between;font-family:${FONT};">
-<a href="${home}" style="font-size:15px;font-weight:600;color:${C.ink};text-decoration:none;letter-spacing:-0.1px;">AI Signal</a>
+<span style="display:flex;align-items:center;gap:14px;"><a data-qxj-back hidden style="font-size:13px;color:${C.ink};text-decoration:none;">‹ 返回</a><a href="${home}" style="font-size:15px;font-weight:600;color:${C.ink};text-decoration:none;letter-spacing:-0.1px;">AI Signal</a></span>
 <span style="font-size:13px;">${right}</span>
-</div></div>`;
+</div></div>${BACK_SCRIPT}`;
 const wordmark = `<span style="font-family:${DISPLAY};font-size:15px;font-weight:700;color:${C.ink};letter-spacing:-0.1px;">AI Signal</span><span style="font-size:15px;color:${C.muted};">&nbsp;信号</span>`;
 
 export function renderIssue(issue, meta, { mode = 'email', base = '' } = {}) {

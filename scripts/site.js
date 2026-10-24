@@ -6,6 +6,7 @@
 // blue for links, an apple.com-style translucent bar.
 
 import * as cheerio from 'cheerio';
+import { BACK_SCRIPT } from './back.js';
 
 export const SITE = 'https://qinxujunai.github.io/ai-signal/';
 const REPO = 'https://github.com/qinxujunai/ai-signal';
@@ -27,6 +28,9 @@ a:hover{text-decoration:underline}
 .bar{position:sticky;top:0;z-index:10;background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--bar-line)}
 .bar-in{max-width:980px;margin:0 auto;padding:0 22px;height:48px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .brand{font-weight:600;font-size:15px;color:var(--ink);letter-spacing:-.01em}
+.start{display:flex;align-items:center;gap:14px}
+.back{font-size:13px;color:var(--ink);opacity:.8}
+.back[hidden]{display:none}
 .bar nav{display:flex;gap:20px;font-size:13px}
 .bar nav a{color:var(--ink);opacity:.8}
 .wrap{max-width:980px;margin:0 auto;padding:0 22px}
@@ -71,7 +75,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 `;
 
 function bar() {
-  return `<header class="bar"><div class="bar-in"><a class="brand" href="./">AI Signal</a><nav aria-label="主导航"><a href="latest/">今天</a><a href="archive/">往期</a><a href="#subscribe">订阅</a><a class="hide-s" href="${REPO}">GitHub</a></nav></div></header>`;
+  return `<header class="bar"><div class="bar-in"><span class="start"><a class="back" data-qxj-back hidden>‹ 返回</a><a class="brand" href="./">AI Signal</a></span><nav aria-label="主导航"><a href="latest/">今天</a><a href="archive/">往期</a><a href="#subscribe">订阅</a><a class="hide-s" href="${REPO}">GitHub</a></nav></div></header>${BACK_SCRIPT}`;
 }
 
 // Subscribing is RSS: any reader app follows the feed. No sign-up, no list of addresses to keep.

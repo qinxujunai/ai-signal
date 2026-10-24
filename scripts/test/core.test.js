@@ -116,7 +116,10 @@ test('website: product page, latest, archive and an Atom feed', async () => {
   const landing = await readFile(join(dir, 'index.html'), 'utf-8');
   assert.ok(landing.includes('测试头条 &lt;b&gt;') && landing.includes('阅读今天这期') && landing.includes('href="latest/"'));
   assert.ok(landing.includes('prefers-color-scheme:dark'), 'follows the system dark mode');
-  assert.ok(!/<script|https?:\/\/(?!qinxujunai\.github\.io|github\.com)[^"']+\.(css|js)/.test(landing), 'no scripts or external assets');
+  // The only script allowed: the back link to the author's personal site (scripts/back.js).
+  const { BACK_SCRIPT } = await import('../back.js');
+  assert.ok(!/<script|https?:\/\/(?!qinxujunai\.github\.io|github\.com)[^"']+\.(css|js)/.test(landing.replace(BACK_SCRIPT, '')), 'no scripts or external assets');
+  assert.ok(landing.includes('data-qxj-back hidden'), 'the back link is hidden until the visitor came from the personal site');
 
   const data = JSON.parse(await readFile(join(dir, 'latest.json'), 'utf-8'));
   assert.equal(data.headline, '测试头条 <b>', 'latest.json carries plain text, not HTML');
