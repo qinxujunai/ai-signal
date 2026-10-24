@@ -40,6 +40,7 @@ scripts/test/              node --test（npm test）
 | 版本号写在 `scripts/package.json`；master 上版本号变了，Release 工作流自动发 `vX.Y.Z`（连同标签），说明取自 CHANGELOG.md 同名一节；已发过就跳过 | 和其他成熟项目一样有版本和发布记录。不靠手动推标签：云端会话推不了标签 | v4.1.0 |
 | 订阅只用 RSS（网站订阅区 + `feed.xml`），不接邮件订阅服务 | 他说「别搞什么注册，也别搞什么 API，删繁就简」（2026-10-23）。v4.2.0 接过 Buttondown，同日撤掉；邮件仍只发给他自己 | v4.2.1 |
 | 只有发出当天这期的那次运行（`steps.send.outputs.sent`）才发布网页 | 排队的多个任务里，等到 10:00 才发现别人已发的那个不能再发一遍 | v4.2.0 |
+| 网页顶栏左边「‹ 返回」只对从作者个人网站点进来的人显示（`scripts/back.js`，读 sessionStorage 的 `qxj.back`）；这是网页唯一的脚本，测试只放行它，邮件里没有 | 他说「单独发的时候，别人返回不到我的个人主页就够了」；约定见个人网站仓库 `docs/back-link.md` | 2026-10-24 |
 | nodemailer 10，Node 20+ | 修掉 8.x 的高危头注入漏洞（npm audit 0） | `e150ccb`、`89f2038` |
 
 ## 已知问题
@@ -48,6 +49,7 @@ scripts/test/              node --test（npm test）
 - 准点依赖 GitHub 在早上把十几次排队里的任意一次及时启动；都没轮上时由 10:17 以后的补发兜底，会晚。
 
 ## 交接日志
+- **2026-10-24，Claude**：产品主页、`latest/`、`archive/` 网页版顶栏加「‹ 返回」（见上表）；已发布的 10-22 起的网页同步补上。验证：`npm test` 9 组通过；从个人网站点进来显示、直接打开不显示。
 - **2026-10-23，Claude**：发布时多写一份 `docs/latest.json`（期号、日期、标题、导语、30 秒读完三条、永久链接），作者个人主页的定时任务每天读它，首页卡片就永远是当天这期。字段改名要同步改个人主页的 `scripts/signal.mjs`。验证：`npm test` 通过（新增 latest.json 断言）；当天这份由已发布页面回填。
 - **2026-10-23**：v4.2.1 撤掉 Buttondown（`broadcast.js`、工作流里的发送步骤、邮件表单），订阅区改成 RSS。验证：`npm test` 9 组。
 - **2026-10-23**：订阅（v4.2.0）：`site.js` 的订阅区、`email.js`、`broadcast.js`，daily.yml 加「Send to subscribers」。验证：`npm test` 9 组；用假 key 请求 Buttondown 返回 401，脚本只记警告、退出码 0；订阅区 axe 0 违规、手机无横向溢出。待作者：注册 Buttondown、关掉打开/点击追踪、在仓库设置变量 `BUTTONDOWN_USERNAME` 和 Secret `BUTTONDOWN_API_KEY`。
