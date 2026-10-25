@@ -28,7 +28,8 @@ const feed = JSON.parse((await readFile(arg('--file'), 'utf-8')).replace(/^﻿/,
 
 try { loadEnv({ path: join(homedir(), '.ai-signal', '.env') }); } catch {}
 const API_KEY = process.env.DEEPSEEK_API_KEY;
-const MODEL = process.env.DEEPSEEK_MODEL || 'deepseek-chat';
+// deepseek-chat was retired on 2026-07-24 (api-docs.deepseek.com/news/news260424); deepseek-flash is the current name.
+const MODEL = process.env.DEEPSEEK_MODEL || 'deepseek-flash';
 const API_URL = 'https://api.deepseek.com/chat/completions';
 
 // Dates are always Beijing time, whatever the runner's clock says.
@@ -127,7 +128,8 @@ async function callLLM(messages) {
   const res = await fetch(API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${API_KEY}` },
-    body: JSON.stringify({ model: MODEL, messages, temperature: 0.3, max_tokens: 6000, response_format: { type: 'json_object' } }),
+    // deepseek-flash thinks by default; deepseek-chat (what this was tuned on) did not. Keep it off: same output, cost and time.
+    body: JSON.stringify({ model: MODEL, messages, temperature: 0.3, max_tokens: 6000, response_format: { type: 'json_object' }, thinking: { type: 'disabled' } }),
     signal: AbortSignal.timeout(240000),
   });
   const body = await res.json().catch(() => ({}));
