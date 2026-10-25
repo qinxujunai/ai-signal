@@ -128,9 +128,11 @@ async function callLLM(messages) {
   const res = await fetch(API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${API_KEY}` },
-    // deepseek-flash thinks by default; deepseek-chat (what this was tuned on) did not. Keep it off: same output, cost and time.
-    body: JSON.stringify({ model: MODEL, messages, temperature: 0.3, max_tokens: 6000, response_format: { type: 'json_object' }, thinking: { type: 'disabled' } }),
-    signal: AbortSignal.timeout(240000),
+    // deepseek-flash thinks by default, and he wants it on (2026-10-25). In thinking mode max_tokens also counts the
+    // reasoning, so it is left at the API default (64K; 6000 would cut the JSON off), and temperature has no effect.
+    // Generation starts at 09:35 and the issue goes out at 10:00: two tries of up to 10 minutes each fit.
+    body: JSON.stringify({ model: MODEL, messages, response_format: { type: 'json_object' } }),
+    signal: AbortSignal.timeout(600000),
   });
   const body = await res.json().catch(() => ({}));
   if (!res.ok || !body.choices?.[0]) throw new Error(body.error?.message || `HTTP ${res.status}`);

@@ -34,7 +34,7 @@ scripts/test/              node --test（npm test）
 | RSS/Atom 用 fast-xml-parser，网页用 cheerio，不手写正则 | 2026-10-22 换掉手写正则，同一批真实信源输出逐条一致，且不再依赖属性顺序和大小写 | `e150ccb` |
 | 版式白底黑字，只有链接一种蓝色，全期最多 7 种颜色（测试会拦） | 他说多色版「很小孩，没有高级感」；对标 Apple 新闻邮件、Stratechery。网页版顶部的毛玻璃栏只在网页版（邮件不支持模糊） | `d0eaf9c` |
 | Reddit 经 AINews（Latent Space RSS）取 | 直接请求 Reddit 会被 403 | `4647f40` |
-| 模型名 `deepseek-flash`，关掉思考（`thinking: {type: 'disabled'}`） | `deepseek-chat` 2026-07-24 已退役（官方 news260424）；`deepseek-flash` 默认开思考，原来的提示词按不思考调的 | 2026-10-25 |
+| 模型名 `deepseek-flash`，思考保持默认开启；不设 `max_tokens`（用默认 64K），单次请求超时 10 分钟 | `deepseek-chat` 2026-07-24 已退役（官方 news260424）。他要思考开着（2026-10-25）。思考模式下 `max_tokens` 连思考一起算，原来的 6000 会把 JSON 截断；`temperature` 不起作用 | 2026-10-25 |
 | 调 DeepSeek 用原生 `fetch`，不引 SDK | 只调一个 OpenAI 兼容接口（JSON 模式、超时、重试都已写好），加 SDK 只多一层依赖 | — |
 | 网址根目录是产品主页，当天全文在 `latest/`，并提供 RSS | 成熟项目都有一个能展示的主页；他要「有个网址去展示」。邮件里的「网页版」链接到当天的 `archive/<日期>.html`（永久地址） | v4.1.0 |
 | 仓库只保留 AGENTS.md / CLAUDE.md 两份智能体说明，不放各编辑器的规则文件 | 旧的 Cline/Windsurf/Cursor 规则引用不存在的脚本，还让助手去读本机 Claude 设置里的密钥 | v4.1.0 |
@@ -50,6 +50,7 @@ scripts/test/              node --test（npm test）
 - 准点依赖 GitHub 在早上把十几次排队里的任意一次及时启动；都没轮上时由 10:17 以后的补发兜底，会晚。
 
 ## 交接日志
+- **2026-10-25，Claude（续）**：他说深度思考就开着。去掉 `thinking: disabled`；`max_tokens` 不再设（默认 64K，思考也算在内）；超时 240 秒 → 600 秒。验证：`npm test` 通过；真实调用看 10-26 那期。
 - **2026-10-25，Claude**：模型名 `deepseek-chat` → `deepseek-flash`（`remix-digest.js` 默认值、daily.yml），并关掉默认开启的思考模式。依据 DeepSeek 官方文档：`deepseek-chat` 已于 2026-07-24 退役，`deepseek-flash` 现由 DeepSeek-V4.1-Flash 提供。验证：`npm test` 通过；真实调用以 10-26 那期为准（不通时自动出降级版，页脚会写 degraded）。
 - **2026-10-24，Claude**：产品主页、`latest/`、`archive/` 网页版顶栏加「‹ 返回」（见上表）；已发布的 10-22 起的网页同步补上。验证：`npm test` 9 组通过；从个人网站点进来显示、直接打开不显示。
 - **2026-10-23，Claude**：发布时多写一份 `docs/latest.json`（期号、日期、标题、导语、30 秒读完三条、永久链接），作者个人主页的定时任务每天读它，首页卡片就永远是当天这期。字段改名要同步改个人主页的 `scripts/signal.mjs`。验证：`npm test` 通过（新增 latest.json 断言）；当天这份由已发布页面回填。
