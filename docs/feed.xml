@@ -5,8 +5,15 @@
   <link href="https://qinxujunai.github.io/ai-signal/"/>
   <link rel="self" href="https://qinxujunai.github.io/ai-signal/feed.xml"/>
   <id>https://qinxujunai.github.io/ai-signal/</id>
-  <updated>2026-10-24T02:00:00Z</updated>
+  <updated>2026-10-25T02:00:00Z</updated>
   <author><name>秦徐俊</name><uri>https://qinxujunai.github.io/</uri></author>
+  <entry>
+    <title>Replit 把大部分 AI 支出从 Anthropic 转投 OpenAI，年单超 1 亿美元</title>
+    <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-25.html"/>
+    <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-25.html</id>
+    <updated>2026-10-25T02:00:00Z</updated>
+    <summary>今天两条主线：AI 支出正在重新分配，安全漏洞的发现速度被智能体推高到每周一次。</summary>
+  </entry>
   <entry>
     <title>Anthropic 将 Agent Skills 捐给 Agentic AI 基金会，与 MCP 并列</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-24.html"/>
