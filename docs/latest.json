@@ -1,16 +1,16 @@
 {
-  "number": 5,
-  "date": "2026-10-24",
-  "dateLabel": "10月24日周六",
-  "scanned": 92,
+  "number": 6,
+  "date": "2026-10-25",
+  "dateLabel": "10月25日周日",
+  "scanned": 69,
   "picked": 35,
   "minutes": 6,
-  "headline": "Anthropic 将 Agent Skills 捐给 Agentic AI 基金会，与 MCP 并列",
-  "intro": "今天两件事指向同一方向：Agent 的接口标准正在被捐给基金会，而模型训练环境正在被主动断网。",
+  "headline": "Replit 把大部分 AI 支出从 Anthropic 转投 OpenAI，年单超 1 亿美元",
+  "intro": "今天两条主线：AI 支出正在重新分配，安全漏洞的发现速度被智能体推高到每周一次。",
   "tldr": [
-    "Anthropic 把 Agent Skills 捐给 Agentic AI 基金会，与 MCP 并列",
-    "OpenAI 称训练前沿模型时用缓存网页搭「离线世界」，并限制联网",
-    "Kimi K3.1 Pro 上线 API，承诺 11 月 4 日前开放全部权重"
+    "Replit 转投 OpenAI，获 30%+ 折扣，年单超 1 亿美元",
+    "Apollo 数据：科技业之外，AI 投入没有带来财务回报",
+    "Cloudflare CTO：Log4j 级漏洞从每年一次变成每周一次"
   ],
-  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-10-24.html"
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-10-25.html"
 }
