@@ -5,8 +5,15 @@
   <link href="https://qinxujunai.github.io/ai-signal/"/>
   <link rel="self" href="https://qinxujunai.github.io/ai-signal/feed.xml"/>
   <id>https://qinxujunai.github.io/ai-signal/</id>
-  <updated>2026-10-25T02:00:00Z</updated>
+  <updated>2026-10-26T02:00:00Z</updated>
   <author><name>秦徐俊</name><uri>https://qinxujunai.github.io/</uri></author>
+  <entry>
+    <title>OpenAI 与 Anthropic 数月内把 LLM 价格下调最高 80%</title>
+    <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-26.html"/>
+    <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-26.html</id>
+    <updated>2026-10-26T02:00:00Z</updated>
+    <summary>今天有三条线同时指向成本：模型降价最高 80%、GPU 债务收紧、旧 CNN 跑赢前沿模型。</summary>
+  </entry>
   <entry>
     <title>Replit 把大部分 AI 支出从 Anthropic 转投 OpenAI，年单超 1 亿美元</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-25.html"/>
