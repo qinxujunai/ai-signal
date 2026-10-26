@@ -1,16 +1,16 @@
 {
-  "number": 6,
-  "date": "2026-10-25",
-  "dateLabel": "10月25日周日",
-  "scanned": 69,
-  "picked": 35,
-  "minutes": 6,
-  "headline": "Replit 把大部分 AI 支出从 Anthropic 转投 OpenAI，年单超 1 亿美元",
-  "intro": "今天两条主线：AI 支出正在重新分配，安全漏洞的发现速度被智能体推高到每周一次。",
+  "number": 7,
+  "date": "2026-10-26",
+  "dateLabel": "10月26日周一",
+  "scanned": 44,
+  "picked": 25,
+  "minutes": 5,
+  "headline": "OpenAI 与 Anthropic 数月内把 LLM 价格下调最高 80%",
+  "intro": "今天有三条线同时指向成本：模型降价最高 80%、GPU 债务收紧、旧 CNN 跑赢前沿模型。",
   "tldr": [
-    "Replit 转投 OpenAI，获 30%+ 折扣，年单超 1 亿美元",
-    "Apollo 数据：科技业之外，AI 投入没有带来财务回报",
-    "Cloudflare CTO：Log4j 级漏洞从每年一次变成每周一次"
+    "OpenAI、Anthropic 数月内 LLM 降价最高 80%",
+    "Musk 称 SpaceX 完成 400 亿美元 GPU 债务融资",
+    "10 年前的 CNN 在皮肤癌诊断上跑赢前沿 LLM"
   ],
-  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-10-25.html"
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-10-26.html"
 }
