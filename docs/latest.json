@@ -1,16 +1,16 @@
 {
-  "number": 7,
-  "date": "2026-10-26",
-  "dateLabel": "10月26日周一",
-  "scanned": 44,
-  "picked": 25,
-  "minutes": 5,
-  "headline": "OpenAI 与 Anthropic 数月内把 LLM 价格下调最高 80%",
-  "intro": "今天有三条线同时指向成本：模型降价最高 80%、GPU 债务收紧、旧 CNN 跑赢前沿模型。",
+  "number": 8,
+  "date": "2026-10-27",
+  "dateLabel": "10月27日周二",
+  "scanned": 59,
+  "picked": 34,
+  "minutes": 6,
+  "headline": "Anthropic 递交 S-1，启动 IPO 并首次披露客户结构",
+  "intro": "Anthropic 的招股书和 GPT-6.1 Terra 的价目表同一天落地，模型公司开始用财报和定价说话。",
   "tldr": [
-    "OpenAI、Anthropic 数月内 LLM 降价最高 80%",
-    "Musk 称 SpaceX 完成 400 亿美元 GPU 债务融资",
-    "10 年前的 CNN 在皮肤癌诊断上跑赢前沿 LLM"
+    "Anthropic 递交 S-1：约 250 家客户年付超 1000 万美元",
+    "GPT-6.1 Terra 定价 $1/$5 每百万 token，主打电脑操作",
+    "Broadcom 牵头 630 亿美元 SPV 为 Anthropic 采购芯片融资"
   ],
-  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-10-26.html"
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-10-27.html"
 }
