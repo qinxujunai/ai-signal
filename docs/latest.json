@@ -1,16 +1,16 @@
 {
-  "number": 8,
-  "date": "2026-10-27",
-  "dateLabel": "10月27日周二",
-  "scanned": 59,
+  "number": 9,
+  "date": "2026-10-28",
+  "dateLabel": "10月28日周三",
+  "scanned": 89,
   "picked": 34,
   "minutes": 6,
-  "headline": "Anthropic 递交 S-1，启动 IPO 并首次披露客户结构",
-  "intro": "Anthropic 的招股书和 GPT-6.1 Terra 的价目表同一天落地，模型公司开始用财报和定价说话。",
+  "headline": "Anthropic 递交 335 页 S-1：上半年营收同比增 1300%，已经营盈利",
+  "intro": "Anthropic 的 335 页 S-1 把前沿实验室的账本摊开；同日 OpenAI 用 GPT-6.1 Terra 抢量，还计划采购 Google TPU。",
   "tldr": [
-    "Anthropic 递交 S-1：约 250 家客户年付超 1000 万美元",
-    "GPT-6.1 Terra 定价 $1/$5 每百万 token，主打电脑操作",
-    "Broadcom 牵头 630 亿美元 SPV 为 Anthropic 采购芯片融资"
+    "Anthropic S-1：上半年营收同比 +1300%，毛利率 85%，已 GAAP 经营盈利",
+    "OpenAI 发 GPT-6.1 Terra，computer use 更强，额度为 6.1 Sol 的 2 倍",
+    "OpenAI 计划采购 Google TPU，招聘要求「主导模型在 TPU 上的优化」"
   ],
-  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-10-27.html"
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-10-28.html"
 }
