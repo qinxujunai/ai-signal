@@ -1,16 +1,16 @@
 {
-  "number": 9,
-  "date": "2026-10-28",
-  "dateLabel": "10月28日周三",
-  "scanned": 89,
+  "number": 10,
+  "date": "2026-10-29",
+  "dateLabel": "10月29日周四",
+  "scanned": 82,
   "picked": 34,
   "minutes": 6,
-  "headline": "Anthropic 递交 335 页 S-1：上半年营收同比增 1300%，已经营盈利",
-  "intro": "Anthropic 的 335 页 S-1 把前沿实验室的账本摊开；同日 OpenAI 用 GPT-6.1 Terra 抢量，还计划采购 Google TPU。",
+  "headline": "Google 发布 Gemini 4 Carbon，HN 已 804 分",
+  "intro": "模型、估值、收入三条线同日推进：Gemini 4 Carbon 发布，Cognition 估值报价已到 700–800 亿美元。",
   "tldr": [
-    "Anthropic S-1：上半年营收同比 +1300%，毛利率 85%，已 GAAP 经营盈利",
-    "OpenAI 发 GPT-6.1 Terra，computer use 更强，额度为 6.1 Sol 的 2 倍",
-    "OpenAI 计划采购 Google TPU，招聘要求「主导模型在 TPU 上的优化」"
+    "Gemini 4 Carbon 发布，HN 804 分、661 条评论",
+    "Cognition 收到 700–800 亿美元估值报价，9 月为 480 亿",
+    "微软 Q1 从 OpenAI 确认 100 亿美元收入，占营收近 11%"
   ],
-  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-10-28.html"
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-10-29.html"
 }
