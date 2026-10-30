@@ -1,16 +1,16 @@
 {
-  "number": 10,
-  "date": "2026-10-29",
-  "dateLabel": "10月29日周四",
-  "scanned": 82,
+  "number": 11,
+  "date": "2026-10-30",
+  "dateLabel": "10月30日周五",
+  "scanned": 76,
   "picked": 34,
   "minutes": 6,
-  "headline": "Google 发布 Gemini 4 Carbon，HN 已 804 分",
-  "intro": "模型、估值、收入三条线同日推进：Gemini 4 Carbon 发布，Cognition 估值报价已到 700–800 亿美元。",
+  "headline": "Gemini 4 Carbon 登顶 AA 智能指数 v5，首发 Token 半价",
+  "intro": "Gemini 4 Carbon 半价首发登顶，Mistral 同日开放 Large 4 权重，Nvidia 为 Anthropic 数据中心做信贷担保。",
   "tldr": [
-    "Gemini 4 Carbon 发布，HN 804 分、661 条评论",
-    "Cognition 收到 700–800 亿美元估值报价，9 月为 480 亿",
-    "微软 Q1 从 OpenAI 确认 100 亿美元收入，占营收近 11%"
+    "Gemini 4 Carbon 登顶 Artificial Analysis 智能指数 v5，首发 Token 半价",
+    "Mistral Large 4 开放权重，HN 热度 1193 分、338 条评论",
+    "Nvidia 洽谈为 Nscale 提供数十亿美元信贷担保，建 460MW 数据中心"
   ],
-  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-10-29.html"
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-10-30.html"
 }
