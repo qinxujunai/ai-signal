@@ -2,7 +2,7 @@
 
 # AI Signal
 
-**A three-minute AI briefing, in your inbox at 10:00 Beijing time every day.**
+**An AI briefing, planned daily for 10:00 Beijing time and readable in a few minutes.**
 
 > Hundreds of AI updates arrive every day. The hard part isn't seeing them; it's telling which are credible and which are worth reading. I also want to know about good GitHub projects early, and what problem each one solves. So it reads everything for me each morning.
 > — Qin Xujun

@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-AI Signal：每天北京时间 10:00:00 送达的 AI 简报，发到邮箱，同时发布网页版（GitHub Pages，`docs/`）。读者是中国的 AI 从业者，3 分钟读完。
+AI Signal：计划每天北京时间 10:00 发出的 AI 简报，发到邮箱，同时发布网页版（GitHub Pages，`docs/`）。任务延迟时补发；阅读时长随内容变化。
 
 ## 架构
 ```
@@ -50,6 +50,7 @@ scripts/test/              node --test（npm test）
 - 准点依赖 GitHub 在早上把十几次排队里的任意一次及时启动；都没轮上时由 10:17 以后的补发兜底，会晚。
 
 ## 交接日志
+- **2026-11-01，Codex**：首页及中英文 README 将 10:00 调整为计划时间，阅读时长不再写成固定 3 分钟；不改变定时任务、历史期次或数据。
 - **2026-10-25，Claude（续）**：他说深度思考就开着。去掉 `thinking: disabled`；`max_tokens` 不再设（默认 64K，思考也算在内）；超时 240 秒 → 600 秒。验证：`npm test` 通过；真实调用看 10-26 那期。
 - **2026-10-25，Claude**：模型名 `deepseek-chat` → `deepseek-flash`（`remix-digest.js` 默认值、daily.yml），并关掉默认开启的思考模式。依据 DeepSeek 官方文档：`deepseek-chat` 已于 2026-07-24 退役，`deepseek-flash` 现由 DeepSeek-V4.1-Flash 提供。验证：`npm test` 通过；真实调用以 10-26 那期为准（不通时自动出降级版，页脚会写 degraded）。
 - **2026-10-24，Claude**：产品主页、`latest/`、`archive/` 网页版顶栏加「‹ 返回」（见上表）；已发布的 10-22 起的网页同步补上。验证：`npm test` 9 组通过；从个人网站点进来显示、直接打开不显示。
