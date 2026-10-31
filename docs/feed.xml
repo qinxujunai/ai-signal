@@ -5,8 +5,15 @@
   <link href="https://qinxujunai.github.io/ai-signal/"/>
   <link rel="self" href="https://qinxujunai.github.io/ai-signal/feed.xml"/>
   <id>https://qinxujunai.github.io/ai-signal/</id>
-  <updated>2026-10-30T02:00:00Z</updated>
+  <updated>2026-10-31T02:00:00Z</updated>
   <author><name>秦徐俊</name><uri>https://qinxujunai.github.io/</uri></author>
+  <entry>
+    <title>Claude Code 的 VS Code 扩展在 Cursor 市场被植入后门</title>
+    <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-31.html"/>
+    <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-31.html</id>
+    <updated>2026-10-31T02:00:00Z</updated>
+    <summary>三条线同时落定：IDE 插件后门、OpenAI 融资目标缩水、Mistral 放出 1T 参数模型。</summary>
+  </entry>
   <entry>
     <title>Gemini 4 Carbon 登顶 AA 智能指数 v5，首发 Token 半价</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-30.html"/>
