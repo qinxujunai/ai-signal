@@ -1,16 +1,16 @@
 {
-  "number": 11,
-  "date": "2026-10-30",
-  "dateLabel": "10月30日周五",
-  "scanned": 76,
-  "picked": 34,
+  "number": 12,
+  "date": "2026-10-31",
+  "dateLabel": "10月31日周六",
+  "scanned": 86,
+  "picked": 33,
   "minutes": 6,
-  "headline": "Gemini 4 Carbon 登顶 AA 智能指数 v5，首发 Token 半价",
-  "intro": "Gemini 4 Carbon 半价首发登顶，Mistral 同日开放 Large 4 权重，Nvidia 为 Anthropic 数据中心做信贷担保。",
+  "headline": "Claude Code 的 VS Code 扩展在 Cursor 市场被植入后门",
+  "intro": "三条线同时落定：IDE 插件后门、OpenAI 融资目标缩水、Mistral 放出 1T 参数模型。",
   "tldr": [
-    "Gemini 4 Carbon 登顶 Artificial Analysis 智能指数 v5，首发 Token 半价",
-    "Mistral Large 4 开放权重，HN 热度 1193 分、338 条评论",
-    "Nvidia 洽谈为 Nscale 提供数十亿美元信贷担保，建 460MW 数据中心"
+    "Cursor 市场上的 Claude Code VS Code 扩展被植入后门，HN 单帖 771 分",
+    "OpenAI 融资目标缩至 200 亿美元，估值从 1.4 万亿降到 1.25 万亿",
+    "Mistral 在 HF 放出 1T 总参数、52B 激活的 Mistral-Large-4-1T-A52B"
   ],
-  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-10-30.html"
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-10-31.html"
 }
