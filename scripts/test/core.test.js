@@ -115,6 +115,8 @@ test('website: product page, latest, archive and an Atom feed', async () => {
 
   const landing = await readFile(join(dir, 'index.html'), 'utf-8');
   assert.ok(landing.includes('测试头条 &lt;b&gt;') && landing.includes('阅读今天这期') && landing.includes('href="latest/"'));
+  assert.ok(landing.includes('计划每天北京时间 10:00') && landing.includes('任务延迟时补发'), 'scheduled time is not presented as a delivery guarantee');
+  assert.ok(!landing.includes('10:00 整发出邮件'));
   assert.ok(landing.includes('prefers-color-scheme:dark'), 'follows the system dark mode');
   // The only script allowed: the back link to the author's personal site (scripts/back.js).
   const { BACK_SCRIPT } = await import('../back.js');

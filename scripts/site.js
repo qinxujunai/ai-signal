@@ -81,7 +81,7 @@ function bar() {
 // Subscribing is RSS: any reader app follows the feed. No sign-up, no list of addresses to keep.
 export function subscribeSection() {
   return `<section class="wrap sub" id="subscribe" aria-labelledby="subscribe-title">
-    <h2 id="subscribe-title">每天 10:00，自动送到你的阅读器</h2>
+    <h2 id="subscribe-title">订阅 RSS，更新后送到你的阅读器</h2>
     <p>用任意 RSS 阅读器订阅，每期一出就收到。免费，不用注册。</p>
     <div class="cta"><a class="button" href="feed.xml">RSS 订阅</a></div>
     <p class="note">订阅地址：${esc(SITE)}feed.xml</p>
@@ -91,13 +91,13 @@ export function subscribeSection() {
 // The product page: what it is, today's issue, why it can be trusted, how it works, where the code is.
 export function renderLanding(issue, meta) {
   const tldr = (issue.tldr || []).slice(0, 3).map((t) => `<li>${esc(t)}</li>`).join('');
-  const description = 'AI 的消息每天成百上千。AI Signal 每天北京时间 10:00 替你读一遍，只留下值得看的，一页读完。每一条都附原文。';
+  const description = 'AI 的消息每天成百上千。AI Signal 计划每天替你读一遍，只留下值得看的，一页读完。每一条都附原文。';
   return `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AI Signal · 每天 10:00，一页读完当天的 AI</title>
+<title>AI Signal · 每天一期，一页读完 AI 消息</title>
 <meta name="description" content="${esc(description)}">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
@@ -113,7 +113,7 @@ ${ICON}
 ${bar()}
 <main>
   <section class="hero wrap">
-    <p class="eyebrow">每天北京时间 10:00</p>
+    <p class="eyebrow">计划每天北京时间 10:00</p>
     <h1>AI Signal</h1>
     <p class="lede">AI 的消息每天成百上千。它替你读一遍，只留下值得看的，一页读完。</p>
     <div class="cta"><a class="button" href="latest/">阅读今天这期</a><a href="#subscribe">订阅 ›</a></div>
@@ -143,7 +143,7 @@ ${bar()}
       <li><strong>收集</strong><span>凌晨开始排队，09:35 读完 36 小时内的新内容。</span></li>
       <li><strong>编号</strong><span>每条素材一个编号，去掉发过的。</span></li>
       <li><strong>编辑</strong><span>按三个问题挑选：会改变判断吗？是新事实吗？有数字或名字吗？</span></li>
-      <li><strong>送达</strong><span>10:00 整发出邮件，同时发布这个网页和往期。</span></li>
+      <li><strong>送达</strong><span>计划 10:00 发出邮件并发布网页；任务延迟时补发。</span></li>
     </ol>
   </section>
 
