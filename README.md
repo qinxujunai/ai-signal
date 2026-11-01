@@ -10,7 +10,7 @@
 🌐 **[qinxujunai.github.io/ai-signal](https://qinxujunai.github.io/ai-signal/)** · [今天这期](https://qinxujunai.github.io/ai-signal/latest/) · [往期](https://qinxujunai.github.io/ai-signal/archive/) · [RSS](https://qinxujunai.github.io/ai-signal/feed.xml) · [更新日志](CHANGELOG.md)
 
 ## 每天读什么
-X 上的 AI builder、Hacker News、Techmeme、Reddit（经 [AINews](https://www.latent.space/s/ainews) 汇总）、Hugging Face 论文热榜和热门模型、GitHub 趋势、Product Hunt、OpenAI / Anthropic / Google DeepMind / Qwen 等官方博客、量子位和 36氪。每天大约 100 条新内容，挑出 15–25 条。
+X 上的 AI builder、Hacker News、Techmeme、Reddit（经 [AINews](https://www.latent.space/s/ainews) 汇总）、Hugging Face 论文热榜和热门模型、GitHub 趋势、Product Hunt、OpenAI / Anthropic / Google DeepMind / Qwen 等官方博客、量子位和 36氪。抓取与筛选数量因信源和当天内容变化，以每期实际标注为准。
 
 ## 一期里有什么
 | 栏目 | 内容 |
@@ -30,7 +30,7 @@ X 上的 AI builder、Hacker News、Techmeme、Reddit（经 [AINews](https://www
 ## 为什么可信
 - **模型不写链接，也不写数字。** 每条素材有编号（H3、R1、M2…），模型只能引用编号；链接、分数、star 数由代码从原始数据回填。引用了不存在的编号，这条直接丢掉。
 - **不重复。** 发过的链接记在 `data/seen.json`，保留 60 天。
-- **不断供。** 模型没响应时按热度直接排出一期并写明；某个信源挂了，页脚写「今天没取到：…」。
+- **降级处理。** 模型没响应时按热度编排并标明降级；某个信源挂了，页脚写「今天没取到：…」。调度、发送或发布本身仍可能失败，不保证每日一定发出。
 
 ## 怎么做到准点
 GitHub 的定时任务在高峰期会晚好几个小时（2026-10-22 定在 09:41 的任务 14:32 才开始），还可能被丢掉。所以：

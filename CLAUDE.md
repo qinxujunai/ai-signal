@@ -50,11 +50,12 @@ scripts/test/              node --test（npm test）
 - 准点依赖 GitHub 在早上把十几次排队里的任意一次及时启动；都没轮上时由 10:17 以后的补发兜底，会晚。
 
 ## 交接日志
+- **2026-11-02，Codex**：核对最新已发布期次及入口，将中英文 README 的固定筛选数与“永不断供”表述改为实际数量和降级边界；更正个人主页取数失败时可能保留旧期次的说明。仅改文档，不改调度、信源或历史期次；不将文档核对说成新一期或新测试。
 - **2026-11-01，Codex**：首页及中英文 README 将 10:00 调整为计划时间，阅读时长不再写成固定 3 分钟；不改变定时任务、历史期次或数据。
 - **2026-10-25，Claude（续）**：他说深度思考就开着。去掉 `thinking: disabled`；`max_tokens` 不再设（默认 64K，思考也算在内）；超时 240 秒 → 600 秒。验证：`npm test` 通过；真实调用看 10-26 那期。
 - **2026-10-25，Claude**：模型名 `deepseek-chat` → `deepseek-flash`（`remix-digest.js` 默认值、daily.yml），并关掉默认开启的思考模式。依据 DeepSeek 官方文档：`deepseek-chat` 已于 2026-07-24 退役，`deepseek-flash` 现由 DeepSeek-V4.1-Flash 提供。验证：`npm test` 通过；真实调用以 10-26 那期为准（不通时自动出降级版，页脚会写 degraded）。
 - **2026-10-24，Claude**：产品主页、`latest/`、`archive/` 网页版顶栏加「‹ 返回」（见上表）；已发布的 10-22 起的网页同步补上。验证：`npm test` 9 组通过；从个人网站点进来显示、直接打开不显示。
-- **2026-10-23，Claude**：发布时多写一份 `docs/latest.json`（期号、日期、标题、导语、30 秒读完三条、永久链接），作者个人主页的定时任务每天读它，首页卡片就永远是当天这期。字段改名要同步改个人主页的 `scripts/signal.mjs`。验证：`npm test` 通过（新增 latest.json 断言）；当天这份由已发布页面回填。
+- **2026-10-23，Claude**：发布时多写一份 `docs/latest.json`（期号、日期、标题、导语、30 秒读完三条、永久链接），作者个人主页定时读取；获取或构建失败可能继续显示上一期，不能保证卡片永远是当天这期。字段改名要同步改个人主页的 `scripts/signal.mjs`。验证：`npm test` 通过（新增 latest.json 断言）；当天这份由已发布页面回填。
 - **2026-10-23**：v4.2.1 撤掉 Buttondown（`broadcast.js`、工作流里的发送步骤、邮件表单），订阅区改成 RSS。验证：`npm test` 9 组。
 - **2026-10-23**：订阅（v4.2.0）：`site.js` 的订阅区、`email.js`、`broadcast.js`，daily.yml 加「Send to subscribers」。验证：`npm test` 9 组；用假 key 请求 Buttondown 返回 401，脚本只记警告、退出码 0；订阅区 axe 0 违规、手机无横向溢出。待作者：注册 Buttondown、关掉打开/点击追踪、在仓库设置变量 `BUTTONDOWN_USERNAME` 和 Secret `BUTTONDOWN_API_KEY`。
 - **2026-10-22，Claude**：v4 准点、信源 11 类、版式（`4647f40`）；白底黑字版式（`d0eaf9c`）；解析换成成熟库、nodemailer 10（`e150ccb`）。验证：`npm test` 7 组通过；真实信源新旧解析输出一致；10-23 是第一次准点发送，以运行记录为准。
