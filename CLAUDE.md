@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-**提交者只有他一个人（2026-11-02 他的要求，所有仓库、以后每一次）**：作者和提交者都只能是 `qinxujunai <266454737+qinxujunai@users.noreply.github.com>`。智能体（Claude、Codex 等）、定时任务（不用 `github-actions[bot]`）、合并都一样；提交说明里不加 `Co-Authored-By`、`Claude-Session` 或任何工具署名。不要在网页上点合并（会让 GitHub 成为提交者），在本地合并后推送。
+**提交者只有他一个人（2026-11-02 他的要求，所有仓库、以后每一次）**：作者和提交者都只能是 `qinxujunai <266454737+qinxujunai@users.noreply.github.com>`。智能体（Claude、Codex 等）、定时任务（不用 `github-actions[bot]`）、合并都一样；提交说明里不加 `Co-Authored-By`、`Claude-Session` 或任何工具署名。不要在网页上点合并（会让 GitHub 成为提交者），在本地合并后推送。2026-11-02 已把全部历史统一改成这一个署名（文件内容不变）；文档里引用的旧提交编号对照见 `COMMIT-MAP-2026-11-02.txt`。版本标签仍指向改写前的提交（内容相同），因为云端推不了标签。
 
 AI Signal：计划每天北京时间 10:00 发出的 AI 简报，发到邮箱，同时发布网页版（GitHub Pages，`docs/`）。任务延迟时补发；阅读时长随内容变化。
 
