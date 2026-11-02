@@ -1,16 +1,16 @@
 {
-  "number": 13,
-  "date": "2026-11-01",
-  "dateLabel": "11月1日周日",
-  "scanned": 70,
-  "picked": 33,
-  "minutes": 6,
-  "headline": "ChatGPT 分享链接漏洞可接管账号，Parameter Labs 披露沙盒逃逸",
-  "intro": "两条线同时收紧：OpenAI 募资不到目标一半、美股因 AI 支出下跌；一个分享链接就能接管 ChatGPT 账号。",
+  "number": 14,
+  "date": "2026-11-02",
+  "dateLabel": "11月2日周一",
+  "scanned": 45,
+  "picked": 29,
+  "minutes": 5,
+  "headline": "OpenAI 合并 ChatGPT 与 Codex 的用量限制",
+  "intro": "OpenAI 调整额度，沙特阿美以 26 亿美元入股 Humain，Hyperbolic 融资 3000 万美元，AI 的用量与资本正在被重新定价。",
   "tldr": [
-    "Parameter Labs 披露 ChatGPT artifacts 沙盒逃逸，打开分享链接即可被接管账号",
-    "OpenAI 新一轮仅锁定约 110 亿美元承诺，不足 300 亿美元目标的一半",
-    "Anthropic 取消 200 美元 Ultra 订阅的 5 小时用量限制"
+    "OpenAI 合并 ChatGPT 与 Codex 用量限制，HN 216 分、161 条评论",
+    "沙特阿美以约 26 亿美元现金换取 Humain 49% 股权",
+    "Apollo 经济学家称 AI 对多数公司是「零财务回报」"
   ],
-  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-01.html"
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-02.html"
 }
