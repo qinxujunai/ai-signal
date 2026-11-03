@@ -87,6 +87,8 @@ test('render: masthead, sections, escaping, web-only bits', () => {
   for (const s of ['第 4 期', '今天的三件事', '社区在聊', '新模型', '新产品', '为什么重要', '信号强度', '今天没取到：Techmeme', 'Techmeme 6']) assert.ok(email.includes(s), s);
   assert.ok(email.includes('测试头条 &lt;b&gt;'), 'headline is escaped');
   assert.ok(!email.includes('<main>') && !email.includes('rel="icon"'), 'email has no web-only tags');
+  const fallback = renderIssue({ ...issue, degraded: true }, meta, { mode: 'email' });
+  assert.ok(fallback.includes('本期依据现有来源生成') && !fallback.includes('由 DeepSeek 按编辑标准挑选'), 'fallback does not claim model editing');
   assert.ok(web.includes('<main>') && web.includes('rel="icon"'));
   assert.equal((web.match(/<h1/g) || []).length, 1);
   assert.ok(!/<style|<img|<script/i.test(email), 'email: no style blocks, images or scripts');
@@ -110,12 +112,15 @@ test('website: product page, latest, archive and an Atom feed', async () => {
   const { publishWeb } = await import('../publish.js');
   const dir = await mkdtemp(join(tmpdir(), 'ai-signal-web-'));
   await mkdir(join(dir, 'archive'), { recursive: true });
-  await writeFile(join(dir, 'archive', '2026-10-21.html'), '<html><head><meta name="description" content="昨天"></head><body><h1>昨天的头条</h1></body></html>');
-  await publishWeb(dir, issue, meta);
+  await writeFile(join(dir, 'archive', '2026-10-21.html'), '<html><head><meta name="description" content="昨天"><meta name="ai-signal-updated-at" content="2026-10-23T02:00:00.000Z"></head><body><h1>昨天的头条</h1></body></html>');
+  await publishWeb(dir, issue, { ...meta, updatedAt: '2026-10-22T02:13:59.000Z' });
 
   const landing = await readFile(join(dir, 'index.html'), 'utf-8');
-  assert.ok(landing.includes('测试头条 &lt;b&gt;') && landing.includes('阅读今天这期') && landing.includes('href="latest/"'));
-  assert.ok(landing.includes('计划每天北京时间 10:00') && landing.includes('任务延迟时补发'), 'scheduled time is not presented as a delivery guarantee');
+  assert.ok(landing.includes('测试头条 &lt;b&gt;') && landing.includes('阅读最新一期') && landing.includes('href="latest/"'));
+  assert.ok(landing.includes('计划每天更新') && landing.includes('可能延迟'), 'the site does not guarantee publishing time');
+  assert.ok(landing.includes('摘要可能遗漏细节') && !landing.includes('编不出假链接') && !landing.includes('不断供'), 'source and reliability claims are limited');
+  const checkedEmail = renderIssue(issue, meta, { mode: 'email' });
+  assert.ok(checkedEmail.includes('不代表事实已核实') && !checkedEmail.includes('每天北京时间 10:00 送达'), 'signals and delivery claims are qualified');
   assert.ok(!landing.includes('10:00 整发出邮件'));
   assert.ok(landing.includes('prefers-color-scheme:dark'), 'follows the system dark mode');
   // The only script allowed: the back link to the author's personal site (scripts/back.js).
@@ -135,6 +140,10 @@ test('website: product page, latest, archive and an Atom feed', async () => {
   const feed = new XMLParser({ ignoreAttributes: false }).parse(await readFile(join(dir, 'feed.xml'), 'utf-8')).feed;
   const entries = [].concat(feed.entry);
   assert.deepEqual(entries.map((e) => e.title), ['测试头条 <b>', '昨天的头条'], 'newest first');
+  assert.equal(entries[0].updated, '2026-10-22T02:13:59.000Z', 'feed uses the recorded content update time, not a fixed 10:00');
+  assert.equal(feed.updated, '2026-10-23T02:00:00.000Z', 'later corrections to an older issue update the feed');
+  const { entryFromArchive } = await import('../site.js');
+  assert.equal(entryFromArchive('<h1>old</h1>', '2026-10-20').updated, '2026-10-20T00:00:00Z', 'unrecorded old issues use a date-only placeholder');
   assert.equal(entries[1].summary, '昨天');
   assert.ok((await readFile(join(dir, 'archive', 'index.html'), 'utf-8')).includes('第 2 期 · 2026-10-22'));
 });
@@ -146,4 +155,17 @@ test('subscribe: RSS, and the subject line', async () => {
   assert.ok(sub.includes('feed.xml') && !sub.includes('<form'));
   const html = '<!DOCTYPE html><html><head><title>Mistral 发布 · AI Signal 2026-10-22</title></head><body></body></html>';
   assert.equal(subjectFor(html, new Date('2026-10-22T02:00:00Z')), 'AI Signal 10/22｜Mistral 发布');
+});
+
+test('the November 3 correction retains the study limitation and source', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const archive = await readFile(new URL('../../docs/archive/2026-11-03.html', import.meta.url), 'utf8');
+  assert.ok(archive.includes('更正：本期对权重编辑研究') && archive.includes('在另一模型上的测试没有明确提升'));
+  assert.ok(archive.includes('https://rikiyat.github.io/blog/weight-space-programming/'));
+  assert.ok(!archive.includes('IPO 估值被投资人下调至'));
+  const data = JSON.parse(await readFile(new URL('../../docs/latest.json', import.meta.url), 'utf8'));
+  if (data.date === '2026-11-03') {
+    assert.ok(data.tldr.some((text) => text.includes('推理循环')));
+    assert.equal(await readFile(new URL('../../docs/latest/index.html', import.meta.url), 'utf8'), archive);
+  }
 });

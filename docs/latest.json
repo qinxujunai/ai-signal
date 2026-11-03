@@ -5,11 +5,11 @@
   "scanned": 68,
   "picked": 32,
   "minutes": 6,
-  "headline": "Anthropic 三季度营收 170 亿美元，IPO 估值被投资人下调至 1.5 万亿",
-  "intro": "同一天里，Anthropic 的 IPO 估值被投资人下修，而 GPT-6 Astra 已能直接改写 Qwen 的权重——资本在降温，能力在推进。",
+  "headline": "Anthropic 三季度营收 170 亿美元，部分投资人倾向更谨慎估值",
+  "intro": "部分投资人对 Anthropic 的 IPO 估值更为谨慎；研究者探索 AI 直接修改模型权重。",
   "tldr": [
-    "Anthropic Q3 营收 170 亿美元，投资人把 IPO 估值压到 1.5–1.6 万亿美元",
-    "GPT-6 Astra 直接编辑 Qwen3.5-0.8B 权重，把它的数学能力改强了",
+    "Anthropic Q3 营收 170 亿美元；部分投资人倾向约 1.5 万亿美元估值",
+    "研究者用 Astra 修改 Qwen 权重，缓解推理循环；效果仍需进一步验证",
     "Salesforce 27 亿美元收购 Cresta；Oracle 发 200 亿美元股债建 AI 基建"
   ],
   "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-03.html"

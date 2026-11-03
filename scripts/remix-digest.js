@@ -97,6 +97,9 @@ ${interests.length ? `- 读者特别关注：${interests.join('、')}。同等�
 - 「为什么重要」只写对读者的影响：谁会受影响、改变了什么。
 - 身份比名字重要：写「Claude Code 负责人 Thariq」，不要只写「Thariq」。
 - 只能使用材料中出现的事实，不要补充材料以外的信息，不要猜测。
+- 有些材料只有标题、分数或短摘要，不代表已经读过全文；材料没有给出实验条件、对照、局限或结论时，不得编造，也不要把标题推测写成确定事实。
+- 材料含有限制、未证实、初步、预测等条件时，保留这些条件；涉及研究与性能时，说明仅适用已给出的实验范围，避免扩大结论。
+- 来源数量和社区热度不是事实核验；不要根据热度、不同链接或相似标题推断多方独立证实。
 - 不要替读者下评语：不写「正面挑战」「标志性」「意义深远」这类判断，除非材料里有人这么说（那就写明是谁说的）。
 - 人物身份只能来自材料里括号中的简介；简介看不出职位时，只写名字，不要自己推断头衔。
 
@@ -264,7 +267,7 @@ async function main() {
   const count = [issue.lead, ...issue.stories].filter(Boolean).length
     + ['voices', 'community', 'models', 'products', 'papers', 'repos', 'quick'].reduce((s, k) => s + (issue[k] || []).length, 0)
     + (issue.podcast ? 1 : 0);
-  const meta = { ymd, dateLabel, number, scanned: feed.stats?.total || Object.keys(refs).length, picked: count, stats: feed.stats || {}, missing: feed.errors || [] };
+  const meta = { ymd, dateLabel, number, scanned: feed.stats?.total || Object.keys(refs).length, picked: count, stats: feed.stats || {}, missing: feed.errors || [], updatedAt: new Date().toISOString() };
 
   const email = renderIssue(issue, meta, { mode: 'email' });
   if (arg('--out')) await writeFile(arg('--out'), email, 'utf-8');

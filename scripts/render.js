@@ -134,7 +134,7 @@ export function renderIssue(issue, meta, { mode = 'email', base = '' } = {}) {
 </td></tr>`;
 
   const degraded = issue.degraded ? `
-<tr><td style="padding:20px 0 0 0;font-size:14px;line-height:1.6;color:${C.text};">今天的模型服务没有响应，本期按来源热度直接排序，标题保留原文。明天会恢复编辑版。</td></tr>` : '';
+<tr><td style="padding:20px 0 0 0;font-size:14px;line-height:1.6;color:${C.text};">本期模型编辑不可用，内容由现有来源生成，标题保留原文。</td></tr>` : '';
 
   const tldr = issue.tldr?.length ? `
 <tr><td style="padding:28px 0 0 0;">
@@ -220,8 +220,8 @@ export function renderIssue(issue, meta, { mode = 'email', base = '' } = {}) {
     <tr><td style="padding:56px 0 48px 0;">
       <div style="height:1px;line-height:1px;font-size:0;background:${C.line};">&nbsp;</div>
       <div style="font-size:12px;line-height:1.8;color:${C.muted};margin-top:16px;">
-        信号强度 ${dots(3)}：几个独立来源报道了同一件事，或这条在社区里有多热。<br>
-        AI Signal 每天北京时间 10:00 送达。今天的来源：${esc(sourceLine)}。由 DeepSeek 按编辑标准挑选，每一条都链接原文；没有链接的内容不会出现，发过的内容不会重复。${missing}
+        信号强度 ${dots(3)}：根据来源关联和社区热度估算，不代表事实已核实。<br>
+        AI Signal 计划每天北京时间 10:00 发布，可能延迟。今天的来源：${esc(sourceLine)}。${issue.degraded ? '本期依据现有来源生成' : '由 DeepSeek 按编辑标准挑选'}，摘要可能遗漏细节，请结合来源阅读。${missing}
       </div>
       <div style="font-size:12px;margin-top:12px;">${web ? a(`${base}archive/`, '往期 ›') : a(`${WEB}archive/${meta.ymd}.html`, '网页版 ›')}&nbsp;&nbsp; ${a(`${WEB}archive/`, '全部往期 ›')}&nbsp;&nbsp; ${a(`${WEB}#subscribe`, '订阅 ›')}&nbsp;&nbsp; ${a(REPO, '源码 ›')}</div>
     </td></tr>
@@ -239,7 +239,7 @@ export function renderIssue(issue, meta, { mode = 'email', base = '' } = {}) {
 <meta name="supported-color-schemes" content="light">
 <meta name="x-apple-disable-message-reformatting">
 <title>${esc(issue.headline)} · AI Signal ${esc(meta.ymd)}</title>
-${web ? `<meta name="description" content="${preheader}">\n<meta name="theme-color" content="${C.page}">\n${ICON}` : ''}
+${web ? `<meta name="description" content="${preheader}">\n${meta.updatedAt ? `<meta name="ai-signal-updated-at" content="${esc(meta.updatedAt)}">\n` : ''}<meta name="theme-color" content="${C.page}">\n${ICON}` : ''}
 </head>
 <body style="margin:0;padding:0;background:${C.page};font-family:${FONT};color:${C.ink};-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0;font-size:1px;line-height:1px;color:${C.page};">${preheader}</div>
@@ -263,7 +263,7 @@ ${ICON}
 ${glassBar(a('../latest/', '最新一期 ›'), '../')}
 <main style="display:block;max-width:640px;margin:0 auto;padding:40px 24px 56px 24px;">
 <h1 style="font-family:${DISPLAY};font-size:32px;line-height:1.2;font-weight:700;letter-spacing:-0.6px;color:${C.ink};margin:0 0 6px 0;">往期</h1>
-<div style="font-size:15px;color:${C.muted};margin-bottom:24px;${NUM}">共 ${dates.length} 期 · 每天北京时间 10:00 一期</div>
+<div style="font-size:15px;color:${C.muted};margin-bottom:24px;${NUM}">共 ${dates.length} 期 · 计划每天更新</div>
 ${dates.map((d, i) => `<div style="padding:14px 0;border-top:1px solid ${C.line};display:flex;justify-content:space-between;${NUM}">${a(`${d}.html`, `第 ${dates.length - i} 期 · ${d}`, 'font-size:16px;')}</div>`).join('\n')}
 <div style="border-top:1px solid ${C.line};padding-top:16px;font-size:13px;">${a('../latest/', '最新一期 ›')}&nbsp;&nbsp; ${a('../', '首页 ›')}&nbsp;&nbsp; ${a(REPO, '源码 ›')}</div>
 </main>

@@ -28,7 +28,8 @@ export async function publishWeb(webDir, issue, meta) {
   for (const day of dates.slice(0, 30)) {
     entries.push(entryFromArchive(await readFile(join(webDir, 'archive', `${day}.html`), 'utf-8'), day));
   }
-  await writeFile(join(webDir, 'feed.xml'), renderFeed(entries, { updated: entries[0]?.updated }), 'utf-8');
+  const updated = entries.map((entry) => entry.updated).sort((a, b) => Date.parse(b) - Date.parse(a))[0];
+  await writeFile(join(webDir, 'feed.xml'), renderFeed(entries, { updated }), 'utf-8');
 }
 
 // Plain data, no HTML: the homepage renders it in its own type. Same numbers as the issue header.

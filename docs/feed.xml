@@ -1,115 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>AI Signal</title>
-  <subtitle>每天北京时间 10:00，一页读完当天的 AI</subtitle>
+  <subtitle>计划每天更新的中文 AI 简报</subtitle>
   <link href="https://qinxujunai.github.io/ai-signal/"/>
   <link rel="self" href="https://qinxujunai.github.io/ai-signal/feed.xml"/>
   <id>https://qinxujunai.github.io/ai-signal/</id>
-  <updated>2026-11-03T02:00:00Z</updated>
+  <updated>2026-11-03T04:17:02.645Z</updated>
   <author><name>秦徐俊</name><uri>https://qinxujunai.github.io/</uri></author>
   <entry>
-    <title>Anthropic 三季度营收 170 亿美元，IPO 估值被投资人下调至 1.5 万亿</title>
+    <title>Anthropic 三季度营收 170 亿美元，部分投资人倾向更谨慎估值</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-11-03.html"/>
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-11-03.html</id>
-    <updated>2026-11-03T02:00:00Z</updated>
-    <summary>同一天里，Anthropic 的 IPO 估值被投资人下修，而 GPT-6 Astra 已能直接改写 Qwen 的权重——资本在降温，能力在推进。</summary>
+    <updated>2026-11-03T04:17:02.645Z</updated>
+    <summary>部分投资人对 Anthropic 的 IPO 估值更为谨慎；研究者探索 AI 直接修改模型权重。</summary>
   </entry>
   <entry>
     <title>OpenAI 合并 ChatGPT 与 Codex 的用量限制</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-11-02.html"/>
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-11-02.html</id>
-    <updated>2026-11-02T02:00:00Z</updated>
+    <updated>2026-11-02T00:00:00Z</updated>
     <summary>OpenAI 调整额度，沙特阿美以 26 亿美元入股 Humain，Hyperbolic 融资 3000 万美元，AI 的用量与资本正在被重新定价。</summary>
   </entry>
   <entry>
     <title>ChatGPT 分享链接漏洞可接管账号，Parameter Labs 披露沙盒逃逸</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-11-01.html"/>
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-11-01.html</id>
-    <updated>2026-11-01T02:00:00Z</updated>
+    <updated>2026-11-01T00:00:00Z</updated>
     <summary>两条线同时收紧：OpenAI 募资不到目标一半、美股因 AI 支出下跌；一个分享链接就能接管 ChatGPT 账号。</summary>
   </entry>
   <entry>
     <title>Claude Code 的 VS Code 扩展在 Cursor 市场被植入后门</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-31.html"/>
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-31.html</id>
-    <updated>2026-10-31T02:00:00Z</updated>
+    <updated>2026-10-31T00:00:00Z</updated>
     <summary>三条线同时落定：IDE 插件后门、OpenAI 融资目标缩水、Mistral 放出 1T 参数模型。</summary>
   </entry>
   <entry>
     <title>Gemini 4 Carbon 登顶 AA 智能指数 v5，首发 Token 半价</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-30.html"/>
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-30.html</id>
-    <updated>2026-10-30T02:00:00Z</updated>
+    <updated>2026-10-30T00:00:00Z</updated>
     <summary>Gemini 4 Carbon 半价首发登顶，Mistral 同日开放 Large 4 权重，Nvidia 为 Anthropic 数据中心做信贷担保。</summary>
   </entry>
   <entry>
     <title>Google 发布 Gemini 4 Carbon，HN 已 804 分</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-29.html"/>
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-29.html</id>
-    <updated>2026-10-29T02:00:00Z</updated>
+    <updated>2026-10-29T00:00:00Z</updated>
     <summary>模型、估值、收入三条线同日推进：Gemini 4 Carbon 发布，Cognition 估值报价已到 700–800 亿美元。</summary>
   </entry>
   <entry>
     <title>Anthropic 递交 335 页 S-1：上半年营收同比增 1300%，已经营盈利</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-28.html"/>
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-28.html</id>
-    <updated>2026-10-28T02:00:00Z</updated>
+    <updated>2026-10-28T00:00:00Z</updated>
     <summary>Anthropic 的 335 页 S-1 把前沿实验室的账本摊开；同日 OpenAI 用 GPT-6.1 Terra 抢量，还计划采购 Google TPU。</summary>
   </entry>
   <entry>
     <title>Anthropic 递交 S-1，启动 IPO 并首次披露客户结构</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-27.html"/>
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-27.html</id>
-    <updated>2026-10-27T02:00:00Z</updated>
+    <updated>2026-10-27T00:00:00Z</updated>
     <summary>Anthropic 的招股书和 GPT-6.1 Terra 的价目表同一天落地，模型公司开始用财报和定价说话。</summary>
   </entry>
   <entry>
     <title>OpenAI 与 Anthropic 数月内把 LLM 价格下调最高 80%</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-26.html"/>
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-26.html</id>
-    <updated>2026-10-26T02:00:00Z</updated>
+    <updated>2026-10-26T00:00:00Z</updated>
     <summary>今天有三条线同时指向成本：模型降价最高 80%、GPU 债务收紧、旧 CNN 跑赢前沿模型。</summary>
   </entry>
   <entry>
     <title>Replit 把大部分 AI 支出从 Anthropic 转投 OpenAI，年单超 1 亿美元</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-25.html"/>
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-25.html</id>
-    <updated>2026-10-25T02:00:00Z</updated>
+    <updated>2026-10-25T00:00:00Z</updated>
     <summary>今天两条主线：AI 支出正在重新分配，安全漏洞的发现速度被智能体推高到每周一次。</summary>
   </entry>
   <entry>
     <title>Anthropic 将 Agent Skills 捐给 Agentic AI 基金会，与 MCP 并列</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-24.html"/>
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-24.html</id>
-    <updated>2026-10-24T02:00:00Z</updated>
+    <updated>2026-10-24T00:00:00Z</updated>
     <summary>今天两件事指向同一方向：Agent 的接口标准正在被捐给基金会，而模型训练环境正在被主动断网。</summary>
   </entry>
   <entry>
     <title>OpenAI 估值目标下调至 1.25 万亿美元，同时推进 300 亿美元融资</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-23.html"/>
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-23.html</id>
-    <updated>2026-10-23T02:00:00Z</updated>
+    <updated>2026-10-23T00:00:00Z</updated>
     <summary>今天两件事最实：OpenAI 融资估值缩水，Anthropic 把 Agent Skills 交给 Linux 基金会下的 AAIF。</summary>
   </entry>
   <entry>
     <title>Mistral Large 4 发布，OpenAI 模型同时上架 Google Cloud</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-22.html"/>
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-22.html</id>
-    <updated>2026-10-22T02:00:00Z</updated>
+    <updated>2026-10-22T00:00:00Z</updated>
     <summary>Mistral Large 4 登上 HN 317 分，官方博客同步发布</summary>
   </entry>
   <entry>
     <title>Anthropic 上半年净亏损超 800 亿美元，OpenAI 收购 Orchestra Bio</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-21.html"/>
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-21.html</id>
-    <updated>2026-10-21T02:00:00Z</updated>
+    <updated>2026-10-21T00:00:00Z</updated>
     <summary>Anthropic 2026 上半年净亏损超 800 亿美元，收入与支出严重失衡</summary>
   </entry>
   <entry>
     <title>DHS 下令禁止 DeepSeek 进入美国联邦民事机构</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-20.html"/>
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-20.html</id>
-    <updated>2026-10-20T02:00:00Z</updated>
+    <updated>2026-10-20T00:00:00Z</updated>
     <summary>美国国土安全部发布命令，禁止联邦民事机构使用 DeepSeek</summary>
   </entry>
 </feed>

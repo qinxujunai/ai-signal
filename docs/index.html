@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AI Signal · 每天一期，一页读完 AI 消息</title>
-<meta name="description" content="AI 的消息每天成百上千。AI Signal 计划每天替你读一遍，只留下值得看的，一页读完。每一条都附原文。">
+<meta name="description" content="AI Signal 是一份中文 AI 简报。关注模型、产品、研究与开源项目，保留来源链接，计划每天更新。">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <meta property="og:title" content="AI Signal">
-<meta property="og:description" content="AI 的消息每天成百上千。AI Signal 计划每天替你读一遍，只留下值得看的，一页读完。每一条都附原文。">
+<meta property="og:description" content="AI Signal 是一份中文 AI 简报。关注模型、产品、研究与开源项目，保留来源链接，计划每天更新。">
 <meta property="og:url" content="https://qinxujunai.github.io/ai-signal/">
 <link rel="canonical" href="https://qinxujunai.github.io/ai-signal/">
 <link rel="alternate" type="application/atom+xml" title="AI Signal" href="feed.xml">
@@ -69,49 +69,62 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;font-size:12px;color
 footer a{text-decoration:underline;text-underline-offset:2px}
 footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 @media (max-width:734px){.hero{padding:56px 0 40px}.facts{grid-template-columns:1fr;padding-block:48px;gap:28px}.steps{grid-template-columns:1fr 1fr}.bar nav{gap:14px}.bar nav .hide-s{display:none}}
+/* An editorial front page: one current issue, with sources and context nearby. */
+.front{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:clamp(36px,6vw,84px);align-items:center;padding-top:76px;padding-bottom:74px}
+.hero{text-align:left;padding:0}.hero .eyebrow{font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:var(--link);margin-bottom:18px}
+.hero h1{font-size:clamp(48px,6vw,76px);letter-spacing:-.045em}.hero .lede{font-size:clamp(24px,3vw,34px);font-weight:600;line-height:1.3;margin:20px 0 0;max-width:440px;word-break:normal}
+.hero .dek{font-size:16px;line-height:1.75;color:var(--text);max-width:390px;margin:20px 0 0}.hero .cta{justify-content:flex-start;gap:20px;margin-top:28px;font-size:15px}
+.today{margin:0;padding:32px clamp(24px,4vw,42px);border:1px solid var(--bar-line);border-radius:22px}.today .issue-label{display:flex;align-items:center;justify-content:space-between;gap:15px;border-bottom:1px solid var(--line);padding-bottom:18px;color:var(--muted);font-size:13px}
+.today .issue-label strong{color:var(--ink);font-size:14px}.today h2{font-size:clamp(23px,2.8vw,34px);line-height:1.27;margin-top:22px}.today .intro{font-size:16px;line-height:1.7;margin-top:12px}.today ol{gap:11px;margin-top:20px}.today li{font-size:15px;grid-template-columns:24px 1fr}.today .more{font-size:15px;margin:23px 0 0}.today .when{margin-top:14px;font-size:12px}
+.section-label{font-size:12px;letter-spacing:.1em;color:var(--muted);font-weight:600;text-transform:uppercase;margin:0 0 14px}.facts{border-top:1px solid var(--line);padding-block:56px}.facts h3{font-size:20px}.facts p{font-size:15px;line-height:1.75}.sub{border-top:1px solid var(--line);padding-block:64px}.sub p{font-size:16px;line-height:1.7}.how{padding-block:56px}.open{padding-block:56px}.steps span{line-height:1.7}
+@media(max-width:734px){.front{grid-template-columns:1fr;gap:36px;padding-top:48px;padding-bottom:52px}.hero .lede{font-size:27px}.hero .dek{font-size:15px}.today{padding:26px 22px}.facts{padding-block:45px}.sub{padding-block:48px}}
 </style>
 </head>
 <body>
-<header class="bar"><div class="bar-in"><span class="start"><a class="back" data-qxj-back hidden>‹ 返回</a><a class="brand" href="./">AI Signal</a></span><nav aria-label="主导航"><a href="latest/">今天</a><a href="archive/">往期</a><a href="#subscribe">订阅</a><a class="hide-s" href="https://github.com/qinxujunai/ai-signal">GitHub</a></nav></div></header><script>(function(){try{var u=sessionStorage.getItem('qxj.back'),a=document.querySelector('[data-qxj-back]');if(!u||!a||u.indexOf(location.origin+'/')!==0)return;a.href=u;a.hidden=false;a.addEventListener('click',function(e){if(document.referrer&&document.referrer.split('#')[0]===u.split('#')[0]){e.preventDefault();history.back();}});}catch(e){}})();</script>
+<header class="bar"><div class="bar-in"><span class="start"><a class="back" data-qxj-back hidden>‹ 返回</a><a class="brand" href="./">AI Signal</a></span><nav aria-label="主导航"><a href="latest/">最新</a><a href="archive/">往期</a><a href="#subscribe">订阅</a><a class="hide-s" href="https://github.com/qinxujunai/ai-signal">GitHub</a></nav></div></header><script>(function(){try{var u=sessionStorage.getItem('qxj.back'),a=document.querySelector('[data-qxj-back]');if(!u||!a||u.indexOf(location.origin+'/')!==0)return;a.href=u;a.hidden=false;a.addEventListener('click',function(e){if(document.referrer&&document.referrer.split('#')[0]===u.split('#')[0]){e.preventDefault();history.back();}});}catch(e){}})();</script>
 <main>
-  <section class="hero wrap">
-    <p class="eyebrow">计划每天北京时间 10:00</p>
+  <div class="front wrap">
+  <section class="hero">
+    <p class="eyebrow">AI NEWSLETTER · 信号</p>
     <h1>AI Signal</h1>
-    <p class="lede">AI 的消息每天成百上千。它替你读一遍，只留下值得看的，一页读完。</p>
-    <div class="cta"><a class="button" href="latest/">阅读今天这期</a><a href="#subscribe">订阅 ›</a></div>
+    <p class="lede">每天的 AI 消息，<br>读这一份。</p>
+    <p class="dek">关注模型、产品、研究与开源项目。把重要的变化和出处放在一起，留一点时间给真正值得看的事。</p>
+    <div class="cta"><a class="button" href="latest/">阅读最新一期</a><a href="archive/">浏览往期 ›</a></div>
   </section>
 
-  <section class="wrap" aria-labelledby="today">
+  <section aria-labelledby="today">
     <article class="today">
-      <div class="when">第 15 期 · 11月3日周二 · 从 68 条新内容里选了 32 条</div>
-      <h2 id="today"><a href="latest/" style="color:inherit">Anthropic 三季度营收 170 亿美元，IPO 估值被投资人下调至 1.5 万亿</a></h2>
-      <p class="intro">同一天里，Anthropic 的 IPO 估值被投资人下修，而 GPT-6 Astra 已能直接改写 Qwen 的权重——资本在降温，能力在推进。</p>
-      <ol aria-label="30 秒读完"><li>Anthropic Q3 营收 170 亿美元，投资人把 IPO 估值压到 1.5–1.6 万亿美元</li><li>GPT-6 Astra 直接编辑 Qwen3.5-0.8B 权重，把它的数学能力改强了</li><li>Salesforce 27 亿美元收购 Cresta；Oracle 发 200 亿美元股债建 AI 基建</li></ol>
+      <div class="issue-label"><strong>最新一期</strong><span>第 15 期 · 11月3日周二</span></div>
+      <h2 id="today"><a href="latest/" style="color:inherit">Anthropic 三季度营收 170 亿美元，部分投资人倾向更谨慎估值</a></h2>
+      <p class="intro">部分投资人对 Anthropic 的 IPO 估值更为谨慎；研究者探索 AI 直接修改模型权重。</p>
+      <ol aria-label="30 秒读完"><li>Anthropic Q3 营收 170 亿美元；部分投资人倾向约 1.5 万亿美元估值</li><li>研究者用 Astra 修改 Qwen 权重，缓解推理循环；效果仍需进一步验证</li><li>Salesforce 27 亿美元收购 Cresta；Oracle 发 200 亿美元股债建 AI 基建</li></ol>
+      <div class="when">从 68 条新内容中选出 32 条</div>
       <p class="more"><a href="latest/">阅读全文 ›</a></p>
     </article>
   </section>
-
-  <section class="wrap sub" id="subscribe" aria-labelledby="subscribe-title">
-    <h2 id="subscribe-title">订阅 RSS，更新后送到你的阅读器</h2>
-    <p>用任意 RSS 阅读器订阅，每期一出就收到。免费，不用注册。</p>
-    <div class="cta"><a class="button" href="feed.xml">RSS 订阅</a></div>
-    <p class="note">订阅地址：https://qinxujunai.github.io/ai-signal/feed.xml</p>
-  </section>
+  </div>
 
   <section class="wrap facts" aria-label="特点">
-    <div><h3>11 类信源</h3><p>X 上的 AI builder、Hacker News、Techmeme、Reddit、论文热榜、新模型、GitHub 趋势、Product Hunt、各家实验室博客和中文媒体。</p></div>
-    <div><h3>每条都有出处</h3><p>模型只能引用素材编号，链接、分数和 star 数由程序从原始数据填回，编不出假链接。</p></div>
-    <div><h3>不重复，不断供</h3><p>发过的内容 60 天内不再出现。某个信源挂了，页脚会写明；模型没响应，也照样按热度排出一期。</p></div>
+    <div><h3>多处信息，一处读完</h3><p>关注实验室、开发者社区、论文、开源项目和中文媒体。当天信源不完整时，会在简报中注明。</p></div>
+    <div><h3>保留来源，方便核对</h3><p>每条内容附来源链接。摘要可能遗漏细节，重要信息请结合原文判断。</p></div>
+    <div><h3>计划每天更新</h3><p>计划北京时间 10:00 发布，任务或信源异常时可能延迟。每期都有独立的往期页面。</p></div>
   </section>
 
   <section class="wrap how" aria-labelledby="how">
     <h2 id="how">每天早上发生的事</h2>
     <ol class="steps">
-      <li><strong>收集</strong><span>凌晨开始排队，09:35 读完 36 小时内的新内容。</span></li>
+      <li><strong>收集</strong><span>计划从多个来源收集近 36 小时的新内容。</span></li>
       <li><strong>编号</strong><span>每条素材一个编号，去掉发过的。</span></li>
       <li><strong>编辑</strong><span>按三个问题挑选：会改变判断吗？是新事实吗？有数字或名字吗？</span></li>
-      <li><strong>送达</strong><span>计划 10:00 发出邮件并发布网页；任务延迟时补发。</span></li>
+      <li><strong>发布</strong><span>生成网页并保留往期，计划每天更新；任务可能延迟。</span></li>
     </ol>
+  </section>
+
+  <section class="wrap sub" id="subscribe" aria-labelledby="subscribe-title">
+    <h2 id="subscribe-title">订阅 RSS，更新后送到你的阅读器</h2>
+    <p>把订阅地址添加到 RSS 阅读器，新一期发布后可在阅读器中查看。</p>
+    <div class="cta"><a class="button" href="feed.xml">RSS 订阅</a></div>
+    <p class="note">订阅地址：https://qinxujunai.github.io/ai-signal/feed.xml</p>
   </section>
 
   <section class="wrap open" aria-labelledby="open">

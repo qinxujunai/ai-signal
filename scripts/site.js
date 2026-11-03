@@ -72,17 +72,26 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;font-size:12px;color
 footer a{text-decoration:underline;text-underline-offset:2px}
 footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 @media (max-width:734px){.hero{padding:56px 0 40px}.facts{grid-template-columns:1fr;padding-block:48px;gap:28px}.steps{grid-template-columns:1fr 1fr}.bar nav{gap:14px}.bar nav .hide-s{display:none}}
+/* An editorial front page: one current issue, with sources and context nearby. */
+.front{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:clamp(36px,6vw,84px);align-items:center;padding-top:76px;padding-bottom:74px}
+.hero{text-align:left;padding:0}.hero .eyebrow{font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:var(--link);margin-bottom:18px}
+.hero h1{font-size:clamp(48px,6vw,76px);letter-spacing:-.045em}.hero .lede{font-size:clamp(24px,3vw,34px);font-weight:600;line-height:1.3;margin:20px 0 0;max-width:440px;word-break:normal}
+.hero .dek{font-size:16px;line-height:1.75;color:var(--text);max-width:390px;margin:20px 0 0}.hero .cta{justify-content:flex-start;gap:20px;margin-top:28px;font-size:15px}
+.today{margin:0;padding:32px clamp(24px,4vw,42px);border:1px solid var(--bar-line);border-radius:22px}.today .issue-label{display:flex;align-items:center;justify-content:space-between;gap:15px;border-bottom:1px solid var(--line);padding-bottom:18px;color:var(--muted);font-size:13px}
+.today .issue-label strong{color:var(--ink);font-size:14px}.today h2{font-size:clamp(23px,2.8vw,34px);line-height:1.27;margin-top:22px}.today .intro{font-size:16px;line-height:1.7;margin-top:12px}.today ol{gap:11px;margin-top:20px}.today li{font-size:15px;grid-template-columns:24px 1fr}.today .more{font-size:15px;margin:23px 0 0}.today .when{margin-top:14px;font-size:12px}
+.section-label{font-size:12px;letter-spacing:.1em;color:var(--muted);font-weight:600;text-transform:uppercase;margin:0 0 14px}.facts{border-top:1px solid var(--line);padding-block:56px}.facts h3{font-size:20px}.facts p{font-size:15px;line-height:1.75}.sub{border-top:1px solid var(--line);padding-block:64px}.sub p{font-size:16px;line-height:1.7}.how{padding-block:56px}.open{padding-block:56px}.steps span{line-height:1.7}
+@media(max-width:734px){.front{grid-template-columns:1fr;gap:36px;padding-top:48px;padding-bottom:52px}.hero .lede{font-size:27px}.hero .dek{font-size:15px}.today{padding:26px 22px}.facts{padding-block:45px}.sub{padding-block:48px}}
 `;
 
 function bar() {
-  return `<header class="bar"><div class="bar-in"><span class="start"><a class="back" data-qxj-back hidden>‹ 返回</a><a class="brand" href="./">AI Signal</a></span><nav aria-label="主导航"><a href="latest/">今天</a><a href="archive/">往期</a><a href="#subscribe">订阅</a><a class="hide-s" href="${REPO}">GitHub</a></nav></div></header>${BACK_SCRIPT}`;
+  return `<header class="bar"><div class="bar-in"><span class="start"><a class="back" data-qxj-back hidden>‹ 返回</a><a class="brand" href="./">AI Signal</a></span><nav aria-label="主导航"><a href="latest/">最新</a><a href="archive/">往期</a><a href="#subscribe">订阅</a><a class="hide-s" href="${REPO}">GitHub</a></nav></div></header>${BACK_SCRIPT}`;
 }
 
 // Subscribing is RSS: any reader app follows the feed. No sign-up, no list of addresses to keep.
 export function subscribeSection() {
   return `<section class="wrap sub" id="subscribe" aria-labelledby="subscribe-title">
     <h2 id="subscribe-title">订阅 RSS，更新后送到你的阅读器</h2>
-    <p>用任意 RSS 阅读器订阅，每期一出就收到。免费，不用注册。</p>
+    <p>把订阅地址添加到 RSS 阅读器，新一期发布后可在阅读器中查看。</p>
     <div class="cta"><a class="button" href="feed.xml">RSS 订阅</a></div>
     <p class="note">订阅地址：${esc(SITE)}feed.xml</p>
   </section>`;
@@ -91,7 +100,7 @@ export function subscribeSection() {
 // The product page: what it is, today's issue, why it can be trusted, how it works, where the code is.
 export function renderLanding(issue, meta) {
   const tldr = (issue.tldr || []).slice(0, 3).map((t) => `<li>${esc(t)}</li>`).join('');
-  const description = 'AI 的消息每天成百上千。AI Signal 计划每天替你读一遍，只留下值得看的，一页读完。每一条都附原文。';
+  const description = 'AI Signal 是一份中文 AI 简报。关注模型、产品、研究与开源项目，保留来源链接，计划每天更新。';
   return `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -112,40 +121,44 @@ ${ICON}
 <body>
 ${bar()}
 <main>
-  <section class="hero wrap">
-    <p class="eyebrow">计划每天北京时间 10:00</p>
+  <div class="front wrap">
+  <section class="hero">
+    <p class="eyebrow">AI NEWSLETTER · 信号</p>
     <h1>AI Signal</h1>
-    <p class="lede">AI 的消息每天成百上千。它替你读一遍，只留下值得看的，一页读完。</p>
-    <div class="cta"><a class="button" href="latest/">阅读今天这期</a><a href="#subscribe">订阅 ›</a></div>
+    <p class="lede">每天的 AI 消息，<br>读这一份。</p>
+    <p class="dek">关注模型、产品、研究与开源项目。把重要的变化和出处放在一起，留一点时间给真正值得看的事。</p>
+    <div class="cta"><a class="button" href="latest/">阅读最新一期</a><a href="archive/">浏览往期 ›</a></div>
   </section>
 
-  <section class="wrap" aria-labelledby="today">
+  <section aria-labelledby="today">
     <article class="today">
-      <div class="when">第 ${esc(meta.number)} 期 · ${esc(meta.dateLabel)} · 从 ${esc(meta.scanned)} 条新内容里选了 ${esc(meta.picked)} 条</div>
+      <div class="issue-label"><strong>最新一期</strong><span>第 ${esc(meta.number)} 期 · ${esc(meta.dateLabel)}</span></div>
       <h2 id="today"><a href="latest/" style="color:inherit">${esc(issue.headline)}</a></h2>
       ${issue.intro ? `<p class="intro">${esc(issue.intro)}</p>` : ''}
       ${tldr ? `<ol aria-label="30 秒读完">${tldr}</ol>` : ''}
+      <div class="when">从 ${esc(meta.scanned)} 条新内容中选出 ${esc(meta.picked)} 条</div>
       <p class="more"><a href="latest/">阅读全文 ›</a></p>
     </article>
   </section>
-
-  ${subscribeSection()}
+  </div>
 
   <section class="wrap facts" aria-label="特点">
-    <div><h3>11 类信源</h3><p>X 上的 AI builder、Hacker News、Techmeme、Reddit、论文热榜、新模型、GitHub 趋势、Product Hunt、各家实验室博客和中文媒体。</p></div>
-    <div><h3>每条都有出处</h3><p>模型只能引用素材编号，链接、分数和 star 数由程序从原始数据填回，编不出假链接。</p></div>
-    <div><h3>不重复，不断供</h3><p>发过的内容 60 天内不再出现。某个信源挂了，页脚会写明；模型没响应，也照样按热度排出一期。</p></div>
+    <div><h3>多处信息，一处读完</h3><p>关注实验室、开发者社区、论文、开源项目和中文媒体。当天信源不完整时，会在简报中注明。</p></div>
+    <div><h3>保留来源，方便核对</h3><p>每条内容附来源链接。摘要可能遗漏细节，重要信息请结合原文判断。</p></div>
+    <div><h3>计划每天更新</h3><p>计划北京时间 10:00 发布，任务或信源异常时可能延迟。每期都有独立的往期页面。</p></div>
   </section>
 
   <section class="wrap how" aria-labelledby="how">
     <h2 id="how">每天早上发生的事</h2>
     <ol class="steps">
-      <li><strong>收集</strong><span>凌晨开始排队，09:35 读完 36 小时内的新内容。</span></li>
+      <li><strong>收集</strong><span>计划从多个来源收集近 36 小时的新内容。</span></li>
       <li><strong>编号</strong><span>每条素材一个编号，去掉发过的。</span></li>
       <li><strong>编辑</strong><span>按三个问题挑选：会改变判断吗？是新事实吗？有数字或名字吗？</span></li>
-      <li><strong>送达</strong><span>计划 10:00 发出邮件并发布网页；任务延迟时补发。</span></li>
+      <li><strong>发布</strong><span>生成网页并保留往期，计划每天更新；任务可能延迟。</span></li>
     </ol>
   </section>
+
+  ${subscribeSection()}
 
   <section class="wrap open" aria-labelledby="open">
     <h2 id="open">开源，可以自己部署</h2>
@@ -171,7 +184,7 @@ export function renderFeed(entries, { updated = new Date().toISOString() } = {})
   return `<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>AI Signal</title>
-  <subtitle>每天北京时间 10:00，一页读完当天的 AI</subtitle>
+  <subtitle>计划每天更新的中文 AI 简报</subtitle>
   <link href="${SITE}"/>
   <link rel="self" href="${SITE}feed.xml"/>
   <id>${SITE}</id>
@@ -187,5 +200,9 @@ export function entryFromArchive(html, ymd) {
   const $ = cheerio.load(String(html));
   const title = ($('h1').first().text() || $('title').text().split(' · ')[0] || ymd).replace(/\s+/g, ' ').trim();
   const summary = ($('meta[name="description"]').attr('content') || '').trim();
-  return { title, summary, url: `${SITE}archive/${ymd}.html`, updated: `${ymd}T02:00:00Z` };
+  // Atom requires a timestamp. For old archives with no recorded update time,
+  // midnight UTC is a date-only placeholder, not a claim of publication time.
+  const recorded = $('meta[name="ai-signal-updated-at"]').attr('content') || '';
+  const updated = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/.test(recorded) && !Number.isNaN(Date.parse(recorded)) ? recorded : `${ymd}T00:00:00Z`;
+  return { title, summary, url: `${SITE}archive/${ymd}.html`, updated };
 }
