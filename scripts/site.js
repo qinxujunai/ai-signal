@@ -81,6 +81,14 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .today .issue-label strong{color:var(--ink);font-size:14px}.today h2{font-size:clamp(23px,2.8vw,34px);line-height:1.27;margin-top:22px}.today .intro{font-size:16px;line-height:1.7;margin-top:12px}.today ol{gap:11px;margin-top:20px}.today li{font-size:15px;grid-template-columns:24px 1fr}.today .more{font-size:15px;margin:23px 0 0}.today .when{margin-top:14px;font-size:12px}
 .section-label{font-size:12px;letter-spacing:.1em;color:var(--muted);font-weight:600;text-transform:uppercase;margin:0 0 14px}.facts{border-top:1px solid var(--line);padding-block:56px}.facts h3{font-size:20px}.facts p{font-size:15px;line-height:1.75}.sub{border-top:1px solid var(--line);padding-block:64px}.sub p{font-size:16px;line-height:1.7}.how{padding-block:56px}.open{padding-block:56px}.steps span{line-height:1.7}
 @media(max-width:734px){.front{grid-template-columns:1fr;gap:36px;padding-top:48px;padding-bottom:52px}.hero .lede{font-size:27px}.hero .dek{font-size:15px}.today{padding:26px 22px}.facts{padding-block:45px}.sub{padding-block:48px}}
+/* Product story: large type, concrete examples, and a quiet reading path. */
+.hero .lede{font-size:clamp(30px,3.5vw,44px);line-height:1.2;letter-spacing:-.025em;max-width:490px}
+.story{border-top:1px solid var(--line);padding:88px 0 72px}.story-heading{max-width:800px}.kicker{margin:0 0 18px;color:var(--link);font-size:13px;font-weight:700;letter-spacing:.08em}.story h2,.sources h2,.inspired h2{margin:0;font-size:clamp(32px,4.7vw,52px);line-height:1.18;letter-spacing:-.035em}.story-intro{font-size:clamp(17px,2vw,21px);color:var(--text);line-height:1.75;max-width:700px;margin:24px 0 0}
+.principles{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:56px}.principle{border-top:1px solid var(--line);padding-top:20px}.principle .num{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}.principle h3{font-size:21px;line-height:1.3;margin:20px 0 10px}.principle p{font-size:15px;line-height:1.8;color:var(--text);margin:0}
+.reading{background:#161617;color:#f5f5f7;border-radius:26px;padding:clamp(30px,5vw,58px);display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;margin-bottom:80px}.reading .kicker{color:#70b9ff}.reading h2{font-size:clamp(32px,4.6vw,50px);line-height:1.18;letter-spacing:-.035em;margin:0}.reading p{font-size:16px;line-height:1.8;color:#c7c7cc;max-width:430px;margin:20px 0 0}.reading a{color:#8dc9ff}.sample{border-left:1px solid #454548;padding-left:32px}.sample-label{font-size:12px;letter-spacing:.08em;color:#a1a1a6}.sample strong{display:block;font-size:clamp(32px,5vw,56px);line-height:1.1;letter-spacing:-.04em;margin:16px 0 10px}.sample span{font-size:15px;line-height:1.7;color:#c7c7cc}
+.sources{border-top:1px solid var(--line);padding:80px 0}.sources-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}.sources p,.inspired p{color:var(--text);font-size:16px;line-height:1.8;max-width:520px}.source-list{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;margin:0;padding:0;list-style:none}.source-list li{padding:13px 0;border-bottom:1px solid var(--line);font-size:15px;font-weight:600}.source-list small{display:block;color:var(--muted);font-size:12px;font-weight:400;margin-top:4px}
+.inspired{border-top:1px solid var(--line);padding:72px 0}.inspired .refs{display:flex;gap:24px;flex-wrap:wrap;font-size:15px;margin-top:22px}.inspired p{max-width:720px}
+@media(max-width:734px){.story{padding:62px 0 54px}.story-intro{margin-top:18px}.principles{grid-template-columns:1fr;gap:28px;margin-top:36px}.principle h3{margin-top:12px}.reading{grid-template-columns:1fr;gap:28px;margin-bottom:56px}.sample{border-left:0;border-top:1px solid #454548;padding:24px 0 0}.sources{padding:58px 0}.sources-grid{grid-template-columns:1fr;gap:24px}.inspired{padding:54px 0}}
 `;
 
 function bar() {
@@ -90,7 +98,7 @@ function bar() {
 // Subscribing is RSS: any reader app follows the feed. No sign-up, no list of addresses to keep.
 export function subscribeSection() {
   return `<section class="wrap sub" id="subscribe" aria-labelledby="subscribe-title">
-    <h2 id="subscribe-title">订阅 RSS，更新后送到你的阅读器</h2>
+    <h2 id="subscribe-title">订阅 RSS，在阅读器中追踪更新</h2>
     <p>把订阅地址添加到 RSS 阅读器，新一期发布后可在阅读器中查看。</p>
     <div class="cta"><a class="button" href="feed.xml">RSS 订阅</a></div>
     <p class="note">订阅地址：${esc(SITE)}feed.xml</p>
@@ -125,8 +133,8 @@ ${bar()}
   <section class="hero">
     <p class="eyebrow">AI NEWSLETTER · 信号</p>
     <h1>AI Signal</h1>
-    <p class="lede">每天的 AI 消息，<br>读这一份。</p>
-    <p class="dek">关注模型、产品、研究与开源项目。把重要的变化和出处放在一起，留一点时间给真正值得看的事。</p>
+    <p class="lede">AI 变化很快。<br>重点，一眼看清。</p>
+    <p class="dek">一份中文 AI 简报，把模型、产品、研究与开源项目的变化整理在一起。从最新消息出发，也能回到原文。</p>
     <div class="cta"><a class="button" href="latest/">阅读最新一期</a><a href="archive/">浏览往期 ›</a></div>
   </section>
 
@@ -142,27 +150,42 @@ ${bar()}
   </section>
   </div>
 
-  <section class="wrap facts" aria-label="特点">
-    <div><h3>多处信息，一处读完</h3><p>关注实验室、开发者社区、论文、开源项目和中文媒体。当天信源不完整时，会在简报中注明。</p></div>
-    <div><h3>保留来源，方便核对</h3><p>每条内容附来源链接。摘要可能遗漏细节，重要信息请结合原文判断。</p></div>
-    <div><h3>计划每天更新</h3><p>计划北京时间 10:00 发布，任务或信源异常时可能延迟。每期都有独立的往期页面。</p></div>
+  <section class="wrap" aria-labelledby="story-title">
+    <div class="story">
+      <div class="story-heading"><p class="kicker">WHY AI SIGNAL</p><h2 id="story-title">把分散的信息，整理成一份清晰的简报。</h2><p class="story-intro">新模型、产品更新、研究论文、开发者讨论，每天都有新消息。AI Signal 汇总多处信息，使用 AI 协助筛选、摘要与归类，让阅读从重点开始。</p></div>
+      <div class="principles">
+        <div class="principle"><span class="num">01 / 先看重点</span><h3>30 秒，读懂重点。</h3><p>编辑版通常先给出几条要点，再展开头条与其他消息。时间有限时，也能先掌握这一期在说什么。</p></div>
+        <div class="principle"><span class="num">02 / 读懂变化</span><h3>事实和背景，放在一起。</h3><p>从发生了什么，到可能影响什么；模型发布、产品、研究和开源项目各有清晰的位置。</p></div>
+        <div class="principle"><span class="num">03 / 可以回看</span><h3>从新闻到原文。</h3><p>正文附来源链接，重要信息可以继续核对；往期也有独立页面，方便回看和分享。</p></div>
+      </div>
+    </div>
   </section>
+
+  <section class="wrap" aria-labelledby="reading-title">
+    <div class="reading"><div><p class="kicker">A CLOSER LOOK</p><h2 id="reading-title">先有全貌。<br>再看细节。</h2><p>一期一页，可能包括头条、要闻、论文、开源项目和社区讨论。内容有重点，出处有路径。</p><p><a href="latest/">打开最新一期 ›</a></p></div>
+      <div class="sample"><span class="sample-label">本期 · ${esc(meta.dateLabel)}</span><strong>${esc(meta.picked)} / ${esc(meta.scanned)}</strong><span>条内容入选 / 条新内容<br>实际数量随当天信源与内容变化</span></div>
+    </div>
+  </section>
+
+  <section class="wrap" aria-labelledby="sources-title"><div class="sources"><div class="sources-grid"><div><p class="kicker">THE SOURCES</p><h2 id="sources-title">让不同的声音，<br>出现在同一页。</h2><p>实验室的发布、开发者的讨论、研究和产品的变化，都可以成为线索。当天信源不足时，简报会注明。</p><p>摘要可能遗漏细节，重要信息请结合原文判断。计划每天更新，任务或信源异常时可能延迟。</p></div><ul class="source-list"><li>实验室与公司<small>官方博客与产品发布</small></li><li>开发者社区<small>Hacker News 与 GitHub</small></li><li>研究与模型<small>论文热榜与开放模型</small></li><li>中文媒体<small>中文科技新闻与报道</small></li></ul></div></div></section>
 
   <section class="wrap how" aria-labelledby="how">
     <h2 id="how">每天早上发生的事</h2>
     <ol class="steps">
       <li><strong>收集</strong><span>计划从多个来源收集近 36 小时的新内容。</span></li>
-      <li><strong>编号</strong><span>每条素材一个编号，去掉发过的。</span></li>
+      <li><strong>整理</strong><span>给素材编号，尽量过滤近期已发过的链接。</span></li>
       <li><strong>编辑</strong><span>按三个问题挑选：会改变判断吗？是新事实吗？有数字或名字吗？</span></li>
       <li><strong>发布</strong><span>生成网页并保留往期，计划每天更新；任务可能延迟。</span></li>
     </ol>
   </section>
 
+  <section class="wrap" aria-labelledby="inspired-title"><div class="inspired"><p class="kicker">EDITORIAL APPROACH</p><h2 id="inspired-title">借鉴成熟简报的阅读方式。</h2><p>参考优秀 AI 简报把重点放在前面、按主题组织内容、为新闻附上出处的做法。AI Signal 用中文呈现，并保留来源链接，方便继续阅读和判断。</p><div class="refs"><a href="https://tldr.tech/ai">TLDR AI ›</a><a href="https://www.therundown.ai/">The Rundown AI ›</a></div></div></section>
+
   ${subscribeSection()}
 
   <section class="wrap open" aria-labelledby="open">
     <h2 id="open">开源，可以自己部署</h2>
-    <p>一个 GitHub 仓库、一个 DeepSeek API key、一个发信邮箱。不追踪读者，没有像素，没有点击统计。</p>
+    <p>一个 GitHub 仓库、一个 DeepSeek API key、一个发信邮箱。网站不使用自建追踪像素或点击统计。</p>
     <div class="cta"><a href="${REPO}">在 GitHub 上查看 ›</a><a href="feed.xml">RSS 订阅 ›</a></div>
   </section>
 </main>
