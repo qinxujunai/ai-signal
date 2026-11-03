@@ -2,6 +2,11 @@
 
 网站：<https://qinxujunai.github.io/ai-signal/> · 往期：<https://qinxujunai.github.io/ai-signal/archive/>
 
+## 2026-11-03 · 信源与处理流程
+
+- 重新设计产品首页，以阅读痛点、实际信源、研究更正案例和处理流程解释简报价值。
+- 标明 DeepSeek 接口、GitHub 发布流程和 `latest.json` 只读数据入口；区分社区热度、来源链接与事实核验。
+
 ## 2026-11-03 · 产品介绍页
 
 - 首页补充产品解决的问题、阅读方式、信源和参考的简报，保留最新一期及往期入口。

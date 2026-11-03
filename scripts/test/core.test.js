@@ -119,7 +119,10 @@ test('website: product page, latest, archive and an Atom feed', async () => {
   assert.ok(landing.includes('测试头条 &lt;b&gt;') && landing.includes('阅读最新一期') && landing.includes('href="latest/"'));
   assert.ok(landing.includes('计划每天更新') && landing.includes('可能延迟'), 'the site does not guarantee publishing time');
   assert.ok(landing.includes('摘要可能遗漏细节') && !landing.includes('编不出假链接') && !landing.includes('不断供'), 'source and reliability claims are limited');
-  assert.ok(landing.includes('把分散的信息，整理成一份清晰的简报') && landing.includes('从新闻到原文') && landing.includes('借鉴成熟简报的阅读方式'), 'homepage explains the reader benefit, source access, and editorial inspiration');
+  assert.ok(landing.includes('信息太多，判断需要依据') && landing.includes('信源怎么来') && landing.includes('一份简报，如何产生'), 'homepage explains the reader problem, sources and architecture');
+  assert.ok(landing.includes('deepseek-flash') && landing.includes('GitHub Actions') && landing.includes('并不等于事实核验'), 'homepage names the real model, publication pipeline and limits');
+  assert.ok(landing.includes('7.9% → 48.1%') && landing.includes('不代表其他消息已逐条人工核验') && landing.includes('archive/2026-11-03.html'), 'the evidence example links to its corrected issue and states its limits');
+  assert.ok(landing.includes('借鉴成熟简报的阅读方式'), 'homepage explains its editorial inspiration');
   assert.ok(landing.includes('https://tldr.tech/ai') && landing.includes('https://www.therundown.ai/'), 'inspiration links identify the referenced publications');
   const checkedEmail = renderIssue(issue, meta, { mode: 'email' });
   assert.ok(checkedEmail.includes('不代表事实已核实') && !checkedEmail.includes('每天北京时间 10:00 送达'), 'signals and delivery claims are qualified');
