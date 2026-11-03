@@ -1,16 +1,16 @@
 {
-  "number": 14,
-  "date": "2026-11-02",
-  "dateLabel": "11月2日周一",
-  "scanned": 45,
-  "picked": 29,
-  "minutes": 5,
-  "headline": "OpenAI 合并 ChatGPT 与 Codex 的用量限制",
-  "intro": "OpenAI 调整额度，沙特阿美以 26 亿美元入股 Humain，Hyperbolic 融资 3000 万美元，AI 的用量与资本正在被重新定价。",
+  "number": 15,
+  "date": "2026-11-03",
+  "dateLabel": "11月3日周二",
+  "scanned": 68,
+  "picked": 32,
+  "minutes": 6,
+  "headline": "Anthropic 三季度营收 170 亿美元，IPO 估值被投资人下调至 1.5 万亿",
+  "intro": "同一天里，Anthropic 的 IPO 估值被投资人下修，而 GPT-6 Astra 已能直接改写 Qwen 的权重——资本在降温，能力在推进。",
   "tldr": [
-    "OpenAI 合并 ChatGPT 与 Codex 用量限制，HN 216 分、161 条评论",
-    "沙特阿美以约 26 亿美元现金换取 Humain 49% 股权",
-    "Apollo 经济学家称 AI 对多数公司是「零财务回报」"
+    "Anthropic Q3 营收 170 亿美元，投资人把 IPO 估值压到 1.5–1.6 万亿美元",
+    "GPT-6 Astra 直接编辑 Qwen3.5-0.8B 权重，把它的数学能力改强了",
+    "Salesforce 27 亿美元收购 Cresta；Oracle 发 200 亿美元股债建 AI 基建"
   ],
-  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-02.html"
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-03.html"
 }
