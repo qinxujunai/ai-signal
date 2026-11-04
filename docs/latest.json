@@ -1,16 +1,16 @@
 {
-  "number": 15,
-  "date": "2026-11-03",
-  "dateLabel": "11月3日周二",
-  "scanned": 68,
+  "number": 16,
+  "date": "2026-11-04",
+  "dateLabel": "11月4日周三",
+  "scanned": 87,
   "picked": 32,
   "minutes": 6,
-  "headline": "Anthropic 三季度营收 170 亿美元，部分投资人倾向更谨慎估值",
-  "intro": "部分投资人对 Anthropic 的 IPO 估值更为谨慎；研究者探索 AI 直接修改模型权重。",
+  "headline": "Revolut 用自托管 GLM 替换 Claude Code，编码推理成本降约 90%",
+  "intro": "同一天里，编码推理账单被打到十分之一，模型回答开始带密码学出处签名——省钱与验真两条线同时推进。",
   "tldr": [
-    "Anthropic Q3 营收 170 亿美元；部分投资人倾向约 1.5 万亿美元估值",
-    "研究者用 Astra 修改 Qwen 权重，缓解推理循环；效果仍需进一步验证",
-    "Salesforce 27 亿美元收购 Cresta；Oracle 发 200 亿美元股债建 AI 基建"
+    "Revolut 不到一年把编码推理成本降约 90%，默认改用自托管 GLM",
+    "Anthropic 开源 FlashProve，可密码学验证回答出自哪个模型",
+    "Google 澄清：K-12 学校 Gemini 与 Search 默认关闭，可逐项开启"
   ],
-  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-03.html"
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-04.html"
 }
