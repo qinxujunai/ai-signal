@@ -1,16 +1,16 @@
 {
-  "number": 16,
-  "date": "2026-11-04",
-  "dateLabel": "11月4日周三",
-  "scanned": 87,
-  "picked": 32,
+  "number": 17,
+  "date": "2026-11-05",
+  "dateLabel": "11月5日周四",
+  "scanned": 80,
+  "picked": 35,
   "minutes": 6,
-  "headline": "Revolut 用自托管 GLM 替换 Claude Code，编码推理成本降约 90%",
-  "intro": "同一天里，编码推理账单被打到十分之一，模型回答开始带密码学出处签名——省钱与验真两条线同时推进。",
+  "headline": "Claude Code 产品负责人 Cat Wu 离职加入 OpenAI",
+  "intro": "OpenAI 一边收购公司补 Codex 工具链，一边用自动化 Agent 在 Linux 内核扫出 948 个提权漏洞。",
   "tldr": [
-    "Revolut 不到一年把编码推理成本降约 90%，默认改用自托管 GLM",
-    "Anthropic 开源 FlashProve，可密码学验证回答出自哪个模型",
-    "Google 澄清：K-12 学校 Gemini 与 Search 默认关闭，可逐项开启"
+    "Claude Code 产品负责人 Cat Wu 离职，加入 OpenAI 负责核心产品管理",
+    "OpenAI 自动化流水线在 Linux 内核发现并验证 948 个本地提权漏洞",
+    "苹果把部分工程师每日 AI 花费上限从 300 美元下调到 200 美元"
   ],
-  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-04.html"
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-05.html"
 }
