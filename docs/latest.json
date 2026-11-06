@@ -1,16 +1,16 @@
 {
-  "number": 17,
-  "date": "2026-11-05",
-  "dateLabel": "11月5日周四",
-  "scanned": 80,
+  "number": 18,
+  "date": "2026-11-06",
+  "dateLabel": "11月6日周五",
+  "scanned": 81,
   "picked": 35,
   "minutes": 6,
-  "headline": "Claude Code 产品负责人 Cat Wu 离职加入 OpenAI",
-  "intro": "OpenAI 一边收购公司补 Codex 工具链，一边用自动化 Agent 在 Linux 内核扫出 948 个提权漏洞。",
+  "headline": "纳指100跌6%，AI交易单日蒸发2.3万亿美元",
+  "intro": "资本市场先给 AI 交易踩刹车；模型侧同日仍有多条发布，安全与评估侧接连出现质疑。",
   "tldr": [
-    "Claude Code 产品负责人 Cat Wu 离职，加入 OpenAI 负责核心产品管理",
-    "OpenAI 自动化流水线在 Linux 内核发现并验证 948 个本地提权漏洞",
-    "苹果把部分工程师每日 AI 花费上限从 300 美元下调到 200 美元"
+    "纳指100跌6%、费半跌12%；Anthropic IPO 估值传降至1万亿美元",
+    "Gemini Omni 1.2 Flash 原生支持15秒视频，价格降30%",
+    "Inkling 2 Small 指数追平 Gemini 3.8 Flash，权重尚未放出"
   ],
-  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-05.html"
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-06.html"
 }
