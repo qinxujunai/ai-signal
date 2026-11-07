@@ -12,5 +12,21 @@
     "OpenAI 完成约 110 亿美元新融资，估值 1.25 万亿美元，总额或达 200 亿",
     "PSI 称非公开 Anthropic 模型证明了悬置 17 年的 Aaronson-Ambainis 猜想"
   ],
-  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-07.html"
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-07.html",
+  "sources": {
+    "builders": 13,
+    "tweets": 29,
+    "blogs": 9,
+    "hackernews": 11,
+    "techmeme": 8,
+    "reddit": 0,
+    "papers": 7,
+    "models": 3,
+    "github": 0,
+    "products": 6,
+    "chinese": 5,
+    "podcasts": 0
+  },
+  "missing": [],
+  "degraded": false
 }
