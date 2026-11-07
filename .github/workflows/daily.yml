@@ -2,14 +2,24 @@ name: AI Signal daily issue
 
 # The issue lands at 10:00:00 Beijing time.
 #
-# GitHub's scheduler is late by hours at busy times (on 2026-10-22 the 09:41 run started at 14:32) and
-# may drop runs, so one exact cron cannot be trusted. Instead a run is scheduled every 20 minutes from
-# 04:07 to 09:47 Beijing, plus late backups. The first run that starts claims the day (concurrency
-# group), waits until 09:35, collects and edits, then waits until 10:00:00 and sends. Runs that start
-# afterwards see today's issue on master and stop. A run that starts after 10:00 sends at once.
-# A manual run (workflow_dispatch) always sends immediately.
+# GitHub's scheduler is late by hours at busy times and drops most runs (22 ticks a day, only 3–5 start; on 2026-11-03
+# none before 10:12), so the cron alone cannot be trusted. Two layers:
+#
+#  1. An alarm set the day before. Once a run has sent today's issue, scripts/relay.js asks for tomorrow's run: it
+#     dispatches this workflow in mode "relay" with wake=daily-wake. The first job of that run waits in the environment
+#     "daily-wake", whose wait timer (22 h 10 min; repository Settings -> Environments) holds no runner and no lock and
+#     ends at about 08:10 the next morning. The run then claims the day like a scheduled one.
+#  2. The cron as a backup: a run every 20 minutes from 04:07 to 09:47 Beijing, plus late backups. Any run that finds
+#     no alarm set after 10:00 sets one, so the chain repairs itself.
+#
+# Whichever run starts first claims the day (the lock is on the job), waits until 09:35, collects and edits, then
+# waits until 10:00:00 and sends. Runs that start afterwards see today's issue on master and stop. A run that starts
+# after 10:00 sends at once. A manual run (workflow_dispatch, mode "now") always sends immediately.
+# dry_run is a rehearsal: no model key, no mail login, no commit, no waiting.
 #
 # The daily commit also keeps this scheduled workflow from being paused for inactivity.
+
+run-name: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'relay' && format('relay for {0}', inputs.for_day) || '' }}
 
 on:
   schedule:
@@ -17,22 +27,51 @@ on:
     - cron: '7,27,47 0-1 * * *'   # 08:07–09:47 Beijing
     - cron: '17 2,3,5,8 * * *'    # 10:17, 11:17, 13:17, 16:17 Beijing: late backups
   workflow_dispatch:
+    inputs:
+      mode:
+        description: 'now: send at once (a manual run). relay: behave like the schedule (the alarm run)'
+        type: choice
+        options: [now, relay]
+        default: now
+      wake:
+        description: 'relay only: the environment whose wait timer delays the start to the next morning'
+        type: string
+        default: ''
+      for_day:
+        description: 'relay only: the Beijing date this run is for, YYYY-MM-DD'
+        type: string
+        default: ''
+      dry_run:
+        description: 'rehearsal: collect and edit only; no model, no mail, no commit, no waiting'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
   pages: write
-
-concurrency:
-  group: daily-issue
-  cancel-in-progress: false
+  actions: write # relay.js sets tomorrow's alarm by dispatching this workflow
 
 jobs:
-  issue:
+  # The alarm. Skipped for every run but a relay run; waiting here costs no runner and holds no lock.
+  wake:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'relay' && inputs.wake != '' }}
     runs-on: ubuntu-latest
+    environment: ${{ inputs.wake }}
+    steps:
+      - run: echo "The alarm went off, for ${{ inputs.for_day }}."
+
+  issue:
+    needs: wake
+    if: ${{ !cancelled() && (needs.wake.result == 'success' || needs.wake.result == 'skipped') }}
+    runs-on: ubuntu-latest
+    # The lock is on this job, not on the workflow, so an alarm waiting on its timer does not hold it.
+    concurrency:
+      group: daily-issue
+      cancel-in-progress: false
     # A run may claim the day up to 5 h before 09:35, then needs ~30 min more; GitHub's cap is 360.
     timeout-minutes: 355
     steps:
-      # Always the newest master, not the commit the schedule was queued on: an earlier run may have sent today.
+      # Always the newest master, not the commit the run was queued on: an earlier run may have sent today.
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.repository.default_branch }}
@@ -43,10 +82,23 @@ jobs:
 
       - name: Claim today
         id: today
+        env:
+          EVENT: ${{ github.event_name }}
+          MODE: ${{ inputs.mode }}
+          FOR_DAY: ${{ inputs.for_day }}
+          DRY_RUN: ${{ inputs.dry_run }}
         run: |
           DAY=$(node scripts/clock.js today)
           echo "day=$DAY" >> "$GITHUB_OUTPUT"
-          if [ "${{ github.event_name }}" = "schedule" ]; then
+          TIMED=false
+          if [ "$EVENT" = "schedule" ] || [ "$MODE" = "relay" ]; then TIMED=true; fi
+          echo "timed=$TIMED" >> "$GITHUB_OUTPUT"
+          if [ "$MODE" = "relay" ] && [ "$FOR_DAY" != "$DAY" ]; then
+            echo "This alarm is for $FOR_DAY but today is $DAY: it went off at the wrong time. Doing nothing."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          elif [ "$DRY_RUN" = "true" ]; then
+            echo "Rehearsal: collect and edit only."
+          elif [ "$TIMED" = "true" ]; then
             if [ -f "docs/archive/$DAY.html" ]; then
               echo "Today's issue ($DAY) is already out."; echo "skip=true" >> "$GITHUB_OUTPUT"
             elif ! node scripts/clock.js reachable 09:35 300; then
@@ -57,7 +109,7 @@ jobs:
           fi
 
       - name: Wait until 09:35 Beijing
-        if: steps.today.outputs.skip != 'true' && github.event_name == 'schedule'
+        if: steps.today.outputs.skip != 'true' && steps.today.outputs.timed == 'true' && inputs.dry_run != true
         run: node scripts/clock.js wait 09:35
 
       - name: Install
@@ -66,15 +118,23 @@ jobs:
 
       - name: Configure
         if: steps.today.outputs.skip != 'true'
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
         run: |
           mkdir -p ~/.ai-signal/drafts
-          {
-            echo "DEEPSEEK_API_KEY=${{ secrets.DEEPSEEK_API_KEY }}"
-            echo "DEEPSEEK_MODEL=deepseek-flash"
-            echo "QQ_EMAIL=${{ secrets.QQ_EMAIL }}"
-            echo "QQ_SMTP_AUTH=${{ secrets.QQ_SMTP_AUTH }}"
-          } > ~/.ai-signal/.env
-          echo '${{ secrets.AI_SIGNAL_CONFIG }}' > ~/.ai-signal/config.json
+          if [ "$DRY_RUN" = "true" ]; then
+            # A rehearsal has no model key and no mail login: it can neither spend nor send.
+            : > ~/.ai-signal/.env
+            echo '{"language":"zh","delivery":{"method":"email"}}' > ~/.ai-signal/config.json
+          else
+            {
+              echo "DEEPSEEK_API_KEY=${{ secrets.DEEPSEEK_API_KEY }}"
+              echo "DEEPSEEK_MODEL=deepseek-flash"
+              echo "QQ_EMAIL=${{ secrets.QQ_EMAIL }}"
+              echo "QQ_SMTP_AUTH=${{ secrets.QQ_SMTP_AUTH }}"
+            } > ~/.ai-signal/.env
+            echo '${{ secrets.AI_SIGNAL_CONFIG }}' > ~/.ai-signal/config.json
+          fi
 
       - name: Collect sources
         if: steps.today.outputs.skip != 'true'
@@ -87,17 +147,21 @@ jobs:
         run: cd scripts && node remix-digest.js --file ~/.ai-signal/drafts/feed.json --out ~/.ai-signal/drafts/email.html --json-out ~/.ai-signal/drafts/issue.json --web-dir ../docs --seen ../data/seen.json
 
       - name: Wait until 10:00 Beijing
-        if: steps.today.outputs.skip != 'true' && github.event_name == 'schedule'
+        if: steps.today.outputs.skip != 'true' && steps.today.outputs.timed == 'true' && inputs.dry_run != true
         run: node scripts/clock.js wait 10:00
 
       # Last check right before sending: a manual run may have sent today's issue while this one waited.
       - name: Send
         id: send
-        if: steps.today.outputs.skip != 'true'
+        if: steps.today.outputs.skip != 'true' && inputs.dry_run != true
+        env:
+          TIMED: ${{ steps.today.outputs.timed }}
+          BRANCH: ${{ github.event.repository.default_branch }}
+          DAY: ${{ steps.today.outputs.day }}
         run: |
-          if [ "${{ github.event_name }}" = "schedule" ]; then
-            git fetch --quiet origin "${{ github.event.repository.default_branch }}"
-            if git cat-file -e "origin/${{ github.event.repository.default_branch }}:docs/archive/${{ steps.today.outputs.day }}.html" 2>/dev/null; then
+          if [ "$TIMED" = "true" ]; then
+            git fetch --quiet origin "$BRANCH"
+            if git cat-file -e "origin/$BRANCH:docs/archive/$DAY.html" 2>/dev/null; then
               echo "Sent by another run while this one waited; stopping."; exit 0
             fi
           fi
@@ -109,16 +173,43 @@ jobs:
         if: steps.send.outputs.sent == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ github.event.repository.default_branch }}
+          DAY: ${{ steps.today.outputs.day }}
         run: |
           git config user.name "qinxujunai"
           git config user.email "266454737+qinxujunai@users.noreply.github.com"
           git add docs data
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "AI Signal ${{ steps.today.outputs.day }}"
-          git pull --rebase --quiet origin "${{ github.event.repository.default_branch }}"
-          git push
+          git commit -m "AI Signal $DAY"
+          # The mail is already out. If this push loses a race with someone else's commit, try again: a lost publish
+          # would make the next run think today's issue was never sent, and send it twice. Generated files win a conflict.
+          for attempt in 1 2 3 4 5; do
+            if git pull --rebase -X theirs --quiet origin "$BRANCH" && git push --quiet origin "HEAD:$BRANCH"; then published=1; break; fi
+            echo "Publishing failed (attempt $attempt of 5)."
+            git rebase --abort 2>/dev/null || true
+            sleep $((attempt * 5))
+          done
+          [ "${published:-}" = 1 ] || { echo "::error::The web edition could not be published after 5 attempts."; exit 1; }
           curl -fsS -X POST -H "Authorization: Bearer $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${{ github.repository }}/pages/builds" || true
+
+      # Keep tomorrow's alarm set (see the top of this file). If this fails the cron backup still covers the day.
+      - name: Set tomorrow's alarm
+        if: always() && steps.today.outputs.timed == 'true'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ github.event.repository.default_branch }}
+          MODE: ${{ inputs.mode }}
+          FOR_DAY: ${{ inputs.for_day }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          SENT: ${{ steps.send.outputs.sent }}
+          DAY: ${{ steps.today.outputs.day }}
+        run: |
+          git fetch --quiet origin "$BRANCH"
+          OUT=false
+          if [ "$SENT" = "true" ] || git cat-file -e "origin/$BRANCH:docs/archive/$DAY.html" 2>/dev/null; then OUT=true; fi
+          node scripts/relay.js arm --issue-out "$OUT" --mode "$MODE" --for-day "$FOR_DAY" --dry-run "$DRY_RUN"
 
       - name: Keep the drafts for debugging
         if: always() && steps.today.outputs.skip != 'true'
