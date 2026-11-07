@@ -99,12 +99,10 @@ const glassBar = (right, home = WEB) => `<div style="position:sticky;top:0;z-ind
 </div></div>${BACK_SCRIPT}`;
 const wordmark = `<span style="font-family:${DISPLAY};font-size:15px;font-weight:700;color:${C.ink};letter-spacing:-0.1px;">AI Signal</span><span style="font-size:15px;color:${C.muted};">&nbsp;信号</span>`;
 
-export function renderIssue(issue, meta, { mode = 'email', base = '' } = {}) {
-  const web = mode === 'web';
-  // Web editions live in latest/ and archive/; `base` leads back to the site root.
-  const minutes = Math.max(2, Math.round(meta.picked * 0.18));
-  const s = meta.stats || {};
-  const sourceLine = [
+// The day's sources in one line, as the footer and the product page print them.
+export function sourceSummary(s = {}) {
+  s = s || {};
+  return [
     s.builders && `X 上 ${s.builders} 位 builder`,
     s.hackernews && `Hacker News ${s.hackernews}`,
     s.techmeme && `Techmeme ${s.techmeme}`,
@@ -117,6 +115,13 @@ export function renderIssue(issue, meta, { mode = 'email', base = '' } = {}) {
     s.chinese && `中文媒体 ${s.chinese}`,
     s.podcasts && `播客 ${s.podcasts}`,
   ].filter(Boolean).join(' · ');
+}
+
+export function renderIssue(issue, meta, { mode = 'email', base = '' } = {}) {
+  const web = mode === 'web';
+  // Web editions live in latest/ and archive/; `base` leads back to the site root.
+  const minutes = Math.max(2, Math.round(meta.picked * 0.18));
+  const sourceLine = sourceSummary(meta.stats);
 
   // ── masthead: wordmark and issue, the day's headline, the editor's line, then the facts ──
   const issueNo = meta.number ? `第 ${meta.number} 期` : '';

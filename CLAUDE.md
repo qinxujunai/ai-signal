@@ -10,8 +10,9 @@ scripts/sources.js         各信源的解析（RSS/Atom 用 fast-xml-parser，�
 scripts/prepare-digest.js  收集素材 → feed.json（36 小时内，去掉 data/seen.json 里发过的）
 scripts/remix-digest.js    素材编号 → DeepSeek 写 JSON（只能引用编号）→ 回填链接和数字 → 渲染
 scripts/render.js          邮件与网页共用的排版（表格 + 内联样式，640px 单栏；白底黑字，灰色分层，只有链接是蓝色，测试限定最多 7 种颜色）
-scripts/publish.js         网站（docs/，GitHub Pages）：index.html 产品主页（site.js）、latest/ 当天全文、archive/<日期>.html、archive/ 列表、feed.xml（Atom，30 期）、latest.json（当天这期的纯数据，作者个人主页每天读它渲染卡片）
-scripts/site.js            产品主页与 RSS（网页专用，可用 <style>，跟随深色模式，零外部请求）
+scripts/publish.js         网站（docs/，GitHub Pages）：index.html 产品主页（site.js，由 latest.json 的数据生成）、latest/ 当天全文、archive/<日期>.html、archive/ 列表、feed.xml（Atom，30 期）、latest.json（当天这期的纯数据，含各信源条数 sources、没取到的 missing、degraded；作者个人主页每天读它渲染卡片）
+scripts/site.js            产品主页与 RSS（网页专用，可用 <style>，跟随深色模式，零外部请求；页面上的事实和出处见 plans/2026-11-03-homepage.md）
+scripts/rebuild-home.js    不出新一期，按 docs/latest.json 重建首页（改了 site.js 之后用）
 scripts/deliver.js         QQ SMTP，发给作者自己（地址只在 Secret）
 scripts/email.js           主题 =「AI Signal 月/日｜当天标题」
 scripts/clock.js           北京时间：今天的日期、等到 09:35 / 10:00
@@ -38,6 +39,9 @@ scripts/test/              node --test（npm test）
 | Reddit 经 AINews（Latent Space RSS）取 | 直接请求 Reddit 会被 403 | `4647f40` |
 | 模型名 `deepseek-flash`，思考保持默认开启；不设 `max_tokens`（用默认 64K），单次请求超时 10 分钟 | `deepseek-chat` 2026-07-24 已退役（官方 news260424）。他要思考开着（2026-10-25）。思考模式下 `max_tokens` 连思考一起算，原来的 6000 会把 JSON 截断；`temperature` 不起作用 | 2026-10-25 |
 | 调 DeepSeek 用原生 `fetch`，不引 SDK | 只调一个 OpenAI 兼容接口（JSON 模式、超时、重试都已写好），加 SDK 只多一层依赖 | — |
+| 首页按「为什么做 → 怎么解决 → 参考了谁 → 信源从哪来 → AI 怎么挑 → 技术架构 → 为什么选它 → 写错了怎么办」讲；版式对齐 VoiceFlow、万象成文（浅底、超大双色标题、最新一期真实内容当首屏、灰色大圆角面板、黑色胶囊按钮、一段黑底，首屏一圈彩色光晕）；页面上的数字要么读 latest.json，要么写明日期；不对读者说「你」 | 他 2026-11-03 说 Codex 的三版「UI 特别丑，不符合其他项目的苹果标准」「讲得不清不楚」，要求按目的、痛点、解法、参考、信源、模型、架构、凭什么最好来讲。当期页面和邮件仍按上面「白底黑字」那条 | 2026-11-03 |
+| 新鲜的 AINews 读出 0 条 Reddit 帖子必须抛错（`redditFromAINews`），不能静默返回空 | 一次静默的 0 让 Reddit 停了 11 天，没人发现，页脚也没写；抛错才会进 `errors`，页脚和 `latest.json` 的 `missing` 才显示。其他信源同理：读到 0 条而页面没报错，要先怀疑解析 | 2026-11-07 |
+| 首页生成（`publishWeb` 里的 `writeHome`）出错只记日志、保留上一版 `index.html`，不抛错 | `publishWeb` 在 daily.yml 的「Edit the issue」里跑，早于发送；抛错会让后面的 Send 被跳过，当天邮件发不出去。首页不是邮件的理由 | 2026-11-07 |
 | 网址根目录是产品主页，当天全文在 `latest/`，并提供 RSS | 成熟项目都有一个能展示的主页；他要「有个网址去展示」。邮件里的「网页版」链接到当天的 `archive/<日期>.html`（永久地址） | v4.1.0 |
 | 仓库只保留 AGENTS.md / CLAUDE.md 两份智能体说明，不放各编辑器的规则文件 | 旧的 Cline/Windsurf/Cursor 规则引用不存在的脚本，还让助手去读本机 Claude 设置里的密钥 | v4.1.0 |
 | 版本号写在 `scripts/package.json`；master 上版本号变了，Release 工作流自动发 `vX.Y.Z`（连同标签），说明取自 CHANGELOG.md 同名一节；已发过就跳过 | 和其他成熟项目一样有版本和发布记录。不靠手动推标签：云端会话推不了标签 | v4.1.0 |
@@ -47,9 +51,10 @@ scripts/test/              node --test（npm test）
 | nodemailer 10，Node 20+ | 修掉 8.x 的高危头注入漏洞（npm audit 0） | `e150ccb`、`89f2038` |
 
 ## 已知问题
+- Reddit 经 AINews（Latent Space RSS）汇总，依赖 AINews 页面的写法。它 10 月下旬改过一次（标题链接不再包在 `<strong>` 里），旧解析器读出 0 条且不报错，Reddit 实际停了 11 天（10-24 至 11-06），2026-11-07 修好。现在新鲜一期读不出帖子会抛错、页脚写「今天没取到：Reddit (AINews)」。以后页脚反复出现这一条，先看 `sources.js` 的 `parseAINewsReddit`。
 - 推文和播客依赖第三方 follow-builders feed；它停了这两类就断。
 - GitHub Trending 页面在部分云端 IP 返回 403（Actions 上正常），失败会写进页脚。
-- 准点依赖 GitHub 在早上把十几次排队里的任意一次及时启动；都没轮上时由 10:17 以后的补发兜底，会晚。
+- 准点依赖 GitHub 在早上把十几次排队里的任意一次及时启动；都没轮上时由 10:17 以后的补发兜底，会晚。实测（10-23 至 11-07 的运行记录）：每天 22 次定时只真正启动 3–5 次；10-23 至 11-07 的 16 天里 15 天 10:00:00 发出（11-04 至 11-07 连续 4 天恢复）；11-03 上午 18 次定时都没启动，10:12 才来一次，10:13:56 开始发、10:13:59 发完。只用 GitHub 的改法（`workflow_dispatch` 接力）写在 `plans/2026-11-03-homepage.md` 末尾，未实施。
 
 ## 交接日志
 - **2026-11-03，Codex（信源与架构）**：重新设计首页，按实际代码解释信源、DeepSeek 接口、GitHub Actions、RSS 和 `latest.json`，用 11 月 3 日研究更正展示原文与限制；信源异常只承诺已检测到的部分，不宣称逐条人工核验或竞品背书。改动限首页生成模板、生成页面和测试；具体提交号及验证见 Git 和 Actions。
@@ -74,5 +79,6 @@ cd scripts && npm ci && npm test
 node prepare-digest.js --out /tmp/feed.json
 node remix-digest.js --file /tmp/feed.json --dump-prompt
 node remix-digest.js --file /tmp/feed.json --content issue.json --out /tmp/email.html --web-dir /tmp/web   # 用手写 JSON 预览排版
+node rebuild-home.js                       # 改了 site.js 之后，按 docs/latest.json 重建 docs/index.html
 ```
 没有 `DEEPSEEK_API_KEY` 时走降级版。

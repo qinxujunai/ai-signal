@@ -23,7 +23,7 @@ import { join } from 'path';
 import { homedir } from 'os';
 import {
   HOURS, AI_RE, AI_RE_ZH, get, decode, parseFeed, fresh,
-  parseTechmeme, latestAINews, mapHFModels, parseTrending,
+  parseTechmeme, redditFromAINews, mapHFModels, parseTrending,
 } from './sources.js';
 
 const args = process.argv.slice(2);
@@ -105,11 +105,7 @@ async function hackerNews() {
 
 const techmeme = async () => parseTechmeme(await get('https://www.techmeme.com/feed.xml'), { now: NOW, window: FRESH }).slice(0, 10);
 
-async function reddit() {
-  const issue = latestAINews(await get('https://www.latent.space/feed', { timeout: 25000 }), { now: NOW, window: 48 * HOURS });
-  if (!issue) throw new Error('no AINews issue in the last 48 h');
-  return issue.reddit.slice(0, 10);
-}
+const reddit = async () => redditFromAINews(await get('https://www.latent.space/feed', { timeout: 25000 }), { now: NOW, window: 48 * HOURS, limit: 10 });
 
 async function papers() {
   const data = await get('https://huggingface.co/api/daily_papers?limit=50', { json: true });

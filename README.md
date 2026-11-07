@@ -42,7 +42,8 @@ GitHub 的定时任务在高峰期会晚好几个小时（2026-10-22 定在 09:4
 ```
 prepare-digest.js   收集素材（36 小时内，去掉已发过的）            sources.js 里是各信源的解析
 remix-digest.js     编号 → DeepSeek 编辑（JSON）→ 回填链接与数字 → render.js 排版
-publish.js          网站：主页（site.js）、latest/、archive/、feed.xml，GitHub Pages 从 docs/ 发布
+publish.js          网站：主页（site.js）、latest/、archive/、feed.xml、latest.json，GitHub Pages 从 docs/ 发布
+rebuild-home.js     不出新一期，按 latest.json 重建主页（改了主页设计时用）
 deliver.js          QQ SMTP 发送，主题是当天的标题
 clock.js            北京时间：等到 09:35、等到 10:00
 ```

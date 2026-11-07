@@ -88,11 +88,17 @@ export function parseAINewsReddit(html) {
   const $ = cheerio.load(String(html));
   const out = [];
   $('li > p').each((_, p) => {
-    const a = $(p).children('strong').first().children('a[href*="reddit.com/r/"]').first();
+    // A thread paragraph starts with its title link: `<strong><a>…</a></strong>` until late October 2026,
+    // `<a><b>…</b></a>` since. Take the paragraph's first link wherever it sits, and read what follows it.
+    const a = $(p).find('a[href*="reddit.com/r/"]').first();
     if (!a.length) return;
     const url = a.attr('href');
-    const rest = $(p).text().slice($(p).children('strong').first().text().length);
-    const activity = rest.match(/\(Activity:\s*([\d,]+)\)/)?.[1];
+    const text = $(p).text();
+    const title = a.text();
+    const start = text.indexOf(title);
+    if (start < 0 || start > 12) return; // not the first thing in the paragraph: a passing mention
+    const rest = text.slice(start + title.length);
+    const activity = rest.match(/^\s*\(Activity:\s*([\d,]+)\)/)?.[1];
     if (!activity) return;
     out.push({
       title: decode(a.text()).replace(/\s*[-–]\s*$/, ''),
@@ -103,6 +109,15 @@ export function parseAINewsReddit(html) {
     });
   });
   return out.sort((a, b) => b.activity - a.activity);
+}
+
+// Reddit threads from the newest AINews issue. Throws when there is no fresh issue and when the issue yields no
+// threads: a silent zero hid a markup change for eleven days (2026-10-24 to 11-06), with nothing in the footer.
+export function redditFromAINews(xml, { now = Date.now(), window = 48 * HOURS, limit = 10 } = {}) {
+  const issue = latestAINews(xml, { now, window });
+  if (!issue) throw new Error(`no AINews issue in the last ${Math.round(window / HOURS)} h`);
+  if (!issue.reddit.length) throw new Error('the newest AINews issue has no readable Reddit threads (page markup changed?)');
+  return issue.reddit.slice(0, limit);
 }
 
 // The newest AINews issue in the Latent Space feed, if it is recent enough.
