@@ -4,7 +4,7 @@
   "description": "AI Signal — LLM-curated AI industry daily digest.",
   "type": "module",
   "scripts": {
-    "prepare": "node prepare-digest.js",
+    "collect": "node prepare-digest.js",
     "remix": "node remix-digest.js",
     "deliver": "node deliver.js",
     "test": "node --test"

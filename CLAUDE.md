@@ -82,4 +82,4 @@ node remix-digest.js --file /tmp/feed.json --dump-prompt
 node remix-digest.js --file /tmp/feed.json --content issue.json --out /tmp/email.html --web-dir /tmp/web   # 用手写 JSON 预览排版
 node rebuild-home.js                       # 改了 site.js 之后，按 docs/latest.json 重建 docs/index.html
 ```
-没有 `DEEPSEEK_API_KEY` 时走降级版。
+没有 `DEEPSEEK_API_KEY` 时走降级版；环境里有这个变量时，直接跑 `remix-digest.js`（不带 `--dump-prompt`、`--content`）会真的调用一次模型，只想看降级版先 `unset DEEPSEEK_API_KEY`。npm 脚本里收集那个叫 `collect`，不能叫 `prepare`：那是 npm 的保留钩子，`npm ci` 会顺带把收集跑一遍并把结果打印进公开日志（2026-11-07 改名）。
