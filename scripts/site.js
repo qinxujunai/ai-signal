@@ -548,7 +548,7 @@ function editor() {
 
 function architecture() {
   const steps = [
-    ['04:07 起', '排队', 'GitHub Actions 每 20 分钟排一次，最先启动的那次认领当天，其余自动退出。', 'daily.yml'],
+    ['08:10', '闹钟', '前一天发完就给今天定好闹钟，到点启动并认领当天；04:07 起每 20 分钟一次的定时任务作后备。', 'relay.js'],
     ['09:35', '收集', `并行读取 ${KINDS} 类信源，各取最近的新内容，去掉 60 天内发过的，用时 1–3 秒。`, 'prepare-digest.js'],
     ['09:35', '编辑', '素材编号后交给 DeepSeek，拿回 JSON，再由程序回填链接和数字。', 'remix-digest.js'],
     ['10:00', '发送', '邮件经 QQ 邮箱 SMTP 发出。', 'deliver.js'],

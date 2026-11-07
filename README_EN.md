@@ -27,7 +27,7 @@ AI builders on X, Hacker News, Techmeme, Reddit (via [AINews](https://www.latent
 - **Graceful fallback:** without the model, the issue is built from ranked sources and says so; a failed source is named in the footer. Scheduling, delivery or publication can still fail, so a daily issue is not guaranteed.
 
 ## How it arrives on time
-GitHub's scheduler can start a job hours late (a 09:41 run started at 14:32 on 2026-10-22) and may drop runs. So a run is queued every 20 minutes from 04:07 to 09:47 Beijing time; the first one to start claims the day, collects and edits at 09:35, and sends at exactly 10:00:00. Later runs see the issue and stop; a run that only starts after 10:00 sends at once.
+GitHub's scheduler can start a job hours late (a 09:41 run started at 14:32 on 2026-10-22) and drops most runs (3–5 of 22 a day start; none on the morning of 2026-11-03). So the run that sends an issue sets an alarm for the next day: it dispatches the next run (`scripts/relay.js`), whose first job waits 22 h 10 min in the environment `daily-wake` (a wait timer, no runner held) and starts around 08:10 Beijing time. The cron stays as a backup, every 20 minutes from 04:07 to 09:47. Whichever run starts first claims the day, collects and edits at 09:35, and sends at exactly 10:00:00. Later runs see the issue and stop; a run that only starts after 10:00 sends at once. To stop the alarms, cancel the waiting "relay for <date>" run.
 
 ## Setup
 Secrets: `DEEPSEEK_API_KEY`, `QQ_EMAIL`, `QQ_SMTP_AUTH`, `AI_SIGNAL_CONFIG` (contents of `config.example.json`). Addresses live only in secrets; neither the code nor the logs print them.

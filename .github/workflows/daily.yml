@@ -9,8 +9,12 @@ name: AI Signal daily issue
 #     dispatches this workflow in mode "relay" with wake=daily-wake. The first job of that run waits in the environment
 #     "daily-wake", whose wait timer (22 h 10 min; repository Settings -> Environments) holds no runner and no lock and
 #     ends at about 08:10 the next morning. The run then claims the day like a scheduled one.
-#  2. The cron as a backup: a run every 20 minutes from 04:07 to 09:47 Beijing, plus late backups. Any run that finds
-#     no alarm set after 10:00 sets one, so the chain repairs itself.
+#  2. The cron as a backup: a run every 20 minutes from 04:07 to 09:47 Beijing, plus late backups. Between 10:00 and
+#     11:30, any scheduled or alarm run that sees today's issue out, and any run that sends it (a manual one too), sets
+#     tomorrow's alarm if none is set, so the chain repairs itself. Later than that the timer would go off too late.
+#
+# To stop the chain, cancel the waiting "relay for <day>" run. A re-run of an alarm run skips the alarm and goes
+# straight to the issue; a rehearsal (dry_run) never waits for the alarm and has a lock of its own.
 #
 # Whichever run starts first claims the day (the lock is on the job), waits until 09:35, collects and edits, then
 # waits until 10:00:00 and sends. Runs that start afterwards see today's issue on master and stop. A run that starts
@@ -54,11 +58,15 @@ permissions:
 jobs:
   # The alarm. Skipped for every run but a relay run; waiting here costs no runner and holds no lock.
   wake:
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'relay' && inputs.wake != '' }}
+    # Not in a rehearsal, and not on a re-run: either would wait another 22 h and then wake on the wrong day.
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'relay' && inputs.wake != '' && !inputs.dry_run && github.run_attempt == 1 }}
     runs-on: ubuntu-latest
     environment: ${{ inputs.wake }}
+    permissions: {}
     steps:
-      - run: echo "The alarm went off, for ${{ inputs.for_day }}."
+      - env:
+          FOR_DAY: ${{ inputs.for_day }}
+        run: echo "The alarm went off, for $FOR_DAY."
 
   issue:
     needs: wake
@@ -66,7 +74,8 @@ jobs:
     runs-on: ubuntu-latest
     # The lock is on this job, not on the workflow, so an alarm waiting on its timer does not hold it.
     concurrency:
-      group: daily-issue
+      # A rehearsal has a lock of its own, so it can never take the place of a real run waiting for this one.
+      group: ${{ inputs.dry_run && 'daily-rehearsal' || 'daily-issue' }}
       cancel-in-progress: false
     # A run may claim the day up to 5 h before 09:35, then needs ~30 min more; GitHub's cap is 360.
     timeout-minutes: 355
@@ -94,7 +103,7 @@ jobs:
           if [ "$EVENT" = "schedule" ] || [ "$MODE" = "relay" ]; then TIMED=true; fi
           echo "timed=$TIMED" >> "$GITHUB_OUTPUT"
           if [ "$MODE" = "relay" ] && [ "$FOR_DAY" != "$DAY" ]; then
-            echo "This alarm is for $FOR_DAY but today is $DAY: it went off at the wrong time. Doing nothing."
+            echo "::warning::This alarm is for $FOR_DAY but today is $DAY: it went off at the wrong time (a re-run on a later day, or the environment lost its wait timer). Doing nothing."
             echo "skip=true" >> "$GITHUB_OUTPUT"
           elif [ "$DRY_RUN" = "true" ]; then
             echo "Rehearsal: collect and edit only."
@@ -193,9 +202,10 @@ jobs:
           curl -fsS -X POST -H "Authorization: Bearer $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${{ github.repository }}/pages/builds" || true
 
-      # Keep tomorrow's alarm set (see the top of this file). If this fails the cron backup still covers the day.
+      # Keep tomorrow's alarm set (see the top of this file): every scheduled or alarm run, and any run that sent today's
+      # issue (a manual one too). If this fails the cron backup still covers the day.
       - name: Set tomorrow's alarm
-        if: always() && steps.today.outputs.timed == 'true'
+        if: always() && (steps.today.outputs.timed == 'true' || steps.send.outputs.sent == 'true')
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
@@ -206,9 +216,10 @@ jobs:
           SENT: ${{ steps.send.outputs.sent }}
           DAY: ${{ steps.today.outputs.day }}
         run: |
-          git fetch --quiet origin "$BRANCH"
+          # A run that sent knows; the others look at master. A failed fetch must not end the step (bash runs with -e).
           OUT=false
-          if [ "$SENT" = "true" ] || git cat-file -e "origin/$BRANCH:docs/archive/$DAY.html" 2>/dev/null; then OUT=true; fi
+          if [ "$SENT" = "true" ]; then OUT=true
+          elif git fetch --quiet origin "$BRANCH" && git cat-file -e "origin/$BRANCH:docs/archive/$DAY.html" 2>/dev/null; then OUT=true; fi
           node scripts/relay.js arm --issue-out "$OUT" --mode "$MODE" --for-day "$FOR_DAY" --dry-run "$DRY_RUN"
 
       - name: Keep the drafts for debugging

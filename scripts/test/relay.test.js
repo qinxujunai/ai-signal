@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { beijingTomorrow, inWindow } from '../clock.js';
-import { armDecision, relayTitle, WAKE_ENV, ARM_WINDOW } from '../relay.js';
+import { armDecision, relayTitle, parseArmArgs, alarmState, WAKE_ENV, ARM_WINDOW } from '../relay.js';
 
 // A moment given in Beijing time.
 const at = (hhmm, day = '2026-11-07') => new Date(`${day}T${hhmm}:00+08:00`);
@@ -62,4 +62,27 @@ test('relay: an alarm that goes off on the wrong day never sets another (no loop
 
 test('relay: the run title is what the next run looks for', () => {
   assert.equal(relayTitle('2026-11-08'), 'relay for 2026-11-08');
+});
+
+test('relay: the command lines the workflow passes', () => {
+  // A scheduled run has no inputs, so every value is empty: a plain run.
+  const plain = parseArmArgs(['--issue-out', 'true', '--mode', '', '--for-day', '', '--dry-run', '']);
+  assert.equal(plain.mode, 'now');
+  assert.equal(plain.forDay, '');
+  assert.equal(plain.dryRun, false);
+  assert.equal(plain.issueOut, true);
+  assert.ok(plain.now instanceof Date && !Number.isNaN(plain.now.getTime()));
+  const relay = parseArmArgs(['--issue-out', 'false', '--mode', 'relay', '--for-day', '2026-11-08', '--dry-run', 'true', '--now', '2026-11-08T10:01:00+08:00']);
+  assert.deepEqual([relay.mode, relay.forDay, relay.dryRun, relay.issueOut, relay.now.toISOString()], ['relay', '2026-11-08', true, false, '2026-11-08T02:01:00.000Z']);
+  // A manual run that sent inside the window sets tomorrow's alarm too (it is often the run that repairs a broken chain).
+  assert.equal(armDecision({ ...parseArmArgs(['--issue-out', 'true', '--mode', 'now', '--for-day', '', '--dry-run', 'false', '--now', '2026-11-07T10:20:00+08:00']), existing: [] }).arm, true);
+});
+
+test('relay: after a dispatch, only a run waiting on its timer counts as a working alarm', () => {
+  const t = relayTitle('2026-11-08');
+  assert.equal(alarmState([{ displayTitle: t, status: 'waiting' }], '2026-11-08'), 'waiting');
+  assert.equal(alarmState([{ displayTitle: t, status: 'in_progress' }], '2026-11-08'), 'in_progress', 'started at once: the environment lost its wait timer');
+  assert.equal(alarmState([{ displayTitle: t, status: 'completed' }], '2026-11-08'), 'missing');
+  assert.equal(alarmState([{ displayTitle: relayTitle('2026-11-09'), status: 'waiting' }], '2026-11-08'), 'missing');
+  assert.equal(alarmState([], '2026-11-08'), 'missing');
 });
