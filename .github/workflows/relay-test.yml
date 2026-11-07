@@ -1,0 +1,42 @@
+name: relay test (temporary)
+
+# Throwaway experiment: does an environment wait timer work as a runner-free alarm clock?
+on:
+  workflow_dispatch:
+    inputs:
+      wake:
+        description: 'environment whose wait timer delays the start; empty = no wait'
+        type: string
+        default: ''
+      hold:
+        description: 'seconds the main job holds the concurrency group'
+        type: string
+        default: '0'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  wake:
+    if: ${{ inputs.wake != '' }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.wake }}
+    steps:
+      - run: echo "wake job started $(date -u +%FT%TZ)"
+  main:
+    needs: wake
+    if: ${{ !cancelled() && (needs.wake.result == 'success' || needs.wake.result == 'skipped') }}
+    runs-on: ubuntu-latest
+    concurrency:
+      group: relay-test-main
+      cancel-in-progress: false
+    steps:
+      - name: report
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "main started $(date -u +%FT%TZ); wake result: ${{ needs.wake.result }}; hold ${{ inputs.hold }}s"
+          gh api repos/${{ github.repository }}/actions/runs/${{ github.run_id }} --jq '"run created_at=\(.created_at) run_started_at=\(.run_started_at)"'
+          gh api repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs --jq '.jobs[] | "job \(.name): status=\(.status) created=\(.created_at) started=\(.started_at) runner_id=\(.runner_id)"'
+          sleep ${{ inputs.hold }}
