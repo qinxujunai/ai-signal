@@ -9,6 +9,8 @@
 //   node clock.js wait 10:00             sleep until that Beijing time today (returns at once if past)
 //   node clock.js reachable 09:35 320    exit 0 if that time is at most N minutes away (or already past)
 //   node clock.js today                  print today's Beijing date, YYYY-MM-DD
+//   node clock.js tomorrow               print tomorrow's Beijing date
+//   node clock.js window 10:00 11:30     exit 0 if now is within [from, to) Beijing time
 
 const TZ = 'Asia/Shanghai';
 
@@ -26,6 +28,18 @@ export function msUntil(hhmm, now = new Date()) {
   return Math.max(0, target - now.getTime());
 }
 
+// The next Beijing calendar day, YYYY-MM-DD (no daylight saving, so +24 h is exactly the next day).
+export function beijingTomorrow(now = new Date()) {
+  return beijingDate(new Date(now.getTime() + 24 * 3600 * 1000));
+}
+
+// True from `from` (inclusive) until `to` (exclusive), both HH:MM Beijing time on the current Beijing day.
+export function inWindow(from, to, now = new Date()) {
+  const [y, mo, d] = beijingDate(now).split('-').map(Number);
+  const at = (hhmm) => { const [h, m] = String(hhmm).split(':').map(Number); return Date.UTC(y, mo - 1, d, h - 8, m, 0, 0); };
+  return now.getTime() >= at(from) && now.getTime() < at(to);
+}
+
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function waitUntil(hhmm) {
@@ -37,6 +51,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const [cmd, time, minutes] = process.argv.slice(2);
   if (cmd === 'until') console.log(msUntil(time));
   else if (cmd === 'today') console.log(beijingDate());
+  else if (cmd === 'tomorrow') console.log(beijingTomorrow());
+  else if (cmd === 'window') process.exit(inWindow(time, minutes) ? 0 : 1); // window 10:00 11:30
   else if (cmd === 'reachable') process.exit(msUntil(time) <= Number(minutes) * 60_000 ? 0 : 1);
   else if (cmd === 'wait') {
     const ms = msUntil(time);
