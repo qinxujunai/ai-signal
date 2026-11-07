@@ -1,16 +1,16 @@
 {
-  "number": 18,
-  "date": "2026-11-06",
-  "dateLabel": "11月6日周五",
-  "scanned": 81,
-  "picked": 35,
+  "number": 19,
+  "date": "2026-11-07",
+  "dateLabel": "11月7日周六",
+  "scanned": 78,
+  "picked": 34,
   "minutes": 6,
-  "headline": "纳指100跌6%，AI交易单日蒸发2.3万亿美元",
-  "intro": "资本市场先给 AI 交易踩刹车；模型侧同日仍有多条发布，安全与评估侧接连出现质疑。",
+  "headline": "Anthropic 拟感恩节前上市，募资至多 1000 亿美元",
+  "intro": "同一天，OpenAI 与 Anthropic 双双以万亿美元估值融资或上市；另一边算力供应链在重新洗牌。",
   "tldr": [
-    "纳指100跌6%、费半跌12%；Anthropic IPO 估值传降至1万亿美元",
-    "Gemini Omni 1.2 Flash 原生支持15秒视频，价格降30%",
-    "Inkling 2 Small 指数追平 Gemini 3.8 Flash，权重尚未放出"
+    "Anthropic 拟本月上市，募资 800–1000 亿美元，估值最高 1.75 万亿美元",
+    "OpenAI 完成约 110 亿美元新融资，估值 1.25 万亿美元，总额或达 200 亿",
+    "PSI 称非公开 Anthropic 模型证明了悬置 17 年的 Aaronson-Ambainis 猜想"
   ],
-  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-06.html"
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-07.html"
 }
