@@ -5,8 +5,15 @@
   <link href="https://qinxujunai.github.io/ai-signal/"/>
   <link rel="self" href="https://qinxujunai.github.io/ai-signal/feed.xml"/>
   <id>https://qinxujunai.github.io/ai-signal/</id>
-  <updated>2026-11-07T01:35:49.791Z</updated>
+  <updated>2026-11-08T01:36:03.162Z</updated>
   <author><name>秦徐俊</name><uri>https://qinxujunai.github.io/</uri></author>
+  <entry>
+    <title>Claude Code 的「Don't Ask Again」把密码写进 1,122 个公开 GitHub 文件</title>
+    <link href="https://qinxujunai.github.io/ai-signal/archive/2026-11-08.html"/>
+    <id>https://qinxujunai.github.io/ai-signal/archive/2026-11-08.html</id>
+    <updated>2026-11-08T01:36:03.162Z</updated>
+    <summary>同一天里，Claude Code 泄露凭据、微软收缩 AI 研究团队并退租算力，OpenAI 融资只到账一半，安全与资本同时收紧。</summary>
+  </entry>
   <entry>
     <title>Anthropic 拟感恩节前上市，募资至多 1000 亿美元</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-11-07.html"/>
