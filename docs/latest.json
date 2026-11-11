@@ -1,34 +1,32 @@
 {
-  "number": 22,
-  "date": "2026-11-10",
-  "dateLabel": "11月10日周二",
-  "scanned": 66,
-  "picked": 33,
-  "minutes": 6,
-  "headline": "Anthropic 发布 Fable 5.2 与 Mythos 5.2，价格降 20%",
-  "intro": "Anthropic 用降价 20% 加更快的输出刷新旗舰，Meta 同日用小模型打单位美元智能——模型竞争回到单价。",
+  "number": 23,
+  "date": "2026-11-11",
+  "dateLabel": "11月11日周三",
+  "scanned": 98,
+  "picked": 37,
+  "minutes": 7,
+  "headline": "Anthropic 发布 Claude Fable 5.2，同日启动 IPO 路演",
+  "intro": "今天三条线同时收紧：Fable 5.2 全量上线、Anthropic 启动 IPO 路演、Gemini 4 Carbon 全面开放。",
   "tldr": [
-    "Fable 5.2 / Mythos 5.2 定价 $8/$40 每百万 token，比 5.1 低 20%，输出快 30%",
-    "Artificial Analysis 给 Fable 5.2 打 65 分，为该榜目前最高分",
-    "Meta Muse Ember 发布，称每美元智能高于 Haiku 5.5 与 GPT-6 Luna"
+    "Claude Fable 5.2 今日全付费档上线；Mythos 5.2 面向安全与生物医学机构申请",
+    "Gemini 4 Carbon 对所有人开放，$2/$10 每百万 token，与 GPT-6.1 Sol 同档",
+    "FT：Anthropic 承销商考虑上调发行价，估值目标或升至 1.5 万亿美元以上"
   ],
-  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-10.html",
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-11.html",
   "sources": {
-    "builders": 10,
-    "tweets": 20,
-    "blogs": 11,
-    "hackernews": 11,
-    "techmeme": 8,
-    "reddit": 0,
+    "builders": 15,
+    "tweets": 29,
+    "blogs": 20,
+    "hackernews": 9,
+    "techmeme": 10,
+    "reddit": 10,
     "papers": 6,
     "models": 1,
-    "github": 3,
-    "products": 0,
+    "github": 1,
+    "products": 7,
     "chinese": 5,
-    "podcasts": 1
+    "podcasts": 0
   },
-  "missing": [
-    "Reddit"
-  ],
+  "missing": [],
   "degraded": false
 }
