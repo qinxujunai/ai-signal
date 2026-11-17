@@ -1,32 +1,34 @@
 {
-  "number": 28,
-  "date": "2026-11-16",
-  "dateLabel": "11月16日周一",
-  "scanned": 62,
-  "picked": 28,
-  "minutes": 5,
-  "headline": "Anthropic IPO 超额认购 7 倍，拟募至多 904 亿美元",
-  "intro": "资本与算力政治同日加速：Anthropic 募资创纪录、Nvidia 高层动荡、美中再列供应链清单。",
+  "number": 29,
+  "date": "2026-11-17",
+  "dateLabel": "11月17日周二",
+  "scanned": 59,
+  "picked": 33,
+  "minutes": 6,
+  "headline": "阿里巴巴发布 Qwen4-Max 基座模型，主打智能体与编程",
+  "intro": "国内基座换代；海外资本与监管同时加压：Anthropic IPO 传出 50 亿美元认购，加州总检察长起诉 OpenAI。",
   "tldr": [
-    "Anthropic IPO 获约 7 倍超额认购，IPO 加私募拟合计募至多 904 亿美元",
-    "FT：Jensen Huang 讨论重返 Nvidia CEO，盟友组 war room 游说白宫",
-    "Epoch AI：华为和林格尔算力约为 Colossus 2 的 7%，或落后到 2028 年"
+    "Altimeter 拟在 Anthropic IPO 投 50 亿美元，是其最大 IPO 投资的 5 倍",
+    "Anthropic 高危漏洞披露期从 90 天缩至 30 天，应对 AI 找 bug",
+    "OpenAI 向全球 20 万学术研究者免费开放前沿模型"
   ],
-  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-16.html",
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-17.html",
   "sources": {
-    "builders": 13,
-    "tweets": 24,
+    "builders": 11,
+    "tweets": 19,
     "blogs": 10,
-    "hackernews": 10,
-    "techmeme": 10,
-    "reddit": 1,
-    "papers": 0,
-    "models": 1,
-    "github": 3,
-    "products": 1,
-    "chinese": 2,
+    "hackernews": 4,
+    "techmeme": 7,
+    "reddit": 0,
+    "papers": 8,
+    "models": 0,
+    "github": 2,
+    "products": 4,
+    "chinese": 5,
     "podcasts": 0
   },
-  "missing": [],
+  "missing": [
+    "Reddit"
+  ],
   "degraded": false
 }
