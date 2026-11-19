@@ -1,31 +1,31 @@
 {
-  "number": 30,
-  "date": "2026-11-18",
-  "dateLabel": "11月18日周三",
-  "scanned": 83,
+  "number": 31,
+  "date": "2026-11-19",
+  "dateLabel": "11月19日周四",
+  "scanned": 100,
   "picked": 36,
   "minutes": 6,
-  "headline": "OpenAI 发布 GPT-6.2 Astra 与 Sol，官方称成本更低",
-  "intro": "OpenAI 双模型与英伟达财报同日落地：模型能力小幅迭代，算力收入继续翻倍。",
+  "headline": "Gemini 4 Neon 发布：每百万 token $3/$15，在 Gemini app 中接替 Argon",
+  "intro": "两家新模型都把卖点压在单位 token 效率：Neon 明码 $3/$15，6.2 Sol/Astra 主打速度与用量。",
   "tldr": [
-    "GPT-6.2 Astra 在 Artificial Analysis 指数上仅次于 Claude Fable 5.2",
-    "英伟达 Q3 营收 1158 亿美元同比 +103%，数据中心 1076 亿",
-    "英伟达不再向中国销售 H200，SEC 同时在查其披露"
+    "Gemini 4 Neon 定价 $3/$15 每百万 token，已上线 API、Antigravity 和 Gemini app",
+    "Anthropic 从日本投资者募资约 $3B，落在 $3B–3.5B 计划区间的下限",
+    "curl 三周多合并 300+ 提交：agent 把 18.5 万行 C 转成 34 万行 Rust，修 200+ bug"
   ],
-  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-18.html",
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-19.html",
   "sources": {
-    "builders": 14,
-    "tweets": 29,
-    "blogs": 11,
-    "hackernews": 9,
-    "techmeme": 8,
+    "builders": 13,
+    "tweets": 33,
+    "blogs": 17,
+    "hackernews": 12,
+    "techmeme": 9,
     "reddit": 0,
     "papers": 8,
-    "models": 3,
-    "github": 2,
-    "products": 8,
+    "models": 4,
+    "github": 4,
+    "products": 7,
     "chinese": 5,
-    "podcasts": 0
+    "podcasts": 1
   },
   "missing": [
     "Reddit"

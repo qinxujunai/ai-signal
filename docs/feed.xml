@@ -5,8 +5,15 @@
   <link href="https://qinxujunai.github.io/ai-signal/"/>
   <link rel="self" href="https://qinxujunai.github.io/ai-signal/feed.xml"/>
   <id>https://qinxujunai.github.io/ai-signal/</id>
-  <updated>2026-11-18T01:35:52.423Z</updated>
+  <updated>2026-11-19T01:36:28.106Z</updated>
   <author><name>秦徐俊</name><uri>https://qinxujunai.github.io/</uri></author>
+  <entry>
+    <title>Gemini 4 Neon 发布：每百万 token $3/$15，在 Gemini app 中接替 Argon</title>
+    <link href="https://qinxujunai.github.io/ai-signal/archive/2026-11-19.html"/>
+    <id>https://qinxujunai.github.io/ai-signal/archive/2026-11-19.html</id>
+    <updated>2026-11-19T01:36:28.106Z</updated>
+    <summary>两家新模型都把卖点压在单位 token 效率：Neon 明码 $3/$15，6.2 Sol/Astra 主打速度与用量。</summary>
+  </entry>
   <entry>
     <title>OpenAI 发布 GPT-6.2 Astra 与 Sol，官方称成本更低</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-11-18.html"/>
@@ -209,12 +216,5 @@
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-21.html</id>
     <updated>2026-10-21T00:00:00Z</updated>
     <summary>Anthropic 2026 上半年净亏损超 800 亿美元，收入与支出严重失衡</summary>
-  </entry>
-  <entry>
-    <title>DHS 下令禁止 DeepSeek 进入美国联邦民事机构</title>
-    <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-20.html"/>
-    <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-20.html</id>
-    <updated>2026-10-20T00:00:00Z</updated>
-    <summary>美国国土安全部发布命令，禁止联邦民事机构使用 DeepSeek</summary>
   </entry>
 </feed>
