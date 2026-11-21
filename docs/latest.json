@@ -1,34 +1,32 @@
 {
-  "number": 32,
-  "date": "2026-11-20",
-  "dateLabel": "11月20日周五",
-  "scanned": 92,
-  "picked": 36,
-  "minutes": 6,
-  "headline": "Anthropic 纳斯达克上市，Iconiq 6B 投资回报超 430%",
-  "intro": "今天三件事同向：前沿实验室进入公开市场，Google 用产品密度抢开发者，算力与并购继续向头部集中。",
+  "number": 33,
+  "date": "2026-11-21",
+  "dateLabel": "11月21日周六",
+  "scanned": 102,
+  "picked": 37,
+  "minutes": 7,
+  "headline": "Anthropic 以 83 美元/股完成 IPO，募资约 935 亿美元，股价随即大跌",
+  "intro": "Anthropic 上市与 Nvidia 七连跌发生在同一周：AI 资产的公开定价和治理同时被重估。",
   "tldr": [
-    "Anthropic 上市，Iconiq 约 1.8% 股份价值 31.8B 美元，回报 430%+",
-    "Google 同日推进 Gemini 4 Neon、Gemini API Tool Retrieval 与 macOS computer use",
-    "Nvidia 洽谈以 5 亿美元+ 收购扩散 LLM 公司 Inception"
+    "Anthropic 发行 11.27 亿股、每股 83 美元，募资约 935 亿美元，上市后股价大跌",
+    "Nvidia 七连跌、七周跌 44%，市值蒸发 2.5 万亿美元，SEC 正调查其会计处理",
+    "TML 开源 26.4B 的 Inkling 2 Mini，每个 token 让中间层循环三次以省 token"
   ],
-  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-20.html",
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-21.html",
   "sources": {
     "builders": 14,
-    "tweets": 29,
-    "blogs": 17,
-    "hackernews": 12,
-    "techmeme": 7,
-    "reddit": 0,
+    "tweets": 33,
+    "blogs": 16,
+    "hackernews": 11,
+    "techmeme": 8,
+    "reddit": 10,
     "papers": 8,
     "models": 2,
-    "github": 4,
-    "products": 7,
+    "github": 0,
+    "products": 8,
     "chinese": 5,
     "podcasts": 1
   },
-  "missing": [
-    "Reddit"
-  ],
+  "missing": [],
   "degraded": false
 }

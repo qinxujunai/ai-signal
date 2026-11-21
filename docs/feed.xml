@@ -5,8 +5,15 @@
   <link href="https://qinxujunai.github.io/ai-signal/"/>
   <link rel="self" href="https://qinxujunai.github.io/ai-signal/feed.xml"/>
   <id>https://qinxujunai.github.io/ai-signal/</id>
-  <updated>2026-11-20T01:36:02.036Z</updated>
+  <updated>2026-11-21T01:35:55.312Z</updated>
   <author><name>秦徐俊</name><uri>https://qinxujunai.github.io/</uri></author>
+  <entry>
+    <title>Anthropic 以 83 美元/股完成 IPO，募资约 935 亿美元，股价随即大跌</title>
+    <link href="https://qinxujunai.github.io/ai-signal/archive/2026-11-21.html"/>
+    <id>https://qinxujunai.github.io/ai-signal/archive/2026-11-21.html</id>
+    <updated>2026-11-21T01:35:55.312Z</updated>
+    <summary>Anthropic 上市与 Nvidia 七连跌发生在同一周：AI 资产的公开定价和治理同时被重估。</summary>
+  </entry>
   <entry>
     <title>Anthropic 纳斯达克上市，Iconiq 6B 投资回报超 430%</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-11-20.html"/>
@@ -209,12 +216,5 @@
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-23.html</id>
     <updated>2026-10-23T00:00:00Z</updated>
     <summary>今天两件事最实：OpenAI 融资估值缩水，Anthropic 把 Agent Skills 交给 Linux 基金会下的 AAIF。</summary>
-  </entry>
-  <entry>
-    <title>Mistral Large 4 发布，OpenAI 模型同时上架 Google Cloud</title>
-    <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-22.html"/>
-    <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-22.html</id>
-    <updated>2026-10-22T00:00:00Z</updated>
-    <summary>Mistral Large 4 登上 HN 317 分，官方博客同步发布</summary>
   </entry>
 </feed>
