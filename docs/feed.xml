@@ -5,8 +5,15 @@
   <link href="https://qinxujunai.github.io/ai-signal/"/>
   <link rel="self" href="https://qinxujunai.github.io/ai-signal/feed.xml"/>
   <id>https://qinxujunai.github.io/ai-signal/</id>
-  <updated>2026-11-22T01:35:54.802Z</updated>
+  <updated>2026-11-23T01:35:55.092Z</updated>
   <author><name>秦徐俊</name><uri>https://qinxujunai.github.io/</uri></author>
+  <entry>
+    <title>OpenAI 公开模型 perplexity，并主张据此设定发展节奏上限</title>
+    <link href="https://qinxujunai.github.io/ai-signal/archive/2026-11-23.html"/>
+    <id>https://qinxujunai.github.io/ai-signal/archive/2026-11-23.html</id>
+    <updated>2026-11-23T01:35:55.092Z</updated>
+    <summary>OpenAI 把 perplexity 摆上评估桌面，Anthropic 在 IPO 前收紧信息口径，能力度量与治理同时变紧。</summary>
+  </entry>
   <entry>
     <title>Anthropic 数学家称用 Claude 证出黎曼猜想</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-11-22.html"/>
@@ -209,12 +216,5 @@
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-25.html</id>
     <updated>2026-10-25T00:00:00Z</updated>
     <summary>今天两条主线：AI 支出正在重新分配，安全漏洞的发现速度被智能体推高到每周一次。</summary>
-  </entry>
-  <entry>
-    <title>Anthropic 将 Agent Skills 捐给 Agentic AI 基金会，与 MCP 并列</title>
-    <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-24.html"/>
-    <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-24.html</id>
-    <updated>2026-10-24T00:00:00Z</updated>
-    <summary>今天两件事指向同一方向：Agent 的接口标准正在被捐给基金会，而模型训练环境正在被主动断网。</summary>
   </entry>
 </feed>
