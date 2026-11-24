@@ -1,32 +1,34 @@
 {
-  "number": 35,
-  "date": "2026-11-23",
-  "dateLabel": "11月23日周一",
-  "scanned": 54,
-  "picked": 29,
+  "number": 36,
+  "date": "2026-11-24",
+  "dateLabel": "11月24日周二",
+  "scanned": 65,
+  "picked": 30,
   "minutes": 5,
-  "headline": "OpenAI 公开模型 perplexity，并主张据此设定发展节奏上限",
-  "intro": "OpenAI 把 perplexity 摆上评估桌面，Anthropic 在 IPO 前收紧信息口径，能力度量与治理同时变紧。",
+  "headline": "Nvidia 重聘黄仁勋为 CEO，纳斯达克100 当日涨 7%",
+  "intro": "黄仁勋回归改写算力供给预期，GLM-5.4 用 looped transformer 改写编码模型架构，一天两条主线。",
   "tldr": [
-    "OpenAI 公开模型 perplexity，主张按这类指标设定节奏上限，并提及 2027 年",
-    "Anthropic IPO 前要求部分承销行限四人小组、六个月禁竞业",
-    "腾讯元宝与 KCL 用 8 万条群聊消息建成 Agent 记忆基准"
+    "Nvidia 董事会重聘黄仁勋任 CEO，纳斯达克100 涨 7%，CoreWeave 涨 22%",
+    "Z.ai 发布 GLM-5.4，首个 looped transformer 架构，主打通用编码",
+    "Anthropic 推 Claude Ship，按团队策略审查并批准 GitHub PR，Team/Enterprise beta"
   ],
-  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-23.html",
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-24.html",
   "sources": {
-    "builders": 12,
+    "builders": 10,
     "tweets": 21,
-    "blogs": 2,
-    "hackernews": 10,
-    "techmeme": 10,
-    "reddit": 1,
-    "papers": 1,
-    "models": 2,
+    "blogs": 11,
+    "hackernews": 8,
+    "techmeme": 8,
+    "reddit": 0,
+    "papers": 7,
+    "models": 1,
     "github": 0,
-    "products": 2,
+    "products": 4,
     "chinese": 5,
     "podcasts": 0
   },
-  "missing": [],
+  "missing": [
+    "Reddit"
+  ],
   "degraded": false
 }

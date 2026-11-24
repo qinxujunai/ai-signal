@@ -5,8 +5,15 @@
   <link href="https://qinxujunai.github.io/ai-signal/"/>
   <link rel="self" href="https://qinxujunai.github.io/ai-signal/feed.xml"/>
   <id>https://qinxujunai.github.io/ai-signal/</id>
-  <updated>2026-11-23T01:35:55.092Z</updated>
+  <updated>2026-11-24T01:36:07.658Z</updated>
   <author><name>秦徐俊</name><uri>https://qinxujunai.github.io/</uri></author>
+  <entry>
+    <title>Nvidia 重聘黄仁勋为 CEO，纳斯达克100 当日涨 7%</title>
+    <link href="https://qinxujunai.github.io/ai-signal/archive/2026-11-24.html"/>
+    <id>https://qinxujunai.github.io/ai-signal/archive/2026-11-24.html</id>
+    <updated>2026-11-24T01:36:07.658Z</updated>
+    <summary>黄仁勋回归改写算力供给预期，GLM-5.4 用 looped transformer 改写编码模型架构，一天两条主线。</summary>
+  </entry>
   <entry>
     <title>OpenAI 公开模型 perplexity，并主张据此设定发展节奏上限</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-11-23.html"/>
@@ -209,12 +216,5 @@
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-26.html</id>
     <updated>2026-10-26T00:00:00Z</updated>
     <summary>今天有三条线同时指向成本：模型降价最高 80%、GPU 债务收紧、旧 CNN 跑赢前沿模型。</summary>
-  </entry>
-  <entry>
-    <title>Replit 把大部分 AI 支出从 Anthropic 转投 OpenAI，年单超 1 亿美元</title>
-    <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-25.html"/>
-    <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-25.html</id>
-    <updated>2026-10-25T00:00:00Z</updated>
-    <summary>今天两条主线：AI 支出正在重新分配，安全漏洞的发现速度被智能体推高到每周一次。</summary>
   </entry>
 </feed>
