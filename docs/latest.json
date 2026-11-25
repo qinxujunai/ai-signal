@@ -1,34 +1,32 @@
 {
-  "number": 36,
-  "date": "2026-11-24",
-  "dateLabel": "11月24日周二",
-  "scanned": 65,
-  "picked": 30,
-  "minutes": 5,
-  "headline": "Nvidia 重聘黄仁勋为 CEO，纳斯达克100 当日涨 7%",
-  "intro": "黄仁勋回归改写算力供给预期，GLM-5.4 用 looped transformer 改写编码模型架构，一天两条主线。",
+  "number": 37,
+  "date": "2026-11-25",
+  "dateLabel": "11月25日周三",
+  "scanned": 100,
+  "picked": 33,
+  "minutes": 6,
+  "headline": "Anthropic 上市后跌破 83 美元发行价",
+  "intro": "Anthropic 跌破 83 美元发行价；GLM-5.4 与 Claude Ship 同日推进 agent 落地。",
   "tldr": [
-    "Nvidia 董事会重聘黄仁勋任 CEO，纳斯达克100 涨 7%，CoreWeave 涨 22%",
-    "Z.ai 发布 GLM-5.4，首个 looped transformer 架构，主打通用编码",
-    "Anthropic 推 Claude Ship，按团队策略审查并批准 GitHub PR，Team/Enterprise beta"
+    "Anthropic 股价跌破 83 美元 IPO 发行价，HN 相关讨论 686 条。",
+    "GLM-5.4：750B 参数，28 层权重共享跑两轮迭代，宣称对标 2T–3T。",
+    "Claude Ship 对 Team/Enterprise 开 beta：Review、PR Steward、Approvals 分工。"
   ],
-  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-24.html",
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-25.html",
   "sources": {
-    "builders": 10,
-    "tweets": 21,
-    "blogs": 11,
-    "hackernews": 8,
-    "techmeme": 8,
-    "reddit": 0,
-    "papers": 7,
-    "models": 1,
+    "builders": 16,
+    "tweets": 37,
+    "blogs": 13,
+    "hackernews": 13,
+    "techmeme": 6,
+    "reddit": 10,
+    "papers": 8,
+    "models": 0,
     "github": 0,
-    "products": 4,
+    "products": 8,
     "chinese": 5,
     "podcasts": 0
   },
-  "missing": [
-    "Reddit"
-  ],
+  "missing": [],
   "degraded": false
 }

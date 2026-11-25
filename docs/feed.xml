@@ -5,8 +5,15 @@
   <link href="https://qinxujunai.github.io/ai-signal/"/>
   <link rel="self" href="https://qinxujunai.github.io/ai-signal/feed.xml"/>
   <id>https://qinxujunai.github.io/ai-signal/</id>
-  <updated>2026-11-24T01:36:07.658Z</updated>
+  <updated>2026-11-25T01:35:51.420Z</updated>
   <author><name>秦徐俊</name><uri>https://qinxujunai.github.io/</uri></author>
+  <entry>
+    <title>Anthropic 上市后跌破 83 美元发行价</title>
+    <link href="https://qinxujunai.github.io/ai-signal/archive/2026-11-25.html"/>
+    <id>https://qinxujunai.github.io/ai-signal/archive/2026-11-25.html</id>
+    <updated>2026-11-25T01:35:51.420Z</updated>
+    <summary>Anthropic 跌破 83 美元发行价；GLM-5.4 与 Claude Ship 同日推进 agent 落地。</summary>
+  </entry>
   <entry>
     <title>Nvidia 重聘黄仁勋为 CEO，纳斯达克100 当日涨 7%</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-11-24.html"/>
@@ -209,12 +216,5 @@
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-27.html</id>
     <updated>2026-10-27T00:00:00Z</updated>
     <summary>Anthropic 的招股书和 GPT-6.1 Terra 的价目表同一天落地，模型公司开始用财报和定价说话。</summary>
-  </entry>
-  <entry>
-    <title>OpenAI 与 Anthropic 数月内把 LLM 价格下调最高 80%</title>
-    <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-26.html"/>
-    <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-26.html</id>
-    <updated>2026-10-26T00:00:00Z</updated>
-    <summary>今天有三条线同时指向成本：模型降价最高 80%、GPU 债务收紧、旧 CNN 跑赢前沿模型。</summary>
   </entry>
 </feed>
