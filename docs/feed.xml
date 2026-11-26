@@ -5,8 +5,15 @@
   <link href="https://qinxujunai.github.io/ai-signal/"/>
   <link rel="self" href="https://qinxujunai.github.io/ai-signal/feed.xml"/>
   <id>https://qinxujunai.github.io/ai-signal/</id>
-  <updated>2026-11-25T01:35:51.420Z</updated>
+  <updated>2026-11-26T01:35:59.991Z</updated>
   <author><name>秦徐俊</name><uri>https://qinxujunai.github.io/</uri></author>
+  <entry>
+    <title>五角大楼被曝以国防生产法施压 Nvidia 董事会，黄仁勋复职</title>
+    <link href="https://qinxujunai.github.io/ai-signal/archive/2026-11-26.html"/>
+    <id>https://qinxujunai.github.io/ai-signal/archive/2026-11-26.html</id>
+    <updated>2026-11-26T01:35:59.991Z</updated>
+    <summary>黄仁勋经五角大楼施压后复职，同日纽约的玩具禁令、42 州联名信与 Apple 下架一同落地：AI 的外部约束在收紧。</summary>
+  </entry>
   <entry>
     <title>Anthropic 上市后跌破 83 美元发行价</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-11-25.html"/>
@@ -209,12 +216,5 @@
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-28.html</id>
     <updated>2026-10-28T00:00:00Z</updated>
     <summary>Anthropic 的 335 页 S-1 把前沿实验室的账本摊开；同日 OpenAI 用 GPT-6.1 Terra 抢量，还计划采购 Google TPU。</summary>
-  </entry>
-  <entry>
-    <title>Anthropic 递交 S-1，启动 IPO 并首次披露客户结构</title>
-    <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-27.html"/>
-    <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-27.html</id>
-    <updated>2026-10-27T00:00:00Z</updated>
-    <summary>Anthropic 的招股书和 GPT-6.1 Terra 的价目表同一天落地，模型公司开始用财报和定价说话。</summary>
   </entry>
 </feed>
