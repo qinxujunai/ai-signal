@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
+<meta name="x-apple-disable-message-reformatting">
+<title>OpenAI 修正 GPT-6.2 计费错误：Astra 用量上限快 40% · AI Signal 2026-11-27</title>
+<meta name="description" content="今天三条成本信号：OpenAI 用量更快耗尽、SAP 为 AI 裁 9% 员工、HN 追问 OpenAI 是否转控成本。">
+<meta name="ai-signal-updated-at" content="2026-11-27T01:35:55.402Z">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%231d1d1f'/%3E%3Ccircle cx='4.5' cy='8' r='1.6' fill='%23fff'/%3E%3Ccircle cx='8' cy='8' r='1.6' fill='%23fff'/%3E%3Ccircle cx='11.5' cy='8' r='1.6' fill='%23fff' fill-opacity='.4'/%3E%3C/svg%3E">
+</head>
+<body style="margin:0;padding:0;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;color:#1d1d1f;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;font-size:1px;line-height:1px;color:#ffffff;">今天三条成本信号：OpenAI 用量更快耗尽、SAP 为 AI 裁 9% 员工、HN 追问 OpenAI 是否转控成本。</div>
+<div style="position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.72);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);">
+<div style="max-width:640px;margin:0 auto;padding:0 24px;height:48px;display:flex;align-items:center;justify-content:space-between;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;">
+<span style="display:flex;align-items:center;gap:14px;"><a data-qxj-back hidden style="font-size:13px;color:#1d1d1f;text-decoration:none;">‹ 返回</a><a href="../" style="font-size:15px;font-weight:600;color:#1d1d1f;text-decoration:none;letter-spacing:-0.1px;">AI Signal</a></span>
+<span style="font-size:13px;"><a href="../archive/" style="color:#0066cc;text-decoration:none;">往期 ›</a></span>
+</div></div><script>(function(){try{var u=sessionStorage.getItem('qxj.back'),a=document.querySelector('[data-qxj-back]');if(!u||!a||u.indexOf(location.origin+'/')!==0)return;a.href=u;a.hidden=false;a.addEventListener('click',function(e){if(document.referrer&&document.referrer.split('#')[0]===u.split('#')[0]){e.preventDefault();history.back();}});}catch(e){}})();</script>
+<main>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;" bgcolor="#ffffff">
+<tr><td align="center" style="padding:0 24px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:640px;">
+    
+<tr><td style="padding:40px 0 0 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      
+      <td align="left" style="font-size:13px;color:#6e6e73;font-variant-numeric:tabular-nums;">第 39 期 · 11月27日周五</td>
+    </tr>
+  </table>
+  <div style="font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:32px;line-height:1.22;font-weight:700;color:#1d1d1f;letter-spacing:-0.6px;margin-top:12px;"><h1 style="margin:0;font:inherit;color:inherit;letter-spacing:inherit;">OpenAI 修正 GPT-6.2 计费错误：Astra 用量上限快 40%</h1></div>
+  <div style="font-size:19px;line-height:1.55;color:#424245;margin-top:14px;letter-spacing:-0.1px;">今天三条成本信号：OpenAI 用量更快耗尽、SAP 为 AI 裁 9% 员工、HN 追问 OpenAI 是否转控成本。</div>
+  <div style="font-size:13px;color:#6e6e73;margin-top:18px;font-variant-numeric:tabular-nums;">从 88 条新内容里选了 32 条 · 约 6 分钟读完</div>
+</td></tr>
+    
+    
+<tr><td style="padding:28px 0 0 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5f5f7;border-radius:18px;" bgcolor="#f5f5f7">
+    <tr><td style="padding:20px 24px 16px 24px;">
+      <div style="font-size:13px;font-weight:600;color:#6e6e73;margin-bottom:6px;">30 秒读完</div>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td width="24" valign="top" style="width:24px;padding:6px 0;font-size:16px;line-height:1.6;font-weight:600;color:#1d1d1f;font-variant-numeric:tabular-nums;">1</td><td valign="top" style="padding:6px 0;font-size:16px;line-height:1.6;color:#1d1d1f;">GPT-6.2 Astra 用量上限提前 40% 触及，Sol 提前 25%，OpenAI 称系发布计费错误</td></tr></table><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td width="24" valign="top" style="width:24px;padding:6px 0;font-size:16px;line-height:1.6;font-weight:600;color:#1d1d1f;font-variant-numeric:tabular-nums;">2</td><td valign="top" style="padding:6px 0;font-size:16px;line-height:1.6;color:#1d1d1f;">前 Claude Code 负责人 Thariq 宣布从 Anthropic 加入 OpenAI</td></tr></table><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td width="24" valign="top" style="width:24px;padding:6px 0;font-size:16px;line-height:1.6;font-weight:600;color:#1d1d1f;font-variant-numeric:tabular-nums;">3</td><td valign="top" style="padding:6px 0;font-size:16px;line-height:1.6;color:#1d1d1f;">SAP 计划裁减至少 1 万个岗位，占全球员工 9%，为 AI 转型</td></tr></table>
+    </td></tr>
+  </table>
+</td></tr>
+    
+<tr><td style="padding:44px 0 0 0;">
+  <div style="font-size:13px;font-weight:600;color:#6e6e73;"><h2 style="margin:0;font:inherit;color:inherit;letter-spacing:inherit;">头条</h2></div>
+  <a href="https://twitter.com/thsottiaux/status/2125784147889393806" target="_blank" style="display:block;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:26px;line-height:1.3;font-weight:700;letter-spacing:-0.4px;color:#1d1d1f;text-decoration:none;margin-top:8px;">OpenAI 修正 GPT-6.2 发布时计费错误，Astra 用量提前 40% 触及上限</a>
+  <div style="font-size:17px;line-height:1.7;color:#424245;margin-top:12px;">OpenAI 的 Thibault Sottiaux（Codex &amp; ChatGPT）称，GPT-6.2 发布时的计费错误让 Astra 和 Sol 的用量被错误打折，现已修复：同样的工作会更耗套餐额度，与上周相比 Astra 提前 40%、Sol 提前 25% 触及上限。TechRadar 报道，其他模型未受影响，OpenAI 表示这两个模型仍比 6 Astra 和 6.1 Sol 更省额度。</div>
+  <div style="font-size:17px;line-height:1.7;color:#424245;margin-top:12px;"><span style="font-weight:600;color:#1d1d1f;">为什么重要。</span>按量做预算和限流的团队要按 40%/25% 重算配额；HN 上「OpenAI 可能在成本控制模式」的讨论也由此而来。</div>
+  <div style="font-size:13px;line-height:20px;color:#6e6e73;margin-top:8px;font-variant-numeric:tabular-nums;"><span style="color:#1d1d1f;letter-spacing:1px;" title="信号强度 3/3">●●●</span><span style="color:#d2d2d7;letter-spacing:1px;"></span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><a href="https://twitter.com/thsottiaux/status/2125784147889393806" target="_blank" style="color:#0066cc;text-decoration:none;">Hacker News · 465 分 ›</a>&nbsp;&nbsp; <a href="https://news.ycombinator.com/item?id=50651117" target="_blank" style="color:#0066cc;text-decoration:none;">讨论 ›</a>&nbsp;&nbsp; <a href="https://www.techradar.com/ai-platforms-assistants/chatgpt/weve-fixed-this-now-so-the-same-work-will-use-more-of-your-plans-usage-allowance-openai-admits-it-made-a-mistake-when-launching-gpt-6-2-and-now-paying-chatgpt-users-could-hit-their-usage-limits-up-to-40-percent-faster" target="_blank" style="color:#0066cc;text-decoration:none;">TechRadar · Techmeme ›</a>&nbsp;&nbsp; <a href="https://x.com/thsottiaux/status/2125784147889393806" target="_blank" style="color:#0066cc;text-decoration:none;">Thibault Sottiaux · X ›</a></div>
+</td></tr>
+    
+<tr><td style="padding:48px 0 0 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr><td colspan="2" style="padding:0px 0 0 0;"><div style="height:1px;line-height:1px;font-size:0;background:#d2d2d7;">&nbsp;</div></td></tr>
+    <tr>
+      <td style="padding:18px 0 4px 0;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:22px;line-height:1.25;font-weight:700;letter-spacing:-0.2px;color:#1d1d1f;"><h2 style="margin:0;font:inherit;color:inherit;letter-spacing:inherit;">要闻</h2></td>
+      <td align="right" valign="bottom" style="padding:18px 0 6px 0;font-size:13px;color:#6e6e73;white-space:nowrap;">8 条</td>
+    </tr>
+    
+    <tr><td colspan="2" style="padding:12px 0 20px 0;">
+      <a href="https://x.com/trq212/status/2125675533761671405" target="_blank" style="font-size:17px;line-height:1.45;font-weight:600;color:#1d1d1f;text-decoration:none;">前 Claude Code 负责人 Thariq 宣布加入 OpenAI</a>
+      <div style="font-size:15px;line-height:1.7;color:#424245;margin-top:6px;">Thariq（现于 OpenAI，此前在 Anthropic 负责 Claude Code）发帖确认离职并加入 OpenAI，称在 Anthropic 的时期令他自豪，仍会支持前同事，并认为自己能在 OpenAI 贡献最多。该帖获 2.5 万赞。</div>
+      <div style="font-size:13px;line-height:20px;color:#6e6e73;margin-top:8px;font-variant-numeric:tabular-nums;"><span style="color:#6e6e73;">商业</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><span style="color:#1d1d1f;letter-spacing:1px;" title="信号强度 2/3">●●</span><span style="color:#d2d2d7;letter-spacing:1px;">●</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><a href="https://x.com/trq212/status/2125675533761671405" target="_blank" style="color:#0066cc;text-decoration:none;">Thariq · X ›</a></div>
+    </td></tr>
+    <tr><td colspan="2" style="padding:20px 0 20px 0;border-top:1px solid #d2d2d7;">
+      <a href="https://techstackups.com/articles/google-workspace-ai-agents-mcp/" target="_blank" style="font-size:17px;line-height:1.45;font-weight:600;color:#1d1d1f;text-decoration:none;">Google 要让 AI agent 走自家 MCP 服务器，Gmail 那个不能发邮件</a>
+      <div style="font-size:15px;line-height:1.7;color:#424245;margin-top:6px;">报道称 Google 将推动 AI agent 使用其 MCP 服务器，其中 Gmail 的 MCP 服务不具备发送邮件的能力。Peter Steinberger 在 X 上吐槽：Google 终于做了 MCP，却开始对 gog 这类 CLI 收费设限。</div>
+      <div style="font-size:13px;line-height:20px;color:#6e6e73;margin-top:8px;font-variant-numeric:tabular-nums;"><span style="color:#6e6e73;">产品</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><span style="color:#1d1d1f;letter-spacing:1px;" title="信号强度 2/3">●●</span><span style="color:#d2d2d7;letter-spacing:1px;">●</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><a href="https://techstackups.com/articles/google-workspace-ai-agents-mcp/" target="_blank" style="color:#0066cc;text-decoration:none;">Hacker News · 238 分 ›</a>&nbsp;&nbsp; <a href="https://news.ycombinator.com/item?id=50653477" target="_blank" style="color:#0066cc;text-decoration:none;">讨论 ›</a>&nbsp;&nbsp; <a href="https://x.com/steipete/status/2125654555262431248" target="_blank" style="color:#0066cc;text-decoration:none;">Peter Steinberger · X ›</a></div>
+    </td></tr>
+    <tr><td colspan="2" style="padding:20px 0 20px 0;border-top:1px solid #d2d2d7;">
+      <a href="https://www.bloomberg.com/news/articles/2026-11-26/sap-weighs-cutting-at-least-10-000-positions-in-ai-restructuring" target="_blank" style="font-size:17px;line-height:1.45;font-weight:600;color:#1d1d1f;text-decoration:none;">SAP 准备裁减至少 1 万个岗位，占全球员工 9%</a>
+      <div style="font-size:15px;line-height:1.7;color:#424245;margin-top:6px;">Bloomberg 援引消息人士称，SAP 正制定计划裁掉至少 10,000 个岗位（全球员工约 9%），以把软件业务改造为适配 AI 时代的形态。</div>
+      <div style="font-size:13px;line-height:20px;color:#6e6e73;margin-top:8px;font-variant-numeric:tabular-nums;"><span style="color:#6e6e73;">商业</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><span style="color:#1d1d1f;letter-spacing:1px;" title="信号强度 1/3">●</span><span style="color:#d2d2d7;letter-spacing:1px;">●●</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><a href="https://www.bloomberg.com/news/articles/2026-11-26/sap-weighs-cutting-at-least-10-000-positions-in-ai-restructuring" target="_blank" style="color:#0066cc;text-decoration:none;">Bloomberg · Techmeme ›</a>&nbsp;&nbsp; <a href="https://www.techmeme.com/261126/p22#a261126p22" target="_blank" style="color:#0066cc;text-decoration:none;">讨论 ›</a></div>
+    </td></tr>
+    <tr><td colspan="2" style="padding:20px 0 20px 0;border-top:1px solid #d2d2d7;">
+      <a href="https://www.qbitai.com/2026/11/513021.html" target="_blank" style="font-size:17px;line-height:1.45;font-weight:600;color:#1d1d1f;text-decoration:none;">381 个 AI agent 冲刺证明 P=NP，在 Lean4 中验证超 2400 条引理</a>
+      <div style="font-size:15px;line-height:1.7;color:#424245;margin-top:6px;">量子位报道，该项目已跑超过一万次会话，在 Lean4 里验证通过 2400 多条引理，过程中一度把 GitHub 干崩。</div>
+      <div style="font-size:13px;line-height:20px;color:#6e6e73;margin-top:8px;font-variant-numeric:tabular-nums;"><span style="color:#6e6e73;">研究</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><span style="color:#1d1d1f;letter-spacing:1px;" title="信号强度 1/3">●</span><span style="color:#d2d2d7;letter-spacing:1px;">●●</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><a href="https://www.qbitai.com/2026/11/513021.html" target="_blank" style="color:#0066cc;text-decoration:none;">量子位 ›</a></div>
+    </td></tr>
+    <tr><td colspan="2" style="padding:20px 0 20px 0;border-top:1px solid #d2d2d7;">
+      <a href="https://x.com/karpathy/status/2125779541952246039" target="_blank" style="font-size:17px;line-height:1.45;font-weight:600;color:#1d1d1f;text-decoration:none;">Karpathy 用 Claude Opus 5.5 生成文明式美国地图：31 个真实数据源、4.5 万行代码</a>
+      <div style="font-size:15px;line-height:1.7;color:#424245;margin-top:6px;">Andrej Karpathy 称他让 Claude 用美国真实数据填充一张 Civilization 式地图，模型下载并解析了 31 个公开数据源（Census、BEA、BLS、EIA、NOAA、USGS、DoD、NPS、FAA、FEMA、CDC 等），耗时 7 小时 45 分、产出 4.5 万行代码后跑通。地图包含真实高程、土地覆盖、GDP、就业、电厂、矿山、港口、机场、基地、大学与货运流。</div>
+      <div style="font-size:13px;line-height:20px;color:#6e6e73;margin-top:8px;font-variant-numeric:tabular-nums;"><span style="color:#6e6e73;">工程</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><span style="color:#1d1d1f;letter-spacing:1px;" title="信号强度 2/3">●●</span><span style="color:#d2d2d7;letter-spacing:1px;">●</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><a href="https://x.com/karpathy/status/2125779541952246039" target="_blank" style="color:#0066cc;text-decoration:none;">Andrej Karpathy · X ›</a></div>
+    </td></tr>
+    <tr><td colspan="2" style="padding:20px 0 20px 0;border-top:1px solid #d2d2d7;">
+      <a href="https://x.com/sama/status/2125638790593274259" target="_blank" style="font-size:17px;line-height:1.45;font-weight:600;color:#1d1d1f;text-decoration:none;">OpenAI 小范围测试 Private Inference，主打更强隐私保护</a>
+      <div style="font-size:15px;line-height:1.7;color:#424245;margin-top:6px;">Sam Altman 称 OpenAI 正与一小批客户测试 Private Inference（属 OpenAI Private Intelligence 的一部分），并提供 ZDR 加 Private Safety Processing，让自动安全审查无需 OpenAI 人员接触数据。</div>
+      <div style="font-size:13px;line-height:20px;color:#6e6e73;margin-top:8px;font-variant-numeric:tabular-nums;"><span style="color:#6e6e73;">安全与政策</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><span style="color:#1d1d1f;letter-spacing:1px;" title="信号强度 2/3">●●</span><span style="color:#d2d2d7;letter-spacing:1px;">●</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><a href="https://x.com/sama/status/2125638790593274259" target="_blank" style="color:#0066cc;text-decoration:none;">Sam Altman · X ›</a></div>
+    </td></tr>
+    <tr><td colspan="2" style="padding:20px 0 20px 0;border-top:1px solid #d2d2d7;">
+      <a href="https://devnull.land/amd-specific-llama-cpp" target="_blank" style="font-size:17px;line-height:1.45;font-weight:600;color:#1d1d1f;text-decoration:none;">AMD 专用 llama.cpp 分支出现，Hugging Face 同步上线 Ryzen/Radeon 基准看板</a>
+      <div style="font-size:15px;line-height:1.7;color:#424245;margin-top:6px;">HN 上出现一个 AMD 专用 llama.cpp fork（282 分、70 条评论）；Hugging Face 同日发布面向 AMD Ryzen 与 Radeon 的 llama.cpp 基准看板。</div>
+      <div style="font-size:13px;line-height:20px;color:#6e6e73;margin-top:8px;font-variant-numeric:tabular-nums;"><span style="color:#6e6e73;">开源</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><span style="color:#1d1d1f;letter-spacing:1px;" title="信号强度 2/3">●●</span><span style="color:#d2d2d7;letter-spacing:1px;">●</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><a href="https://devnull.land/amd-specific-llama-cpp" target="_blank" style="color:#0066cc;text-decoration:none;">Hacker News · 282 分 ›</a>&nbsp;&nbsp; <a href="https://news.ycombinator.com/item?id=50657265" target="_blank" style="color:#0066cc;text-decoration:none;">讨论 ›</a>&nbsp;&nbsp; <a href="https://huggingface.co/blog/ggml-org/llamacpp-amd-bench" target="_blank" style="color:#0066cc;text-decoration:none;">Hugging Face ›</a></div>
+    </td></tr>
+    <tr><td colspan="2" style="padding:20px 0 20px 0;border-top:1px solid #d2d2d7;">
+      <a href="https://x.com/rauchg/status/2125685667833520237" target="_blank" style="font-size:17px;line-height:1.45;font-weight:600;color:#1d1d1f;text-decoration:none;">Vercel 称 workflow 再快 10 倍，无需改代码升级</a>
+      <div style="font-size:15px;line-height:1.7;color:#424245;margin-top:6px;">Guillermo Rauch（Vercel CEO）称 workflows 又快了一个数量级，对 harness 的耐久性（@eve、libfx、pi、opencode 等）意义在于压缩了轮次之间的延迟，升级 workflow@latest 即可、无需改代码；他另称 fx 全部功能仍能塞进 6MB，含 subagents、MCP、skills、sessions、ACP、TUI 与网络传输。</div>
+      <div style="font-size:13px;line-height:20px;color:#6e6e73;margin-top:8px;font-variant-numeric:tabular-nums;"><span style="color:#6e6e73;">工程</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><span style="color:#1d1d1f;letter-spacing:1px;" title="信号强度 2/3">●●</span><span style="color:#d2d2d7;letter-spacing:1px;">●</span><span style="color:#d2d2d7;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><a href="https://x.com/rauchg/status/2125685667833520237" target="_blank" style="color:#0066cc;text-decoration:none;">Guillermo Rauch · X ›</a>&nbsp;&nbsp; <a href="https://x.com/rauchg/status/2125650675665432995" target="_blank" style="color:#0066cc;text-decoration:none;">Guillermo Rauch · X ›</a></div>
+    </td></tr>
+  </table>
+</td></tr>
+    
+<tr><td style="padding:48px 0 0 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr><td colspan="2" style="padding:0px 0 0 0;"><div style="height:1px;line-height:1px;font-size:0;background:#d2d2d7;">&nbsp;</div></td></tr>
+    <tr>
+      <td style="padding:18px 0 4px 0;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:22px;line-height:1.25;font-weight:700;letter-spacing:-0.2px;color:#1d1d1f;"><h2 style="margin:0;font:inherit;color:inherit;letter-spacing:inherit;">社区在聊</h2></td>
+      <td align="right" valign="bottom" style="padding:18px 0 6px 0;font-size:13px;color:#6e6e73;white-space:nowrap;">Reddit · 经 AINews</td>
+    </tr>
+    
+    <tr><td colspan="2" style="padding:12px 0 18px 0;">
+      <a href="https://diseasescuredbyai.com/" target="_blank" style="font-size:16px;line-height:1.5;font-weight:600;color:#1d1d1f;text-decoration:none;">哪些疾病已经被 AI 治好了</a>
+      <div style="font-size:15px;line-height:1.7;color:#424245;margin-top:5px;">一个专门追踪「AI 治愈疾病」的站点拿到 301 分、180 条评论，社区在逐条核对证据成色。</div>
+      <div style="font-size:13px;margin-top:8px;font-variant-numeric:tabular-nums;"><a href="https://diseasescuredbyai.com/" target="_blank" style="color:#0066cc;text-decoration:none;">Hacker News · 301 分 ›</a></div>
+    </td></tr>
+    <tr><td colspan="2" style="padding:18px 0 18px 0;border-top:1px solid #d2d2d7;">
+      <a href="https://micjm.com/blog/openai-is-in-cost-control-mode/" target="_blank" style="font-size:16px;line-height:1.5;font-weight:600;color:#1d1d1f;text-decoration:none;">OpenAI 可能进入成本控制模式</a>
+      <div style="font-size:15px;line-height:1.7;color:#424245;margin-top:5px;">272 分、263 条评论，讨论集中在计费收紧与推断成本结构，而非模型能力本身。</div>
+      <div style="font-size:13px;margin-top:8px;font-variant-numeric:tabular-nums;"><a href="https://micjm.com/blog/openai-is-in-cost-control-mode/" target="_blank" style="color:#0066cc;text-decoration:none;">Hacker News · 272 分 ›</a></div>
+    </td></tr>
+    <tr><td colspan="2" style="padding:18px 0 18px 0;border-top:1px solid #d2d2d7;">
+      <a href="https://janlukas.blog/posts/ai-self-hosting" target="_blank" style="font-size:16px;line-height:1.5;font-weight:600;color:#1d1d1f;text-decoration:none;">AI 让自托管重新变得好玩</a>
+      <div style="font-size:15px;line-height:1.7;color:#424245;margin-top:5px;">292 分、156 条评论，社区在分享用 AI 把自建服务重新捡起来的体验。</div>
+      <div style="font-size:13px;margin-top:8px;font-variant-numeric:tabular-nums;"><a href="https://janlukas.blog/posts/ai-self-hosting" target="_blank" style="color:#0066cc;text-decoration:none;">Hacker News · 292 分 ›</a></div>
+    </td></tr>
+  </table>
+</td></tr>
+    
+<tr><td style="padding:48px 0 0 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr><td colspan="2" style="padding:0px 0 0 0;"><div style="height:1px;line-height:1px;font-size:0;background:#d2d2d7;">&nbsp;</div></td></tr>
+    <tr>
+      <td style="padding:18px 0 4px 0;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:22px;line-height:1.25;font-weight:700;letter-spacing:-0.2px;color:#1d1d1f;"><h2 style="margin:0;font:inherit;color:inherit;letter-spacing:inherit;">观点</h2></td>
+      <td align="right" valign="bottom" style="padding:18px 0 6px 0;font-size:13px;color:#6e6e73;white-space:nowrap;">来自 X</td>
+    </tr>
+    
+    <tr><td colspan="2" style="padding:14px 0 20px 0;">
+      <div style="font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:19px;line-height:1.55;font-weight:500;color:#1d1d1f;letter-spacing:-0.1px;">「按任务算成本是误导性指标，真正稀缺的是人的注意力而非 token 成本；那些把模型压成两个数字的帕累托前沿图会掩盖严重的可靠性问题。」</div>
+      <div style="font-size:13px;color:#6e6e73;margin-top:8px;">Swyx&nbsp;&nbsp; <a href="https://x.com/swyx/status/2125627281230205435" target="_blank" style="color:#0066cc;text-decoration:none;text-decoration:underline;text-underline-offset:2px;">原帖 ›</a></div>
+    </td></tr>
+    <tr><td colspan="2" style="padding:20px 0 20px 0;border-top:1px solid #d2d2d7;">
+      <div style="font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:19px;line-height:1.55;font-weight:500;color:#1d1d1f;letter-spacing:-0.1px;">「AI 原生团队最终会倒逼整个组织 AI 化：写代码速度大涨，但多数公司真正交付的产品和业务影响没变，因为实验工具、评测、发布流程和 GTM 这套周边系统还停留在旧状态。」</div>
+      <div style="font-size:13px;color:#6e6e73;margin-top:8px;">Madhu Guru（Meta AI 高级总监，此前在 Google 负责 Gemini、Veo、Nan）&nbsp;&nbsp; <a href="https://x.com/realmadhuguru/status/2125630707640783322" target="_blank" style="color:#0066cc;text-decoration:none;text-decoration:underline;text-underline-offset:2px;">原帖 ›</a></div>
+    </td></tr>
+    <tr><td colspan="2" style="padding:20px 0 20px 0;border-top:1px solid #d2d2d7;">
+      <div style="font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:19px;line-height:1.55;font-weight:500;color:#1d1d1f;letter-spacing:-0.1px;">「只要能验证结果，大规模软件迁移现在已可行，这对承载关键基础设施的老旧系统尤其重要。」</div>
+      <div style="font-size:13px;color:#6e6e73;margin-top:8px;">Amjad Masad（Replit CEO）&nbsp;&nbsp; <a href="https://x.com/amasad/status/2125664998454366305" target="_blank" style="color:#0066cc;text-decoration:none;text-decoration:underline;text-underline-offset:2px;">原帖 ›</a></div>
+    </td></tr>
+  </table>
+</td></tr>
+    
+    
+<tr><td style="padding:48px 0 0 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr><td colspan="2" style="padding:0px 0 0 0;"><div style="height:1px;line-height:1px;font-size:0;background:#d2d2d7;">&nbsp;</div></td></tr>
+    <tr>
+      <td style="padding:18px 0 4px 0;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:22px;line-height:1.25;font-weight:700;letter-spacing:-0.2px;color:#1d1d1f;"><h2 style="margin:0;font:inherit;color:inherit;letter-spacing:inherit;">新产品</h2></td>
+      <td align="right" valign="bottom" style="padding:18px 0 6px 0;font-size:13px;color:#6e6e73;white-space:nowrap;">Product Hunt</td>
+    </tr>
+    
+    <tr>
+      <td width="60" valign="top" style="width:60px;padding:12px 0 16px 0;font-size:14px;line-height:22px;font-weight:600;color:#6e6e73;white-space:nowrap;font-variant-numeric:tabular-nums;">01</td>
+      <td valign="top" style="padding:12px 0 16px 0;">
+        <a href="https://www.producthunt.com/products/whipdesk" target="_blank" style="font-size:16px;line-height:22px;font-weight:600;color:#1d1d1f;text-decoration:none;">WhipDesk</a>
+        <div style="font-size:14px;line-height:1.65;color:#424245;margin-top:4px;">WhipDesk：在手机上控制 AI coding agent，解决离开电脑就想看进度的问题。</div>
+        
+      </td>
+    </tr>
+    <tr>
+      <td width="60" valign="top" style="width:60px;padding:16px 0;border-top:1px solid #d2d2d7;font-size:14px;line-height:22px;font-weight:600;color:#6e6e73;white-space:nowrap;font-variant-numeric:tabular-nums;">02</td>
+      <td valign="top" style="padding:16px 0;border-top:1px solid #d2d2d7;">
+        <a href="https://www.producthunt.com/products/ottante" target="_blank" style="font-size:16px;line-height:22px;font-weight:600;color:#1d1d1f;text-decoration:none;">Ottante</a>
+        <div style="font-size:14px;line-height:1.65;color:#424245;margin-top:4px;">Ottante：在 Mac 上直接检查 AI agent 到底做了什么。</div>
+        
+      </td>
+    </tr>
+    <tr>
+      <td width="60" valign="top" style="width:60px;padding:16px 0;border-top:1px solid #d2d2d7;font-size:14px;line-height:22px;font-weight:600;color:#6e6e73;white-space:nowrap;font-variant-numeric:tabular-nums;">03</td>
+      <td valign="top" style="padding:16px 0;border-top:1px solid #d2d2d7;">
+        <a href="https://www.producthunt.com/products/flurra" target="_blank" style="font-size:16px;line-height:22px;font-weight:600;color:#1d1d1f;text-decoration:none;">Flurra</a>
+        <div style="font-size:14px;line-height:1.65;color:#424245;margin-top:4px;">Flurra：让 Claude 或 ChatGPT 直接剪视频，把对话界面接到剪辑流程上。</div>
+        
+      </td>
+    </tr>
+  </table>
+</td></tr>
+    
+<tr><td style="padding:48px 0 0 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr><td colspan="2" style="padding:0px 0 0 0;"><div style="height:1px;line-height:1px;font-size:0;background:#d2d2d7;">&nbsp;</div></td></tr>
+    <tr>
+      <td style="padding:18px 0 4px 0;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:22px;line-height:1.25;font-weight:700;letter-spacing:-0.2px;color:#1d1d1f;"><h2 style="margin:0;font:inherit;color:inherit;letter-spacing:inherit;">论文</h2></td>
+      <td align="right" valign="bottom" style="padding:18px 0 6px 0;font-size:13px;color:#6e6e73;white-space:nowrap;">Hugging Face 今日热榜</td>
+    </tr>
+    
+    <tr>
+      <td width="60" valign="top" style="width:60px;padding:12px 0 16px 0;font-size:14px;line-height:22px;font-weight:600;color:#6e6e73;white-space:nowrap;font-variant-numeric:tabular-nums;">▲ 86</td>
+      <td valign="top" style="padding:12px 0 16px 0;">
+        <a href="https://huggingface.co/papers/2611.34575" target="_blank" style="font-size:16px;line-height:22px;font-weight:600;color:#1d1d1f;text-decoration:none;">Sage-Med：医疗多模态模型的规模化法则</a>
+        <div style="font-size:14px;line-height:1.65;color:#424245;margin-top:4px;">系统评估显示现有医疗 MLLM 在多项医疗任务上不如通用前沿 MLLM，且单纯放大模型主要提升文本能力而非多模态感知。</div>
+        <div style="font-size:13px;line-height:1.5;color:#6e6e73;margin-top:4px;">Sage-Med: Scaling Medical Multimodal Intelligence</div>
+      </td>
+    </tr>
+    <tr>
+      <td width="60" valign="top" style="width:60px;padding:16px 0;border-top:1px solid #d2d2d7;font-size:14px;line-height:22px;font-weight:600;color:#6e6e73;white-space:nowrap;font-variant-numeric:tabular-nums;">▲ 61</td>
+      <td valign="top" style="padding:16px 0;border-top:1px solid #d2d2d7;">
+        <a href="https://huggingface.co/papers/2611.34923" target="_blank" style="font-size:16px;line-height:22px;font-weight:600;color:#1d1d1f;text-decoration:none;">Mixture-of-Loops Transformer</a>
+        <div style="font-size:14px;line-height:1.65;color:#424245;margin-top:4px;">跨循环与深度复用 key-value 记忆，其 U 形变体提升了预训练效率并降低推理延迟。</div>
+        
+      </td>
+    </tr>
+    <tr>
+      <td width="60" valign="top" style="width:60px;padding:16px 0;border-top:1px solid #d2d2d7;font-size:14px;line-height:22px;font-weight:600;color:#6e6e73;white-space:nowrap;font-variant-numeric:tabular-nums;">▲ 44</td>
+      <td valign="top" style="padding:16px 0;border-top:1px solid #d2d2d7;">
+        <a href="https://huggingface.co/papers/2611.34941" target="_blank" style="font-size:16px;line-height:22px;font-weight:600;color:#1d1d1f;text-decoration:none;">不用视频也能扩展视频编辑能力</a>
+        <div style="font-size:14px;line-height:1.65;color:#424245;margin-top:4px;">把预训练视频编辑器当图像编辑器、在单张图片上训练，从而支持新的视频编辑任务，并在 OpenVE-Bench 与 OpenVE++ 上取得最好结果。</div>
+        <div style="font-size:13px;line-height:1.5;color:#6e6e73;margin-top:4px;">Improving and Expanding Video Editing Capabilities Without Videos</div>
+      </td>
+    </tr>
+    <tr>
+      <td width="60" valign="top" style="width:60px;padding:16px 0;border-top:1px solid #d2d2d7;font-size:14px;line-height:22px;font-weight:600;color:#6e6e73;white-space:nowrap;font-variant-numeric:tabular-nums;">▲ 27</td>
+      <td valign="top" style="padding:16px 0;border-top:1px solid #d2d2d7;">
+        <a href="https://huggingface.co/papers/2611.34420" target="_blank" style="font-size:16px;line-height:22px;font-weight:600;color:#1d1d1f;text-decoration:none;">DocSEAM：多页文档的双向跨页编码</a>
+        <div style="font-size:14px;line-height:1.65;color:#424245;margin-top:4px;">在预训练视觉编码器与语言模型之间加一个轻量模块，用中心锚定的掩码自注意力把相邻页信息并入当前页 token，提升多页文档 VQA 并降低边界敏感性。</div>
+        <div style="font-size:13px;line-height:1.5;color:#6e6e73;margin-top:4px;">DocSEAM: Bidirectional Cross-Page Encoding for Multi-Page Document Understanding</div>
+      </td>
+    </tr>
+  </table>
+</td></tr>
+    
+<tr><td style="padding:48px 0 0 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr><td colspan="2" style="padding:0px 0 0 0;"><div style="height:1px;line-height:1px;font-size:0;background:#d2d2d7;">&nbsp;</div></td></tr>
+    <tr>
+      <td style="padding:18px 0 4px 0;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:22px;line-height:1.25;font-weight:700;letter-spacing:-0.2px;color:#1d1d1f;"><h2 style="margin:0;font:inherit;color:inherit;letter-spacing:inherit;">开源</h2></td>
+      <td align="right" valign="bottom" style="padding:18px 0 6px 0;font-size:13px;color:#6e6e73;white-space:nowrap;">GitHub 今日趋势</td>
+    </tr>
+    
+    <tr>
+      <td width="60" valign="top" style="width:60px;padding:12px 0 16px 0;font-size:14px;line-height:22px;font-weight:600;color:#6e6e73;white-space:nowrap;font-variant-numeric:tabular-nums;">★ </td>
+      <td valign="top" style="padding:12px 0 16px 0;">
+        <a href="https://github.com/alesha-pro/llm.asm/tree/main/02-baremetal-os" target="_blank" style="font-size:16px;line-height:22px;font-weight:600;color:#1d1d1f;text-decoration:none;"></a>
+        <div style="font-size:14px;line-height:1.65;color:#424245;margin-top:4px;">Bare Metal Qwen：让 Qwen 直接在裸金属上跑，适合关心推理栈精简与延迟的部署方。</div>
+        
+      </td>
+    </tr>
+  </table>
+</td></tr>
+    
+<tr><td style="padding:48px 0 0 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr><td colspan="2" style="padding:0px 0 0 0;"><div style="height:1px;line-height:1px;font-size:0;background:#d2d2d7;">&nbsp;</div></td></tr>
+    <tr>
+      <td style="padding:18px 0 4px 0;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:22px;line-height:1.25;font-weight:700;letter-spacing:-0.2px;color:#1d1d1f;"><h2 style="margin:0;font:inherit;color:inherit;letter-spacing:inherit;">快讯</h2></td>
+      <td align="right" valign="bottom" style="padding:18px 0 6px 0;font-size:13px;color:#6e6e73;white-space:nowrap;"></td>
+    </tr>
+    
+    <tr><td colspan="2" style="padding:10px 0 14px 0;font-size:15px;line-height:1.6;color:#1d1d1f;">
+      美国国会两党 AI 监管立法势头上升，但受立法节奏与管辖权之争拖累&nbsp;&nbsp;<a href="https://www.nytimes.com/2026/11/26/us/politics/ai-regulation-congress-nvidia.html" target="_blank" style="color:#0066cc;text-decoration:none;font-size:13px;">New York Times · Techmeme ›</a>
+    </td></tr>
+    <tr><td colspan="2" style="padding:14px 0 14px 0;border-top:1px solid #d2d2d7;font-size:15px;line-height:1.6;color:#1d1d1f;">
+      佛罗里达一男子用 AI 冒充主播 N3on，骗 memecoin 组织方约 26 万美元，获刑 47 个月&nbsp;&nbsp;<a href="https://aftermath.site/n3on-impersonator-ai-prison-260000-dollars-kick-stream/" target="_blank" style="color:#0066cc;text-decoration:none;font-size:13px;">Aftermath · Techmeme ›</a>
+    </td></tr>
+    <tr><td colspan="2" style="padding:14px 0 14px 0;border-top:1px solid #d2d2d7;font-size:15px;line-height:1.6;color:#1d1d1f;">
+      TrustedRouter 融资 600 万美元做企业 AI 查询端到端加密，日处理 60 亿 token（8 月为 10 亿）&nbsp;&nbsp;<a href="https://www.bloomberg.com/news/newsletters/2026-11-26/trustedrouter-aims-to-give-companies-greater-privacy-with-ai" target="_blank" style="color:#0066cc;text-decoration:none;font-size:13px;">Bloomberg · Techmeme ›</a>
+    </td></tr>
+    <tr><td colspan="2" style="padding:14px 0 14px 0;border-top:1px solid #d2d2d7;font-size:15px;line-height:1.6;color:#1d1d1f;">
+      Avicena 用 microLED 替代激光连接 AI 芯片，完成 1 亿美元以上 C 轮，SK 海力士、三星、AMD 参投&nbsp;&nbsp;<a href="https://thenextweb.com/news/avicena-100m-series-c-microled-optical-interconnects-ai" target="_blank" style="color:#0066cc;text-decoration:none;font-size:13px;">The Next Web · Techmeme ›</a>
+    </td></tr>
+    <tr><td colspan="2" style="padding:14px 0 14px 0;border-top:1px solid #d2d2d7;font-size:15px;line-height:1.6;color:#1d1d1f;">
+      机构投资者折价抛售 2021 年高点成立的旧 VC 基金份额，转投新 AI 基金&nbsp;&nbsp;<a href="https://www.ft.com/content/0278cbea-a0b6-4a30-80f2-f31ac6657f11" target="_blank" style="color:#0066cc;text-decoration:none;font-size:13px;">Financial Times · Techmeme ›</a>
+    </td></tr>
+    <tr><td colspan="2" style="padding:14px 0 14px 0;border-top:1px solid #d2d2d7;font-size:15px;line-height:1.6;color:#1d1d1f;">
+      Gemini 新增 66 种本地语音与口音&nbsp;&nbsp;<a href="https://x.com/joshwoodward/status/2125641468421546107" target="_blank" style="color:#0066cc;text-decoration:none;font-size:13px;">Josh Woodward · X ›</a>
+    </td></tr>
+    <tr><td colspan="2" style="padding:14px 0 14px 0;border-top:1px solid #d2d2d7;font-size:15px;line-height:1.6;color:#1d1d1f;">
+      纽约时报警告摄影师不要因 AI 功能更新 Photoshop&nbsp;&nbsp;<a href="https://simonwillison.net/2026/Nov/26/hn-50651685/" target="_blank" style="color:#0066cc;text-decoration:none;font-size:13px;">Simon Willison ›</a>
+    </td></tr>
+    <tr><td colspan="2" style="padding:14px 0 14px 0;border-top:1px solid #d2d2d7;font-size:15px;line-height:1.6;color:#1d1d1f;">
+      sqlite3_rsync 可远程复制 SQLite 数据库，3.47.0 引入、3.50.0 增强&nbsp;&nbsp;<a href="https://simonwillison.net/2026/Nov/26/sqlite3-rsync/" target="_blank" style="color:#0066cc;text-decoration:none;font-size:13px;">Simon Willison ›</a>
+    </td></tr>
+  </table>
+</td></tr>
+    
+<tr><td style="padding:48px 0 0 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr><td colspan="2" style="padding:0px 0 0 0;"><div style="height:1px;line-height:1px;font-size:0;background:#d2d2d7;">&nbsp;</div></td></tr>
+    <tr>
+      <td style="padding:18px 0 4px 0;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;font-size:22px;line-height:1.25;font-weight:700;letter-spacing:-0.2px;color:#1d1d1f;"><h2 style="margin:0;font:inherit;color:inherit;letter-spacing:inherit;">播客</h2></td>
+      <td align="right" valign="bottom" style="padding:18px 0 6px 0;font-size:13px;color:#6e6e73;white-space:nowrap;">Training Data</td>
+    </tr>
+    
+    <tr><td colspan="2" style="padding:12px 0 4px 0;">
+      <a href="https://www.youtube.com/watch?v=tRaFbDFBl_A" target="_blank" style="font-size:17px;line-height:1.45;font-weight:600;color:#1d1d1f;text-decoration:none;">OpenAI’s Noam Brown: Why Game Theory Didn’t Lead to General Intelligence (Live at No Limit Finals)</a>
+      <div style="font-size:15px;line-height:1.7;color:#1d1d1f;margin-top:8px;"><span style="font-weight:600;">一句话。</span>博弈论假设所有人理性，这个前提在 Diplomacy 这类需要谈判的游戏里会直接导致失误。</div>
+      <div style="font-size:15px;line-height:1.7;color:#424245;margin-top:4px;">· Noam Brown 从扑克 CFR 自博弈起步，用同一套 bot 在 2014、2015 两次赢下 MIT PokerBots 比赛。</div><div style="font-size:15px;line-height:1.7;color:#424245;margin-top:4px;">· 转向 Diplomacy 的原因是扑克方法难以迁移到国际象棋和围棋，而 2019 年 GPT-2 之后语言模型进展更快。</div><div style="font-size:15px;line-height:1.7;color:#424245;margin-top:4px;">· 他称 Astra 现在已能在线上扑克中赚钱，并想看到 LLM 直接参赛的表现；若只给一小时，他会用 k-means 压小抽象规模、自博弈约 30 分钟做出低精度 bot。</div>
+      <div style="font-size:13px;margin-top:10px;"><a href="https://www.youtube.com/watch?v=tRaFbDFBl_A" target="_blank" style="color:#0066cc;text-decoration:none;">收听 ›</a></div>
+    </td></tr>
+  </table>
+</td></tr>
+    <tr><td style="padding:56px 0 48px 0;">
+      <div style="height:1px;line-height:1px;font-size:0;background:#d2d2d7;">&nbsp;</div>
+      <div style="font-size:12px;line-height:1.8;color:#6e6e73;margin-top:16px;">
+        信号强度 <span style="color:#1d1d1f;letter-spacing:1px;" title="信号强度 3/3">●●●</span><span style="color:#d2d2d7;letter-spacing:1px;"></span>：根据来源关联和社区热度估算，不代表事实已核实。<br>
+        AI Signal 计划每天北京时间 10:00 发布，可能延迟。今天的来源：X 上 21 位 builder · Hacker News 7 · Techmeme 7 · 论文 8 · Product Hunt 8 · 官方博客 13 · 中文媒体 5 · 播客 1。由 DeepSeek 按编辑标准挑选，摘要可能遗漏细节，请结合来源阅读。
+      </div>
+      <div style="font-size:12px;margin-top:12px;"><a href="../archive/" style="color:#0066cc;text-decoration:none;">往期 ›</a>&nbsp;&nbsp; <a href="https://qinxujunai.github.io/ai-signal/archive/" target="_blank" style="color:#0066cc;text-decoration:none;">全部往期 ›</a>&nbsp;&nbsp; <a href="https://qinxujunai.github.io/ai-signal/#subscribe" target="_blank" style="color:#0066cc;text-decoration:none;">订阅 ›</a>&nbsp;&nbsp; <a href="https://github.com/qinxujunai/ai-signal" target="_blank" style="color:#0066cc;text-decoration:none;">源码 ›</a></div>
+    </td></tr>
+  </table>
+</td></tr>
+</table></main>
+</body>
+</html>

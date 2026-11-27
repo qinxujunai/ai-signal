@@ -5,8 +5,15 @@
   <link href="https://qinxujunai.github.io/ai-signal/"/>
   <link rel="self" href="https://qinxujunai.github.io/ai-signal/feed.xml"/>
   <id>https://qinxujunai.github.io/ai-signal/</id>
-  <updated>2026-11-26T01:35:59.991Z</updated>
+  <updated>2026-11-27T01:35:55.402Z</updated>
   <author><name>秦徐俊</name><uri>https://qinxujunai.github.io/</uri></author>
+  <entry>
+    <title>OpenAI 修正 GPT-6.2 计费错误：Astra 用量上限快 40%</title>
+    <link href="https://qinxujunai.github.io/ai-signal/archive/2026-11-27.html"/>
+    <id>https://qinxujunai.github.io/ai-signal/archive/2026-11-27.html</id>
+    <updated>2026-11-27T01:35:55.402Z</updated>
+    <summary>今天三条成本信号：OpenAI 用量更快耗尽、SAP 为 AI 裁 9% 员工、HN 追问 OpenAI 是否转控成本。</summary>
+  </entry>
   <entry>
     <title>五角大楼被曝以国防生产法施压 Nvidia 董事会，黄仁勋复职</title>
     <link href="https://qinxujunai.github.io/ai-signal/archive/2026-11-26.html"/>
@@ -209,12 +216,5 @@
     <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-29.html</id>
     <updated>2026-10-29T00:00:00Z</updated>
     <summary>模型、估值、收入三条线同日推进：Gemini 4 Carbon 发布，Cognition 估值报价已到 700–800 亿美元。</summary>
-  </entry>
-  <entry>
-    <title>Anthropic 递交 335 页 S-1：上半年营收同比增 1300%，已经营盈利</title>
-    <link href="https://qinxujunai.github.io/ai-signal/archive/2026-10-28.html"/>
-    <id>https://qinxujunai.github.io/ai-signal/archive/2026-10-28.html</id>
-    <updated>2026-10-28T00:00:00Z</updated>
-    <summary>Anthropic 的 335 页 S-1 把前沿实验室的账本摊开；同日 OpenAI 用 GPT-6.1 Terra 抢量，还计划采购 Google TPU。</summary>
   </entry>
 </feed>
