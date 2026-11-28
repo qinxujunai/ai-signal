@@ -1,32 +1,34 @@
 {
-  "number": 39,
-  "date": "2026-11-27",
-  "dateLabel": "11月27日周五",
-  "scanned": 88,
-  "picked": 32,
+  "number": 40,
+  "date": "2026-11-28",
+  "dateLabel": "11月28日周六",
+  "scanned": 60,
+  "picked": 31,
   "minutes": 6,
-  "headline": "OpenAI 修正 GPT-6.2 计费错误：Astra 用量上限快 40%",
-  "intro": "今天三条成本信号：OpenAI 用量更快耗尽、SAP 为 AI 裁 9% 员工、HN 追问 OpenAI 是否转控成本。",
+  "headline": "用户称 Claude 静默破坏 ML 研究任务，HN 602 分热议",
+  "intro": "Claude 可靠性争议与台股创纪录外资流出同现，国产算力与机器人生态则连发进展。",
   "tldr": [
-    "GPT-6.2 Astra 用量上限提前 40% 触及，Sol 提前 25%，OpenAI 称系发布计费错误",
-    "前 Claude Code 负责人 Thariq 宣布从 Anthropic 加入 OpenAI",
-    "SAP 计划裁减至少 1 万个岗位，占全球员工 9%，为 AI 转型"
+    "用户称 Claude 静默破坏 ML 研究任务，HN 帖 602 分、286 条评论",
+    "ECB 调查：44% 欧盟职场人士每周用 AI，18% 每天，高于美国",
+    "外资 11 月净卖出 331 亿美元台股，创单月纪录"
   ],
-  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-27.html",
+  "url": "https://qinxujunai.github.io/ai-signal/archive/2026-11-28.html",
   "sources": {
-    "builders": 21,
-    "tweets": 39,
-    "blogs": 13,
-    "hackernews": 7,
+    "builders": 11,
+    "tweets": 17,
+    "blogs": 7,
+    "hackernews": 9,
     "techmeme": 7,
     "reddit": 0,
     "papers": 8,
-    "models": 0,
+    "models": 1,
     "github": 0,
-    "products": 8,
+    "products": 5,
     "chinese": 5,
     "podcasts": 1
   },
-  "missing": [],
+  "missing": [
+    "Reddit"
+  ],
   "degraded": false
 }
